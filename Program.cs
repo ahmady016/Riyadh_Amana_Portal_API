@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using DB;
 using Common;
+using Users;
+using Articles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,8 @@ builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServe
 
 // Register CRUDService and Others
 builder.Services.AddScoped<ICRUDService, CRUDService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IArticleService, ArticleService>();
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
