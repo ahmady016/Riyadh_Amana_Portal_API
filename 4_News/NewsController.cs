@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace amana_mono._4_News
+namespace News;
+
+[Route("api/[controller]")]
+[ApiController]
+public class NewsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class NewsController : ControllerBase
-    {
-    }
 }

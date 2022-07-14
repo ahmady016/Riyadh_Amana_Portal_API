@@ -1,6 +1,5 @@
-﻿namespace amana_mono._3_Articles
+﻿namespace Articles;
+
+public class ArticleService
 {
-    public class ArticleService
-    {
-    }
 }

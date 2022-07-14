@@ -1,6 +1,5 @@
-﻿namespace amana_mono._1_Users
+﻿namespace Users;
+
+public class UserService
 {
-    public class UserService
-    {
-    }
 }

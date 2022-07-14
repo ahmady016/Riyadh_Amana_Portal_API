@@ -1,6 +1,5 @@
-﻿namespace amana_mono._2_Advertisements
+﻿namespace Advertisements;
+
+public class AdvertisementService
 {
-    public class AdvertisementService
-    {
-    }
 }

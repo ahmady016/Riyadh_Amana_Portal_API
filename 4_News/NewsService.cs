@@ -1,6 +1,5 @@
-﻿namespace amana_mono._4_News
+﻿namespace News;
+
+public class NewsService
 {
-    public class NewsService
-    {
-    }
 }
