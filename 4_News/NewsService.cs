@@ -1,4 +1,4 @@
-﻿namespace News;
+﻿namespace _News;
 
 public class NewsService
 {

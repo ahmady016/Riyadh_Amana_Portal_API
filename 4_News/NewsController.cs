@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace News;
+namespace _News;
 
 [Route("api/[controller]")]
 [ApiController]

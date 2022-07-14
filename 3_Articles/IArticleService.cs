@@ -1,5 +1,5 @@
 ﻿namespace Articles;
 
-public class IArticleService
+public interface IArticleService
 {
 }

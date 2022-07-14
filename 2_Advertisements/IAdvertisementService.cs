@@ -1,5 +1,5 @@
 ﻿namespace Advertisements;
 
-public class IAdvertisementService
+public interface IAdvertisementService
 {
 }
