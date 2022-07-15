@@ -35,7 +35,6 @@ public class ArticleService : IArticleService
         };
         return _mapper.Map<List<ArticleDto>>(list);
     }
-
     public PageResult<ArticleDto> ListPage(string type, int pageSize, int pageNumber)
     {
         var query = type.ToLower() switch
@@ -64,7 +63,6 @@ public class ArticleService : IArticleService
         }
         return _mapper.Map<ArticleDto>(article);
     }
-
     public List<ArticleDto> FindList(string ids)
     {
         if (ids == null)
@@ -86,7 +84,6 @@ public class ArticleService : IArticleService
         _crudService.SaveChanges();
         return _mapper.Map<ArticleDto>(createdArticle);
     }
-
     public List<ArticleDto> AddMany(List<CreateArticleInput> inputs)
     {
         var articles = _mapper.Map<List<Article>>(inputs);
@@ -102,7 +99,6 @@ public class ArticleService : IArticleService
         _crudService.SaveChanges();
         return _mapper.Map<ArticleDto>(updatedArticle);
     }
-
     public List<ArticleDto> UpdateMany(List<UpdateArticleInput> inputs)
     {
         var articles = _mapper.Map<List<Article>>(inputs);
@@ -124,7 +120,6 @@ public class ArticleService : IArticleService
         _logger.LogError(_errorMessage);
         throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
     }
-
     public bool Activate(Guid id)
     {
         var article = _crudService.Find<Article, Guid>(id);
@@ -138,4 +133,5 @@ public class ArticleService : IArticleService
         _logger.LogError(_errorMessage);
         throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
     }
+
 }
