@@ -5,7 +5,7 @@ namespace Articles;
 
 public interface IArticleService
 {
-     List<ArticleDto> List(string type);
+    List<ArticleDto> List(string type);
     PageResult<ArticleDto> ListPage(string type, int pageSize, int pageNumber);
     ArticleDto Find(Guid id);
     List<ArticleDto> FindList(string ids);

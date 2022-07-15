@@ -1,5 +1,5 @@
 ﻿namespace _News;
 
-public class NewsService
+public class NewsService : INewsService
 {
 }

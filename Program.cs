@@ -7,7 +7,9 @@ using Serilog;
 using DB;
 using Common;
 using Users;
+using Advertisements;
 using Articles;
+using _News;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,10 +27,14 @@ builder.Logging.AddSerilog(logger);
 var dbConnection = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(dbConnection));
 
-// Register CRUDService and Others
+// Register CRUDService
 builder.Services.AddScoped<ICRUDService, CRUDService>();
+
+// Register Features Services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAdvertisementService, AdvertisementService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<INewsService, NewsService>();
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
