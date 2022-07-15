@@ -59,7 +59,7 @@ public class UserService : IUserService
         {
             _errorMessage = $"User Record with Id: {id} Not Found";
             _logger.LogError(_errorMessage);
-            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound); ;
+            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
         }
         return _mapper.Map<UserDto>(user);
     }

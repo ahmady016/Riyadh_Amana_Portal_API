@@ -59,7 +59,7 @@ public class ArticleService : IArticleService
         {
             _errorMessage = $"Article Record with Id: {id} Not Found";
             _logger.LogError(_errorMessage);
-            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound); ;
+            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
         }
         return _mapper.Map<ArticleDto>(article);
     }
