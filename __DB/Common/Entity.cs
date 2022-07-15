@@ -1,8 +1,11 @@
-﻿namespace DB.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public abstract class Entity<T>
+namespace DB.Common;
+
+public abstract class Entity<Tkey>
 {
-    public virtual T Id { get; set; }
+    public virtual Tkey Id { get; set; }
 
     public virtual bool IsDeleted { get; set; } = false;
     public virtual bool IsActive { get; set; } = false;
@@ -18,4 +21,69 @@ public abstract class Entity<T>
 
     public virtual DateTime? ActivatedAt { get; set; }
     public virtual string ActivatedBy { get; set; }
+}
+
+public abstract class EntityConfig<T, Tkey> : IEntityTypeConfiguration<T> where T : Entity<Tkey>
+{
+    public virtual void Configure(EntityTypeBuilder<T> entity)
+    {
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Id)
+            .HasDefaultValueSql("NEWID()")
+            .HasColumnName("id")
+            .HasColumnType("uniqueidentifier");
+
+        entity.Property(e => e.IsDeleted)
+            .IsRequired()
+            .HasDefaultValue(false)
+            .HasColumnName("is_deleted")
+            .HasColumnType("bit");
+
+        entity.Property(e => e.IsActive)
+            .IsRequired()
+            .HasDefaultValue(false)
+            .HasColumnName("is_active")
+            .HasColumnType("bit");
+
+        entity.Property(e => e.CreatedAt)
+            .IsRequired()
+            .HasDefaultValueSql("GETDATE()")
+            .HasColumnName("created_at")
+            .HasColumnType("datetime");
+
+        entity.Property(e => e.CreatedBy)
+            .IsRequired()
+            .HasDefaultValue("app_dev")
+            .HasMaxLength(100)
+            .HasColumnName("created_by")
+            .HasColumnType("varchar(100)");
+
+        entity.Property(e => e.UpdatedAt)
+            .HasColumnName("updated_at")
+            .HasColumnType("datetime");
+
+        entity.Property(e => e.UpdatedBy)
+            .HasMaxLength(100)
+            .HasColumnName("updated_by")
+            .HasColumnType("varchar(100)");
+
+        entity.Property(e => e.DeletedAt)
+            .HasColumnName("deleted_at")
+            .HasColumnType("datetime");
+
+        entity.Property(e => e.DeletedBy)
+            .HasMaxLength(100)
+            .HasColumnName("deleted_by")
+            .HasColumnType("varchar(100)");
+
+        entity.Property(e => e.ActivatedAt)
+            .HasColumnName("activated_at")
+            .HasColumnType("datetime");
+
+        entity.Property(e => e.ActivatedBy)
+            .HasMaxLength(100)
+            .HasColumnName("activated_by")
+            .HasColumnType("varchar(100)");
+
+    }
 }

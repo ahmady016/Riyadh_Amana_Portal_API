@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace amana_mono.__DB.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220714092959_Initial_Entities")]
+    [Migration("20220715192205_Initial_Entities")]
     partial class Initial_Entities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
