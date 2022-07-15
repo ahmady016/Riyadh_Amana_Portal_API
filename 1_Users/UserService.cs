@@ -35,7 +35,6 @@ public class UserService : IUserService
         };
         return _mapper.Map<List<UserDto>>(list);
     }
-
     public PageResult<UserDto> ListPage(string type, int pageSize, int pageNumber)
     {
         var query = type.ToLower() switch
@@ -64,7 +63,6 @@ public class UserService : IUserService
         }
         return _mapper.Map<UserDto>(user);
     }
-
     public List<UserDto> FindList(string ids)
     {
         if (ids == null)
@@ -86,7 +84,6 @@ public class UserService : IUserService
         _crudService.SaveChanges();
         return _mapper.Map<UserDto>(createdUser);
     }
-
     public List<UserDto> AddMany(List<CreateUserInput> inputs)
     {
         var users = _mapper.Map<List<User>>(inputs);
@@ -94,7 +91,7 @@ public class UserService : IUserService
         _crudService.SaveChanges();
         return _mapper.Map<List<UserDto>>(createdUsers);
     }
-
+    
     public UserDto Update(UpdateUserInput input)
     {
         var user = _mapper.Map<User>(input);
@@ -102,7 +99,6 @@ public class UserService : IUserService
         _crudService.SaveChanges();
         return _mapper.Map<UserDto>(updatedUser);
     }
-
     public List<UserDto> UpdateMany(List<UpdateUserInput> inputs)
     {
         var users = _mapper.Map<List<User>>(inputs);
@@ -124,7 +120,6 @@ public class UserService : IUserService
         _logger.LogError(_errorMessage);
         throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
     }
-
     public bool Activate(Guid id)
     {
         var user = _crudService.Find<User, Guid>(id);
@@ -138,4 +133,5 @@ public class UserService : IUserService
         _logger.LogError(_errorMessage);
         throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
     }
+
 }
