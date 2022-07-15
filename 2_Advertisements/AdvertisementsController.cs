@@ -1,5 +1,5 @@
-﻿using Dtos;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Dtos;
 
 namespace Advertisements;
 
