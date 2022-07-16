@@ -24,6 +24,7 @@ public class CreateUserInput
     
     [Required]
     [StringLength(100)]
+    [EmailAddress]
     public string Email { get; set; }
 
     [Required]
