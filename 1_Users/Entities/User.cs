@@ -20,6 +20,8 @@ public class User : Entity<Guid>
     public string Email { get; set; }
     public string Password { get; set; }
     public string Mobile { get; set; }
+
+    public ICollection<UserPermission> UsersPermissions { get; set; }
 }
 
 public class UserConfig : EntityConfig<User, Guid>
