@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
-using DB.Entities;
+
 using Dtos;
+using Auth.Dtos;
+using DB.Entities;
 
 namespace Common;
 
@@ -9,6 +11,7 @@ public class AutoMapperProfile : Profile
     public AutoMapperProfile()
     {
         CreateMap<User, UserDto>().ReverseMap();
+        CreateMap<User, RegisterInput>().ReverseMap();
         CreateMap<User, CreateUserInput>().ReverseMap();
         CreateMap<User, UpdateUserInput>().ReverseMap();
 

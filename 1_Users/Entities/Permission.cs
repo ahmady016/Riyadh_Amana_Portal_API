@@ -11,7 +11,7 @@ public class Permission : Entity<Guid>
     public string DescriptionAr { get; set; }
     public string DescriptionEn { get; set; }
 
-    public ICollection<UserPermission> UsersPermissions { get; set; }
+    public ICollection<UserPermission> UsersPermissions { get; set; } = new HashSet<UserPermission>();
 }
 
 public class PermissionConfig : EntityConfig<Permission, Guid>

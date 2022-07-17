@@ -15,25 +15,24 @@ public partial class ApplicationContext : DbContext
     }
 
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
     public virtual DbSet<Permission> Permissions { get; set; }
     public virtual DbSet<UserPermission> UsersPermissions { get; set; }
     public virtual DbSet<Advertisement> Advertisements { get; set; }
     public virtual DbSet<Article> Articles { get; set; }
     public virtual DbSet<News> News { get; set; }
+    public virtual DbSet<ContactUs> ContactsUs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new UserConfig());
-
+        modelBuilder.ApplyConfiguration(new RefreshTokenConfig());
         modelBuilder.ApplyConfiguration(new PermissionConfig());
-        
         modelBuilder.ApplyConfiguration(new UserPermissionConfig());
-
         modelBuilder.ApplyConfiguration(new AdvertisementConfig());
-        
         modelBuilder.ApplyConfiguration(new ArticleConfig());
-        
         modelBuilder.ApplyConfiguration(new NewsConfig());
+        modelBuilder.ApplyConfiguration(new ContactUsConfig());
 
         OnModelCreatingPartial(modelBuilder);
     }

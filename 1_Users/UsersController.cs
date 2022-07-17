@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Dtos;
+using Auth.Dtos;
 
 namespace Users;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]/[action]")]
 public class UsersController : ControllerBase
@@ -11,6 +14,87 @@ public class UsersController : ControllerBase
     public UsersController(IUserService service)
     {
         _service = service;
+    }
+
+    private string GetIPAddress()
+    {
+        // get source ip address for the current request
+        if (Request.Headers.ContainsKey("X-Forwarded-For"))
+            return Request.Headers["X-Forwarded-For"];
+        else
+            return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    public IActionResult Register(RegisterInput input)
+    {
+        var result = _service.Register(input, GetIPAddress());
+        return Ok(result);
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    public IActionResult Login(LoginDto login)
+    {
+        var result = _service.Login(login, GetIPAddress());
+        return Ok(result);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{token}")]
+    public IActionResult RefreshToken(string token)
+    {
+        var result = _service.RefreshTheTokens(token, GetIPAddress());
+        return Ok(result);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{userId}")]
+    public IActionResult Logout(Guid userId)
+    {
+        bool isLoggedout = _service.Logout(userId);
+        return Ok(isLoggedout ? "User is logedout ..." : "User aleary logedout!!!");
+    }
+
+    /// <summary>
+    /// Users/Update
+    /// </summary>
+    /// <returns>UserDto</returns>
+    [HttpPut]
+    public virtual IActionResult Update([FromBody] UpdateUserInput input)
+    {
+        return Ok(_service.Update(input));
+    }
+
+    /// <summary>
+    /// Users/UpdateMany
+    /// </summary>
+    /// <returns>List Of UserDto</returns>
+    [HttpPut]
+    public virtual IActionResult UpdateMany([FromBody] List<UpdateUserInput> inputs)
+    {
+        return Ok(_service.UpdateMany(inputs));
+    }
+
+    /// <summary>
+    /// Users/Delete
+    /// </summary>
+    /// <returns>bool</returns>
+    [HttpDelete]
+    public virtual IActionResult Delete(Guid id)
+    {
+        return Ok(_service.Delete(id));
+    }
+
+    /// <summary>
+    /// Users/Activate
+    /// </summary>
+    /// <returns>bool</returns>
+    [HttpDelete]
+    public virtual IActionResult Activate(Guid id)
+    {
+        return Ok(_service.Activate(id));
     }
 
     /// <summary>
@@ -55,66 +139,6 @@ public class UsersController : ControllerBase
     public IActionResult FindList(string ids)
     {
         return Ok(_service.FindList(ids));
-    }
-
-    /// <summary>
-    /// Users/Add
-    /// </summary>
-    /// <returns>UserDto</returns>
-    [HttpPost]
-    public virtual IActionResult Add([FromBody] CreateUserInput input)
-    {
-        return Ok(_service.Add(input));
-    }
-
-    /// <summary>
-    /// Users/AddMany
-    /// </summary>
-    /// <returns>List Of UserDto</returns>
-    [HttpPost]
-    public virtual IActionResult AddMany([FromBody] List<CreateUserInput> inputs)
-    {
-        return Ok(_service.AddMany(inputs));
-    }
-
-    /// <summary>
-    /// Users/Update
-    /// </summary>
-    /// <returns>UserDto</returns>
-    [HttpPut]
-    public virtual IActionResult Update([FromBody] UpdateUserInput input)
-    {
-        return Ok(_service.Update(input));
-    }
-
-    /// <summary>
-    /// Users/UpdateMany
-    /// </summary>
-    /// <returns>List Of UserDto</returns>
-    [HttpPut]
-    public virtual IActionResult UpdateMany([FromBody] List<UpdateUserInput> inputs)
-    {
-        return Ok(_service.UpdateMany(inputs));
-    }
-
-    /// <summary>
-    /// Users/Delete
-    /// </summary>
-    /// <returns>bool</returns>
-    [HttpDelete]
-    public virtual IActionResult Delete(Guid id)
-    {
-        return Ok(_service.Delete(id));
-    }
-
-    /// <summary>
-    /// Users/Activate
-    /// </summary>
-    /// <returns>bool</returns>
-    [HttpDelete]
-    public virtual IActionResult Activate(Guid id)
-    {
-        return Ok(_service.Activate(id));
     }
 
 }

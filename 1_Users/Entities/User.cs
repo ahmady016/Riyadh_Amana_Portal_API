@@ -21,7 +21,8 @@ public class User : Entity<Guid>
     public string Password { get; set; }
     public string Mobile { get; set; }
 
-    public ICollection<UserPermission> UsersPermissions { get; set; }
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new HashSet<RefreshToken>();
+    public virtual ICollection<UserPermission> UsersPermissions { get; set; } = new HashSet<UserPermission>();
 }
 
 public class UserConfig : EntityConfig<User, Guid>
