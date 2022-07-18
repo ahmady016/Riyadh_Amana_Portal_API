@@ -53,7 +53,7 @@ public class NewsController : ControllerBase
     /// News/FindList/[id, id, id]
     /// </summary>
     /// <returns>List Of NewsDto</returns>
-    [HttpGet("{id}")]
+    [HttpGet("{ids}")]
     public IActionResult FindList(string ids)
     {
         return Ok(_service.FindList(ids));
@@ -113,7 +113,7 @@ public class NewsController : ControllerBase
     /// News/Activate
     /// </summary>
     /// <returns>bool</returns>
-    [HttpDelete]
+    [HttpPut]
     public virtual IActionResult Activate(Guid id)
     {
         return Ok(_service.Activate(id));

@@ -51,7 +51,7 @@ public class ArticlesController : ControllerBase
     /// Articles/FindList/[id, id, id]
     /// </summary>
     /// <returns>List Of ArticleDto</returns>
-    [HttpGet("{id}")]
+    [HttpGet("{ids}")]
     public IActionResult FindList(string ids)
     {
         return Ok(_service.FindList(ids));
@@ -111,7 +111,7 @@ public class ArticlesController : ControllerBase
     /// Articles/Activate
     /// </summary>
     /// <returns>bool</returns>
-    [HttpPost]
+    [HttpPut]
     public virtual IActionResult Activate(Guid id)
     {
         return Ok(_service.Activate(id));

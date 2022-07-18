@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using DB.Common;
+using Dtos;
 
-namespace amana_mono._5_ContactUs
+namespace _ContactUs;
+
+public interface IContactUsService
 {
-    public class IContactUsService
-    {
-        List<ContactUsDto> List(string type);
-        PageResult<ContactUsDto> ListPage(string type, int pageSize, int pageNumber);
-        ContactUsDto Find(Guid id);
-        List<ContactUsDto> FindList(string ids);
-        ContactUsDto Add(CreateNewsInput input);
-        List<ContactUsDto> AddMany(List<CreateNewsInput> inputs);
-        ContactUsDto Update(UpdateNewsInput input);
-        List<ContactUsDto> UpdateMany(List<UpdateNewsInput> inputs);
-        bool Delete(Guid id);
-        bool Activate(Guid id);
-    }
+    List<ContactUsDto> List(string type);
+    PageResult<ContactUsDto> ListPage(string type, int pageSize, int pageNumber);
+    ContactUsDto Find(Guid id);
+    List<ContactUsDto> FindList(string ids);
+    ContactUsDto Add(CreateContactUsInput input);
+    List<ContactUsDto> AddMany(List<CreateContactUsInput> inputs);
+    ContactUsDto Update(UpdateContactUsInput input);
+    List<ContactUsDto> UpdateMany(List<UpdateContactUsInput> inputs);
+    bool Delete(Guid id);
+    bool Activate(Guid id);
 }

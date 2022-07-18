@@ -1,59 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
+using System.ComponentModel.DataAnnotations;
 
-namespace amana_mono._5_ContactUs.Dtos
+namespace Dtos;
+
+public class CreateContactUsInput
 {
-    public class CreateContactUsInput
-    {
-        [Required]
-        [StringLength(100)]
-        public string Name { get; set; }
-        [Required]
-        [StringLength(100)]
-        public string UserId { get; set; }
-        [Required]
-        [StringLength(100)]
-        public string MobileNo { get; set; }
-        [Required]
-        [StringLength(100)]
-        public string Email { get; set; }
-        [Required]
-        [StringLength(100)]
-        public string Subject { get; set; }
-        [Required]
-        [StringLength(100)]
-        public string Description { get; set; }
-        [Required]
-        [StringLength(100)]
-        public int? CreatedBy { get; set; }
-        [Required]
-        [StringLength(100)]
-        public int? ModifiedBy { get; set; }
-        [Required]
-        [StringLength(100)]
-        public DateTime? ModifiedDate { get; set; }
-        [Required]
-        [StringLength(100)]
-        public DateTime? CreatedDate { get; set; }
-        [Required]
-        [StringLength(100)]
-        public int? ReferenceId { get; set; }
-        [Required]
-        [StringLength(100)]
-        public bool? IsDeleted { get; set; }
-        [Required]
-        [StringLength(100)]
-        public int? EntityId { get; set; }
+    [Required(ErrorMessage = "Name is required")]
+    [StringLength(100, MinimumLength = 6, ErrorMessage = "Name Must be between 6 and 100 characters")]
+    public string Name { get; set; }
 
-        public string FileUrl { get; set; }
+    [Required(ErrorMessage = "Email is required")]
+    [StringLength(100, MinimumLength = 6, ErrorMessage = "Email Must be between 6 and 100 characters")]
+    [EmailAddress(ErrorMessage = "Email Must be a valid email")]
+    public string Email { get; set; }
 
-        public string ComplainId { get; set; }
-        [Required]
-        [StringLength(100)]
-        public string Address { get; set; }
-        public string Longitude { get; set; }
-        public string Latitude { get; set; }
-    }
+    [Required(ErrorMessage = "Mobile is required")]
+    [StringLength(20, MinimumLength = 10, ErrorMessage = "Mobile Must be between 10 and 20 characters")]
+    [RegularExpression("^[0-9]*$", ErrorMessage = "Mobile must be numeric")]
+    public string Mobile { get; set; }
+
+    [StringLength(200, MinimumLength = 10, ErrorMessage = "Address Must be between 10 and 200 characters")]
+    public string Address { get; set; }
+
+    [StringLength(20, MinimumLength = 5, ErrorMessage = "Longitude Must be between 5 and 20 characters")]
+    [RegularExpression("^[0-9]*$", ErrorMessage = "Longitude must be numeric")]
+    public string Longitude { get; set; }
+
+    [StringLength(20, MinimumLength = 5, ErrorMessage = "Latitude Must be between 5 and 20 characters")]
+    [RegularExpression("^[0-9]*$", ErrorMessage = "Latitude must be numeric")]
+    public string Latitude { get; set; }
+
+    [Required(ErrorMessage = "Title is required")]
+    [StringLength(100, MinimumLength = 5, ErrorMessage = "Title Must be between 5 and 100 characters")]
+    public string Title { get; set; }
+
+    [Required(ErrorMessage = "Description is required")]
+    [StringLength(400, MinimumLength = 10, ErrorMessage = "Description Must be between 10 and 400 characters")]
+    public string Description { get; set; }
+
+    [Required(ErrorMessage = "FileUrl is required")]
+    [StringLength(400, MinimumLength = 10, ErrorMessage = "FileUrl Must be between 10 and 400 characters")]
+    public string FileUrl { get; set; }
 }

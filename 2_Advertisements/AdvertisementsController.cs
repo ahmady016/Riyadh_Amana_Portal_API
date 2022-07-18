@@ -51,7 +51,7 @@ public class AdvertisementsController : ControllerBase
     /// Advertisements/FindList/[id, id, id]
     /// </summary>
     /// <returns>List Of AdvertisementDto</returns>
-    [HttpGet("{id}")]
+    [HttpGet("{ids}")]
     public IActionResult FindList(string ids)
     {
         return Ok(_service.FindList(ids));
@@ -111,7 +111,7 @@ public class AdvertisementsController : ControllerBase
     /// Advertisements/Activate
     /// </summary>
     /// <returns>bool</returns>
-    [HttpDelete]
+    [HttpPut]
     public virtual IActionResult Activate(Guid id)
     {
         return Ok(_service.Activate(id));
