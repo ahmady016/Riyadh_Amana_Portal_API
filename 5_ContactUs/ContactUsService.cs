@@ -126,7 +126,7 @@ public class ContactUsService : IContactUsService
         var contactUsItem = _crudService.Find<ContactUs, Guid>(id);
         if (contactUsItem is not null)
         {
-            _crudService.Activate<ContactUs, Guid>(ncontactUsItemews);
+            _crudService.Activate<ContactUs, Guid>(contactUsItem);
             _crudService.SaveChanges();
             return true;
         }
