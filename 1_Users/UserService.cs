@@ -47,7 +47,7 @@ public class UserService : IUserService
     }
     private static void RevokeRefreshToken(RefreshToken token, string ipAddress = null, string reason = null)
     {
-        token.RevokedAt = DateTime.UtcNow;
+        token.RevokedAt = DateTime.UtcNow.AddHours(3);
         token.RevokedIP = ipAddress;
         token.RevokedReason = reason;
     }
@@ -162,9 +162,32 @@ public class UserService : IUserService
             RefreshToken = tokens.Item2.Value
         };
     }
+    public bool RevokeTheToken(string token, string ipAddress = null)
+    {
+        if (string.IsNullOrEmpty(token))
+        {
+            _errorMessage = "Token is required !!!";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
+        }
+
+        var oldRefreshToken = GetRefreshToken(token);
+        if (!oldRefreshToken.IsValid)
+        {
+            _errorMessage = "Invalid Token !!!";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.Conflict);
+        }
+
+        RevokeRefreshToken(oldRefreshToken, ipAddress, $"Revoked without replacement");
+        _crudService.Update<RefreshToken, Guid>(oldRefreshToken);
+        _crudService.SaveChanges();
+
+        return true;
+    }
     public bool Logout(Guid userId)
     {
-        // return error if email already existed
+        // return error if user not found
         var existedUser = _crudService.Find<User, Guid>(userId);
         if (existedUser is null)
         {

@@ -10,8 +10,8 @@ public interface IUserService
     #region private methods
     /*
     RefreshToken GetRefreshToken(string token);
-    void RevokeRefreshToken(RefreshToken token, string ipAddress = null, string reason = null);
-    void RevokeAllUserRefreshTokens(Guid userId, string ipAddress = null);
+    void RevokeRefreshToken(RefreshToken token, string ipAddress, string reason);
+    void RevokeAllUserRefreshTokens(Guid userId, string ipAddress);
     void RemoveOldRefreshTokens(Guid userId);
     Tuple<string, RefreshToken> GenerateTokens(User user, string ipAddress = null);
     */
@@ -20,6 +20,7 @@ public interface IUserService
     AuthDto Register(RegisterInput input, string ipAddress);
     AuthDto Login(LoginDto login, string ipAddress);
     AuthDto RefreshTheTokens(string token, string ipAddress);
+    bool RevokeTheToken(string token, string ipAddress);
     bool Logout(Guid userId);
 
     UserDto Update(UpdateUserInput input);

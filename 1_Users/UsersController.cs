@@ -32,7 +32,6 @@ public class UsersController : ControllerBase
         var result = _service.Register(input, GetIPAddress());
         return Ok(result);
     }
-
     [AllowAnonymous]
     [HttpPost]
     public IActionResult Login(LoginDto login)
@@ -41,20 +40,25 @@ public class UsersController : ControllerBase
         return Ok(result);
     }
 
-    [AllowAnonymous]
     [HttpGet("{token}")]
     public IActionResult RefreshToken(string token)
     {
         var result = _service.RefreshTheTokens(token, GetIPAddress());
         return Ok(result);
     }
+    [HttpGet("{token}")]
+    public IActionResult RevokeToken(string token)
+    {
+        _service.RevokeTheToken(token, GetIPAddress());
+        return Ok(new { Message = "Token is Revoked" });
+    }
 
-    [AllowAnonymous]
     [HttpGet("{userId}")]
     public IActionResult Logout(Guid userId)
     {
         bool isLoggedout = _service.Logout(userId);
-        return Ok(isLoggedout ? "User is logedout ..." : "User aleary logedout!!!");
+        var result = new { Message = isLoggedout ? "User is logedout ..." : "User aleary logedout!!!" };
+        return Ok(result);
     }
 
     /// <summary>
