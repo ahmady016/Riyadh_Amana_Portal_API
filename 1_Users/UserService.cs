@@ -19,7 +19,9 @@ public class UserService : IUserService
     private readonly ILogger<User> _logger;
     private readonly IConfiguration _config;
     private string _errorMessage;
-
+    
+    private int RefreshTokenValidityInDays => int.Parse(_config["JWT:RefreshTokenValidityInDays"]);
+    
     public UserService(
         ICRUDService curdService,
         IMapper mapper,
@@ -66,7 +68,7 @@ public class UserService : IUserService
         // remove old inactive refresh tokens from user based on TTL in app settings
         _crudService.GetListAndDelete<RefreshToken>(rf =>
             rf.UserId == userId && !rf.IsActive && !rf.IsValid &&
-            rf.CreatedAt.AddDays(int.Parse(_config["JWT:RefreshTokenValidityInDays"])) <= DateTime.UtcNow.AddHours(3)
+            rf.CreatedAt.AddDays(RefreshTokenValidityInDays) <= DateTime.UtcNow.AddHours(3)
         );
         _crudService.SaveChanges();
     }
