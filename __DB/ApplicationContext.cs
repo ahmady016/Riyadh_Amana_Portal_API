@@ -23,6 +23,7 @@ public partial class ApplicationContext : DbContext
     public virtual DbSet<News> News { get; set; }
     public virtual DbSet<ContactUs> ContactsUs { get; set; }
     public virtual DbSet<Award> Awards { get; set; }
+    public virtual DbSet<Partner> Partners { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -35,6 +36,7 @@ public partial class ApplicationContext : DbContext
         modelBuilder.ApplyConfiguration(new NewsConfig());
         modelBuilder.ApplyConfiguration(new ContactUsConfig());
         modelBuilder.ApplyConfiguration(new AwardConfig());
+        modelBuilder.ApplyConfiguration(new PartnerConfig());
 
         OnModelCreatingPartial(modelBuilder);
     }
