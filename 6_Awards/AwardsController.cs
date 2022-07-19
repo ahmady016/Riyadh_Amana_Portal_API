@@ -1,4 +1,4 @@
-﻿using amana_mono._6_Awards.Dtos;
+﻿using Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Awards;

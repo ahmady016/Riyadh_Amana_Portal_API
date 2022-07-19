@@ -1,5 +1,5 @@
-﻿using amana_mono._6_Awards.Dtos;
-using DB.Common;
+﻿using DB.Common;
+using Dtos;
 
 namespace Awards;
 
