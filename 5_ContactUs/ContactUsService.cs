@@ -58,7 +58,7 @@ public class ContactUsService : IContactUsService
         var news = _crudService.Find<ContactUs, Guid>(id);
         if (news == null)
         {
-            _errorMessage = $"News Record with Id: {id} Not Found";
+            _errorMessage = $"ContactUs Record with Id: {id} Not Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
         }
@@ -68,7 +68,7 @@ public class ContactUsService : IContactUsService
     {
         if (ids == null)
         {
-            _errorMessage = $"News: Must supply comma separated string of ids";
+            _errorMessage = $"ContactUs: Must supply comma separated string of ids";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.BadRequest);
         }
@@ -117,7 +117,7 @@ public class ContactUsService : IContactUsService
             _crudService.SaveChanges();
             return true;
         }
-        _errorMessage = $"News record Not Found!!!";
+        _errorMessage = $"ContactUs record Not Found!!!";
         _logger.LogError(_errorMessage);
         throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
     }
@@ -130,7 +130,7 @@ public class ContactUsService : IContactUsService
             _crudService.SaveChanges();
             return true;
         }
-        _errorMessage = $"News record Not Found!!!";
+        _errorMessage = $"ContactUs record Not Found!!!";
         _logger.LogError(_errorMessage);
         throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
     }
