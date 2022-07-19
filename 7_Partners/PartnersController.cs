@@ -1,14 +1,13 @@
 ﻿using Dtos;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Awards;
-
+namespace Partners;
 [ApiController]
 [Route("api/[controller]/[action]")]
-public class AwardsController : ControllerBase
+public class PartnersController : ControllerBase
 {
-    private readonly IAwardsService _service;
-    public AwardsController(IAwardsService service)
+    private readonly IPartnersService _service;
+    public PartnersController(IPartnersService service)
     {
         _service = service;
     }
@@ -16,7 +15,7 @@ public class AwardsController : ControllerBase
     /// <summary>
     /// listType values (all/deleted/existed)
     /// </summary>
-    /// <returns>List of AwardsDto</returns>
+    /// <returns>List of PartnersDots</returns>
     [HttpGet("{type}")]
     public virtual IActionResult List([FromRoute] string type)
     {
@@ -26,7 +25,7 @@ public class AwardsController : ControllerBase
     /// <summary>
     /// listType values (all/deleted/existed)
     /// </summary>
-    /// <returns>List of AwardsDto</returns>
+    /// <returns>List of PartnersDots</returns>
     [HttpGet("{type}")]
     public virtual IActionResult ListPage(
         [FromRoute] string type,
@@ -38,9 +37,9 @@ public class AwardsController : ControllerBase
     }
 
     /// <summary>
-    /// Award/Find/[id]
+    /// Partner/Find/[id]
     /// </summary>
-    /// <returns>AwardsDto</returns>
+    /// <returns>PartnersDots</returns>
     [HttpGet("{id}")]
     public IActionResult Find(Guid id)
     {
@@ -48,9 +47,9 @@ public class AwardsController : ControllerBase
     }
 
     /// <summary>
-    /// Award/FindList/[id, id, id]
+    /// Partner/FindList/[id, id, id]
     /// </summary>
-    /// <returns>List Of AwardsDto</returns>
+    /// <returns>List Of PartnersDots</returns>
     [HttpGet("{ids}")]
     public IActionResult FindList(string ids)
     {
@@ -58,47 +57,47 @@ public class AwardsController : ControllerBase
     }
 
     /// <summary>
-    /// Award/Add
+    /// Partner/Add
     /// </summary>
-    /// <returns>AwardsDto</returns>
+    /// <returns>PartnersDots</returns>
     [HttpPost]
-    public virtual IActionResult Add([FromBody] CreateAwardsInput input)
+    public virtual IActionResult Add([FromBody] CreatePartnersInput input)
     {
         return Ok(_service.Add(input));
     }
 
     /// <summary>
-    /// Award/AddMany
+    /// Partner/AddMany
     /// </summary>
-    /// <returns>List Of AwardsDto</returns>
+    /// <returns>List Of PartnersDots</returns>
     [HttpPost]
-    public virtual IActionResult AddMany([FromBody] List<CreateAwardsInput> inputs)
+    public virtual IActionResult AddMany([FromBody] List<CreatePartnersInput> inputs)
     {
         return Ok(_service.AddMany(inputs));
     }
 
     /// <summary>
-    /// Award/Update
+    /// Partner/Update
     /// </summary>
-    /// <returns>AwardsDto</returns>
+    /// <returns>PartnersDots</returns>
     [HttpPut]
-    public virtual IActionResult Update([FromBody] UpdateAwardsInput input)
+    public virtual IActionResult Update([FromBody] UpdatePartnersInput input)
     {
         return Ok(_service.Update(input));
     }
 
     /// <summary>
-    /// Award/UpdateMany
+    /// Partner/UpdateMany
     /// </summary>
-    /// <returns>List Of AwardsDto</returns>
+    /// <returns>List Of PartnersDots</returns>
     [HttpPut]
-    public virtual IActionResult UpdateMany([FromBody] List<UpdateAwardsInput> inputs)
+    public virtual IActionResult UpdateMany([FromBody] List<UpdatePartnersInput> inputs)
     {
         return Ok(_service.UpdateMany(inputs));
     }
 
     /// <summary>
-    /// Award/Delete
+    /// Partner/Delete
     /// </summary>
     /// <returns>bool</returns>
     [HttpDelete]
@@ -108,7 +107,7 @@ public class AwardsController : ControllerBase
     }
 
     /// <summary>
-    /// Award/Activate
+    /// Partner/Activate
     /// </summary>
     /// <returns>bool</returns>
     [HttpPut]
@@ -116,5 +115,4 @@ public class AwardsController : ControllerBase
     {
         return Ok(_service.Activate(id));
     }
-
 }

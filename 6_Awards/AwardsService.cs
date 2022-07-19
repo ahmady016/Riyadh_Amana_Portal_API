@@ -1,9 +1,9 @@
-﻿using amana_mono._6_Awards.Dtos;
-using AutoMapper;
+﻿using AutoMapper;
 using Common;
 using DB;
 using DB.Common;
 using DB.Entities;
+using Dtos;
 
 namespace Awards;
 
