@@ -13,6 +13,7 @@ public class Document : Entity<Guid>
     public string Url { get; set; }
     public string Base64Url { get; set; }
 }
+
 public class DocumentConfig : EntityConfig<Document, Guid>
 {
     public override void Configure(EntityTypeBuilder<Document> entity)
@@ -34,15 +35,15 @@ public class DocumentConfig : EntityConfig<Document, Guid>
 
         entity.Property(e => e.DescriptionAr)
             .IsRequired()
-            .HasMaxLength(100)
+            .HasMaxLength(200)
             .HasColumnName("description_ar")
-            .HasColumnType("nvarchar(100)");
+            .HasColumnType("nvarchar(200)");
 
         entity.Property(e => e.DescriptionEn)
             .IsRequired()
-            .HasMaxLength(100)
+            .HasMaxLength(200)
             .HasColumnName("description_en")
-            .HasColumnType("varchar(100)");
+            .HasColumnType("varchar(200)");
 
         entity.Property(e => e.Url)
             .HasMaxLength(400)
@@ -56,4 +57,3 @@ public class DocumentConfig : EntityConfig<Document, Guid>
 
     }
 }
-

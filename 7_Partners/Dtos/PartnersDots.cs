@@ -3,7 +3,6 @@
 public class PartnersDots
 {
     public Guid Id { get; set; }
-
     public string PartnershipTitleAr { get; set; }
     public string PartnershipTitleEn { get; set; }
     public string PartnerTitleAr { get; set; }
@@ -18,5 +17,4 @@ public class PartnersDots
     public string IconBase64Url { get; set; }
     public DateTime? ContractDate { get; set; }
     public bool? IsActiveContract { get; set; }
-
 }

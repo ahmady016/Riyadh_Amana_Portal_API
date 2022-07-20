@@ -3,7 +3,6 @@
 public class AwardsDto
 {
     public Guid Id { get; set; }
-
     public string TitleAr { get; set; }
     public string TitleEn { get; set; }
     public string ContentAr { get; set; }

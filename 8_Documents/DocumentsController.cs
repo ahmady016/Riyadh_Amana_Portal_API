@@ -1,7 +1,8 @@
-﻿using Dtos;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Dtos;
 
 namespace Documents;
+
 [ApiController]
 [Route("api/[controller]/[action]")]
 public class DocumentsController : ControllerBase
