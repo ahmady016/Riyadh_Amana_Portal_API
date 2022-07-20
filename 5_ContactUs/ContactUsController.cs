@@ -3,6 +3,8 @@ using Dtos;
 
 namespace _ContactUs;
 
+[ApiController]
+[Route("api/[controller]/[action]")]
 public class ContactUsController : Controller
 {
     private readonly IContactUsService _service;

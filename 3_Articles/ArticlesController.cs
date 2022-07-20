@@ -3,8 +3,8 @@ using Dtos;
 
 namespace Articles;
 
-[Route("api/[controller]/[action]")]
 [ApiController]
+[Route("api/[controller]/[action]")]
 public class ArticlesController : ControllerBase
 {
     private readonly IArticleService _service;

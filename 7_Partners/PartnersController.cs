@@ -1,7 +1,8 @@
-﻿using Dtos;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Dtos;
 
 namespace Partners;
+
 [ApiController]
 [Route("api/[controller]/[action]")]
 public class PartnersController : ControllerBase
