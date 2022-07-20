@@ -87,11 +87,7 @@ app.UseAuthorization();
 
 // swagger docs
 app.UseSwagger(options => options.SerializeAsV2 = true);
-app.UseSwaggerUI(options =>
-{
-    var swaggerJsonBasePath = string.IsNullOrWhiteSpace(options.RoutePrefix) ? "." : "..";
-    options.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "Riyadh Amana API");
-});
+app.UseSwaggerUI();
 
 // global exception handler
 app.UseExceptionHandler(appError =>

@@ -2,6 +2,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Security.Claims;
+using System.Text;
+
 using DB.Entities;
 
 namespace Auth;
@@ -14,17 +16,22 @@ public static class AuthHelpers
         _config = Configuration;
     }
 
+    private static byte[] SecretKey => Encoding.UTF8.GetBytes(_config["JWT:Secret"]);
+    private static int AccessTokenValidityHours => int.Parse(_config["JWT:AccessTokenValidityInHours"]);
+    private static int RefreshTokenValidityDays => int.Parse(_config["JWT:RefreshTokenValidityInDays"]);
+    private static string TokenIssuer => _config["JWT:Issuer"];
+    private static string TokenAudience => _config["JWT:Audience"];
+
     public static string GenerateAccessToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Convert.FromBase64String(_config["JWT:Secret"]);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) }),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-            Issuer = _config["JWT:Issuer"],
-            Audience = _config["JWT:Audience"],
-            Expires = DateTime.Now.AddHours(int.Parse(_config["JWT:AccessTokenValidityInHours"])),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(SecretKey), SecurityAlgorithms.HmacSha256Signature),
+            Issuer = TokenIssuer,
+            Audience = TokenAudience,
+            Expires = DateTime.Now.AddHours(AccessTokenValidityHours + 3),
         };
         var securityToken = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(securityToken);
@@ -46,7 +53,7 @@ public static class AuthHelpers
         {
             Value = GetUniqueToken(usedRefreshTokens),
             CreatedAt = DateTime.UtcNow.AddHours(3),
-            ExpiresAt = DateTime.UtcNow.AddHours(3).AddDays(int.Parse(_config["JWT:RefreshTokenValidityInDays"])),
+            ExpiresAt = DateTime.UtcNow.AddHours(3).AddDays(RefreshTokenValidityDays),
             CreatedIP = ipAddress,
             UserId = userId
         };
@@ -60,9 +67,9 @@ public static class AuthHelpers
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(_config["JWT:Secret"])),
-            ValidIssuer = _config["JWT:Issuer"],
-            ValidAudience = _config["JWT:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(SecretKey),
+            ValidIssuer = TokenIssuer,
+            ValidAudience = TokenAudience,
         };
     }
 
