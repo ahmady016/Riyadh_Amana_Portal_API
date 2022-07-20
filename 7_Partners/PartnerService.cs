@@ -7,14 +7,14 @@ using Dtos;
 
 namespace Partners;
 
-public class PartnersService : IPartnersService
+public class PartnerService : IPartnerService
 {
     private readonly ICRUDService _crudService;
     private readonly IMapper _mapper;
     private readonly ILogger<Partner> _logger;
     private string _errorMessage;
 
-    public PartnersService(
+    public PartnerService(
         ICRUDService curdService,
         IMapper mapper,
         ILogger<Partner> logger

@@ -3,7 +3,7 @@ using Dtos;
 
 namespace Awards;
 
-public interface IAwardsService
+public interface IAwardService
 {
     List<AwardsDto> List(string type);
     PageResult<AwardsDto> ListPage(string type, int pageSize, int pageNumber);

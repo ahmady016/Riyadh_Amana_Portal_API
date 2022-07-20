@@ -7,8 +7,8 @@ namespace Awards;
 [Route("api/[controller]/[action]")]
 public class AwardsController : ControllerBase
 {
-    private readonly IAwardsService _service;
-    public AwardsController(IAwardsService service)
+    private readonly IAwardService _service;
+    public AwardsController(IAwardService service)
     {
         _service = service;
     }

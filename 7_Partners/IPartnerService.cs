@@ -3,7 +3,7 @@ using Dtos;
 
 namespace Partners;
 
-public interface IPartnersService
+public interface IPartnerService
 {
     List<PartnersDots> List(string type);
     PageResult<PartnersDots> ListPage(string type, int pageSize, int pageNumber);

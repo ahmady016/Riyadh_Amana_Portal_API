@@ -6,13 +6,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
+
 using DB;
 using Common;
 using Auth;
+
 using Users;
 using Advertisements;
 using Articles;
 using _News;
+using _ContactUs;
+using Awards;
+using Partners;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +46,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAdvertisementService, AdvertisementService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddScoped<IContactUsService, ContactUsService>();
+builder.Services.AddScoped<IAwardService, AwardService>();
+builder.Services.AddScoped<IPartnerService, PartnerService>();
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

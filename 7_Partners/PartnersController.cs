@@ -7,8 +7,8 @@ namespace Partners;
 [Route("api/[controller]/[action]")]
 public class PartnersController : ControllerBase
 {
-    private readonly IPartnersService _service;
-    public PartnersController(IPartnersService service)
+    private readonly IPartnerService _service;
+    public PartnersController(IPartnerService service)
     {
         _service = service;
     }

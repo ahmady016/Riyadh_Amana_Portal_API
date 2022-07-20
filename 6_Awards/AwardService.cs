@@ -7,14 +7,14 @@ using Dtos;
 
 namespace Awards;
 
-public class AwardsService: IAwardsService
+public class AwardService: IAwardService
 {
     private readonly ICRUDService _crudService;
     private readonly IMapper _mapper;
     private readonly ILogger<Award> _logger;
     private string _errorMessage;
 
-    public AwardsService(
+    public AwardService(
         ICRUDService curdService,
         IMapper mapper,
         ILogger<Award> logger
