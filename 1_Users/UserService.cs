@@ -187,6 +187,35 @@ public class UserService : IUserService
 
         return true;
     }
+    public bool ChangePassword(ChangePasswordInput input)
+    {
+        var user = _crudService.Find<User, Guid>(input.UserId);
+        if (user is null)
+        {
+            _errorMessage = $"User Not Found!!!";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
+        }
+
+        if(input.NewPassword != input.ConfirmNewPassword)
+        {
+            _errorMessage = $"ConfirmNewPassword does't match !!!";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.BadRequest);
+        }
+        if(BCrypt.Net.BCrypt.HashPassword(input.OldPassword) != user.Password)
+        {
+            _errorMessage = $"Worng Old Password!!!";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.BadRequest);
+        }
+
+        user.Password = BCrypt.Net.BCrypt.HashPassword(input.NewPassword);
+        _crudService.Update<User, Guid>(user);
+        _crudService.SaveChanges();
+
+        return true;
+    }
     public bool Logout(Guid userId)
     {
         // return error if user not found

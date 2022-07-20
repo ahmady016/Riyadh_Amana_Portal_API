@@ -53,6 +53,13 @@ public class UsersController : ControllerBase
         return Ok(new { Message = "Token is Revoked" });
     }
 
+    [HttpPost()]
+    public IActionResult ChangePassword(ChangePasswordInput input)
+    {
+        _service.ChangePassword(input);
+        return Ok(new { Message = "Password Changed Successfully" });
+    }
+
     [HttpGet("{userId}")]
     public IActionResult Logout(Guid userId)
     {
