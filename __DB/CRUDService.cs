@@ -107,26 +107,14 @@ public class CRUDService : ICRUDService
     #region Commands [Add-Update-Delete]
     public T Add<T, Tkey>(T item) where T : Entity<Tkey>
     {
-        item.CreatedBy = "app_user";
-        item.CreatedAt = DateTime.UtcNow.AddHours(3);
         return _db.Set<T>().Add(item).Entity;
     }
     public void AddRange<T, Tkey>(List<T> range) where T : Entity<Tkey>
     {
-        range.ForEach(item =>
-        {
-            item.CreatedBy = "app_user";
-            item.CreatedAt = DateTime.UtcNow.AddHours(3);
-        });
         _db.Set<T>().AddRange(range);
     }
     public List<T> AddAndGetRange<T, Tkey>(List<T> range) where T : Entity<Tkey>
     {
-        range.ForEach(item =>
-        {
-            item.CreatedBy = "app_dev";
-            item.CreatedAt = DateTime.UtcNow.AddHours(3);
-        });
         return range.Select(obj => _db.Set<T>().Add(obj).Entity)
                     .ToList();
     }
@@ -152,8 +140,7 @@ public class CRUDService : ICRUDService
             item.UpdatedBy = "app_dev";
             item.UpdatedAt = DateTime.UtcNow.AddHours(3);
         });
-        return range.Select(obj => _db.Set<T>().Update(obj).Entity)
-                    .ToList();
+        return range.Select(obj => _db.Set<T>().Update(obj).Entity).ToList();
     }
 
     public void Activate<T, TKey>(T item) where T : Entity<TKey>
