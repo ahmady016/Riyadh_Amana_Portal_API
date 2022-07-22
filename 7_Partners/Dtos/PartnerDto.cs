@@ -17,4 +17,6 @@ public class PartnerDto
     public string IconBase64Url { get; set; }
     public DateTime? ContractDate { get; set; }
     public bool? IsActiveContract { get; set; }
+    public DateTime? CreatedAt { get; set; }
+    public string CreatedBy { get; set; }
 }

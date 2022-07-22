@@ -10,4 +10,6 @@ public class AwardDto
     public string IconUrl { get; set; }
     public string IconBase64Url { get; set; }
     public int? Order { get; set; }
+    public DateTime? CreatedAt { get; set; }
+    public string CreatedBy { get; set; }
 }

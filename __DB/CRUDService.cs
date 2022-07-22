@@ -121,33 +121,35 @@ public class CRUDService : ICRUDService
     public T Update<T, TKey>(T item) where T : Entity<TKey>
     {
         item.UpdatedBy = "app_dev";
-        item.UpdatedAt = DateTime.UtcNow.AddHours(3);
-        return _db.Set<T>().Update(item).Entity;
+        item.UpdatedAt = DateTime.Now;
+        _db.Entry(item).State = EntityState.Modified;
+        return item;
     }
     public void UpdateRange<T, TKey>(List<T> range) where T : Entity<TKey>
     {
         range.ForEach(item =>
         {
             item.UpdatedBy = "app_dev";
-            item.UpdatedAt = DateTime.UtcNow.AddHours(3);
+            item.UpdatedAt = DateTime.UtcNow;
+            _db.Entry(item).State = EntityState.Modified;
         });
-        _db.Set<T>().UpdateRange(range);
     }
     public List<T> UpdateAndGetRange<T, TKey>(List<T> range) where T : Entity<TKey>
     {
         range.ForEach(item =>
         {
             item.UpdatedBy = "app_dev";
-            item.UpdatedAt = DateTime.UtcNow.AddHours(3);
+            item.UpdatedAt = DateTime.Now;
+            _db.Entry(item).State = EntityState.Modified;
         });
-        return range.Select(obj => _db.Set<T>().Update(obj).Entity).ToList();
+        return range;
     }
 
     public void Activate<T, TKey>(T item) where T : Entity<TKey>
     {
         item.IsActive = true;
         item.ActivatedBy = "app_dev";
-        item.ActivatedAt = DateTime.UtcNow.AddHours(3);
+        item.ActivatedAt = DateTime.Now;
         _db.Entry(item).State = EntityState.Modified;
     }
 
@@ -157,7 +159,7 @@ public class CRUDService : ICRUDService
         {
             item.IsActive = true;
             item.ActivatedBy = "app_dev";
-            item.ActivatedAt = DateTime.UtcNow.AddHours(3);
+            item.ActivatedAt = DateTime.Now;
             _db.Entry(item).State = EntityState.Modified;
         });
     }
@@ -197,7 +199,7 @@ public class CRUDService : ICRUDService
     {
         item.IsDeleted = true;
         item.DeletedBy = "app_dev";
-        item.DeletedAt = DateTime.UtcNow.AddHours(3);
+        item.DeletedAt = DateTime.Now.AddHours(3);
         _db.Entry(item).State = EntityState.Modified;
     }
 
@@ -207,7 +209,7 @@ public class CRUDService : ICRUDService
         {
             item.IsDeleted = true;
             item.DeletedBy = "app_dev";
-            item.DeletedAt = DateTime.UtcNow.AddHours(3);
+            item.DeletedAt = DateTime.Now.AddHours(3);
             _db.Entry(item).State = EntityState.Modified;
         });
     }

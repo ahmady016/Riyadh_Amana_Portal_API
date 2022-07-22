@@ -10,8 +10,8 @@ public abstract class Entity<Tkey>
     public virtual bool IsDeleted { get; set; } = false;
     public virtual bool IsActive { get; set; } = false;
 
-    public virtual DateTime CreatedAt { get; set; } = DateTime.UtcNow.AddHours(3);
-    public virtual string CreatedBy { get; set; } = "app_dev";
+    public virtual DateTime CreatedAt { get; set; }
+    public virtual string CreatedBy { get; set; }
 
     public virtual DateTime? UpdatedAt { get; set; }
     public virtual string UpdatedBy { get; set; }

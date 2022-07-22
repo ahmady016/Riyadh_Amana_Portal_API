@@ -22,12 +22,12 @@ using Partners;
 var builder = WebApplication.CreateBuilder(args);
 
 #region Configure Serilog Logging
-var logger = new LoggerConfiguration()
-  .ReadFrom.Configuration(builder.Configuration)
-  .Enrich.FromLogContext()
-  .CreateLogger();
+//var logger = new LoggerConfiguration()
+//  .ReadFrom.Configuration(builder.Configuration)
+//  .Enrich.FromLogContext()
+//  .CreateLogger();
 
-builder.Logging.AddSerilog(logger);
+//builder.Logging.AddSerilog(logger);
 #endregion
 
 #region Add Services to the DI Container

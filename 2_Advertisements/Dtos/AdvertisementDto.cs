@@ -14,4 +14,6 @@ public class AdvertisementDto
     public int? Order { get; set; }
     public bool? IsHomeSlider { get; set; } = false;
     public bool? IsPopup { get; set; } = false;
+    public DateTime? CreatedAt { get; set; }
+    public string CreatedBy { get; set; }
 }
