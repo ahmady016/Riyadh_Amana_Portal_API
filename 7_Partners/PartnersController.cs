@@ -62,7 +62,7 @@ public class PartnersController : ControllerBase
     /// </summary>
     /// <returns>PartnersDots</returns>
     [HttpPost]
-    public virtual IActionResult Add([FromBody] CreatePartnersInput input)
+    public virtual IActionResult Add([FromBody] CreatePartnerInput input)
     {
         return Ok(_service.Add(input));
     }
@@ -72,7 +72,7 @@ public class PartnersController : ControllerBase
     /// </summary>
     /// <returns>List Of PartnersDots</returns>
     [HttpPost]
-    public virtual IActionResult AddMany([FromBody] List<CreatePartnersInput> inputs)
+    public virtual IActionResult AddMany([FromBody] List<CreatePartnerInput> inputs)
     {
         return Ok(_service.AddMany(inputs));
     }
@@ -82,7 +82,7 @@ public class PartnersController : ControllerBase
     /// </summary>
     /// <returns>PartnersDots</returns>
     [HttpPut]
-    public virtual IActionResult Update([FromBody] UpdatePartnersInput input)
+    public virtual IActionResult Update([FromBody] UpdatePartnerInput input)
     {
         return Ok(_service.Update(input));
     }
@@ -92,7 +92,7 @@ public class PartnersController : ControllerBase
     /// </summary>
     /// <returns>List Of PartnersDots</returns>
     [HttpPut]
-    public virtual IActionResult UpdateMany([FromBody] List<UpdatePartnersInput> inputs)
+    public virtual IActionResult UpdateMany([FromBody] List<UpdatePartnerInput> inputs)
     {
         return Ok(_service.UpdateMany(inputs));
     }

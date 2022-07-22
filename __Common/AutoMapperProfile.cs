@@ -27,5 +27,21 @@ public class AutoMapperProfile : Profile
         CreateMap<News, CreateNewsInput>().ReverseMap();
         CreateMap<News, UpdateNewsInput>().ReverseMap();
 
+        CreateMap<ContactUs, ContactUsDto>().ReverseMap();
+        CreateMap<ContactUs, CreateContactUsInput>().ReverseMap();
+        CreateMap<ContactUs, UpdateContactUsInput>().ReverseMap();
+
+        CreateMap<Award, AwardDto>().ReverseMap();
+        CreateMap<Award, CreateAwardInput>().ReverseMap();
+        CreateMap<Award, UpdateAwardInput>().ReverseMap();
+
+        CreateMap<Partner, PartnerDto>().ReverseMap();
+        CreateMap<Partner, CreatePartnerInput>().ReverseMap();
+        CreateMap<Partner, UpdatePartnerInput>().ReverseMap();
+
+        CreateMap<Document, DocumentDto>().ReverseMap();
+        CreateMap<Document, CreateDocumentInput>().ReverseMap();
+        CreateMap<Document, UpdateDocumentInput>().ReverseMap();
+
     }
 }

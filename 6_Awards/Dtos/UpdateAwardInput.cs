@@ -2,7 +2,7 @@
 
 namespace Dtos;
 
-public class UpdateAwardsInput : CreateAwardsInput
+public class UpdateAwardInput : CreateAwardInput
 {
     [Required]
     [RegularExpression(

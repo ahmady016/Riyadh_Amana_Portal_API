@@ -62,7 +62,7 @@ public class AwardsController : ControllerBase
     /// </summary>
     /// <returns>AwardsDto</returns>
     [HttpPost]
-    public virtual IActionResult Add([FromBody] CreateAwardsInput input)
+    public virtual IActionResult Add([FromBody] CreateAwardInput input)
     {
         return Ok(_service.Add(input));
     }
@@ -72,7 +72,7 @@ public class AwardsController : ControllerBase
     /// </summary>
     /// <returns>List Of AwardsDto</returns>
     [HttpPost]
-    public virtual IActionResult AddMany([FromBody] List<CreateAwardsInput> inputs)
+    public virtual IActionResult AddMany([FromBody] List<CreateAwardInput> inputs)
     {
         return Ok(_service.AddMany(inputs));
     }
@@ -82,7 +82,7 @@ public class AwardsController : ControllerBase
     /// </summary>
     /// <returns>AwardsDto</returns>
     [HttpPut]
-    public virtual IActionResult Update([FromBody] UpdateAwardsInput input)
+    public virtual IActionResult Update([FromBody] UpdateAwardInput input)
     {
         return Ok(_service.Update(input));
     }
@@ -92,7 +92,7 @@ public class AwardsController : ControllerBase
     /// </summary>
     /// <returns>List Of AwardsDto</returns>
     [HttpPut]
-    public virtual IActionResult UpdateMany([FromBody] List<UpdateAwardsInput> inputs)
+    public virtual IActionResult UpdateMany([FromBody] List<UpdateAwardInput> inputs)
     {
         return Ok(_service.UpdateMany(inputs));
     }

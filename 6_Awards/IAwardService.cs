@@ -5,14 +5,14 @@ namespace Awards;
 
 public interface IAwardService
 {
-    List<AwardsDto> List(string type);
-    PageResult<AwardsDto> ListPage(string type, int pageSize, int pageNumber);
-    AwardsDto Find(Guid id);
-    List<AwardsDto> FindList(string ids);
-    AwardsDto Add(CreateAwardsInput input);
-    List<AwardsDto> AddMany(List<CreateAwardsInput> inputs);
-    AwardsDto Update(UpdateAwardsInput input);
-    List<AwardsDto> UpdateMany(List<UpdateAwardsInput> inputs);
+    List<AwardDto> List(string type);
+    PageResult<AwardDto> ListPage(string type, int pageSize, int pageNumber);
+    AwardDto Find(Guid id);
+    List<AwardDto> FindList(string ids);
+    AwardDto Add(CreateAwardInput input);
+    List<AwardDto> AddMany(List<CreateAwardInput> inputs);
+    AwardDto Update(UpdateAwardInput input);
+    List<AwardDto> UpdateMany(List<UpdateAwardInput> inputs);
     bool Delete(Guid id);
     bool Activate(Guid id);
 }

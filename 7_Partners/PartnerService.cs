@@ -25,7 +25,7 @@ public class PartnerService : IPartnerService
         _logger = logger;
     }
 
-    public List<PartnersDots> List(string type)
+    public List<PartnerDto> List(string type)
     {
         var list = type.ToLower() switch
         {
@@ -33,9 +33,9 @@ public class PartnerService : IPartnerService
             "deleted" => _crudService.GetList<Partner, Guid>(e => e.IsDeleted),
             _ => _crudService.GetList<Partner, Guid>(e => !e.IsDeleted),
         };
-        return _mapper.Map<List<PartnersDots>>(list);
+        return _mapper.Map<List<PartnerDto>>(list);
     }
-    public PageResult<PartnersDots> ListPage(string type, int pageSize, int pageNumber)
+    public PageResult<PartnerDto> ListPage(string type, int pageSize, int pageNumber)
     {
         var query = type.ToLower() switch
         {
@@ -44,15 +44,15 @@ public class PartnerService : IPartnerService
             _ => _crudService.GetQuery<Partner>(e => !e.IsDeleted),
         };
         var page = _crudService.GetPage(query, pageSize, pageNumber);
-        return new PageResult<PartnersDots>()
+        return new PageResult<PartnerDto>()
         {
-            PageItems = _mapper.Map<List<PartnersDots>>(page.PageItems),
+            PageItems = _mapper.Map<List<PartnerDto>>(page.PageItems),
             TotalItems = page.TotalItems,
             TotalPages = page.TotalPages
         };
     }
 
-    public PartnersDots Find(Guid id)
+    public PartnerDto Find(Guid id)
     {
         var user = _crudService.Find<Partner, Guid>(id);
         if (user == null)
@@ -61,9 +61,9 @@ public class PartnerService : IPartnerService
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
         }
-        return _mapper.Map<PartnersDots>(user);
+        return _mapper.Map<PartnerDto>(user);
     }
-    public List<PartnersDots> FindList(string ids)
+    public List<PartnerDto> FindList(string ids)
     {
         if (ids == null)
         {
@@ -73,37 +73,37 @@ public class PartnerService : IPartnerService
         }
         var _ids = ids.SplitAndRemoveEmpty(',').ToList();
         var list = _crudService.GetList<Partner, Guid>(e => _ids.Contains(e.Id.ToString()));
-        return _mapper.Map<List<PartnersDots>>(list);
+        return _mapper.Map<List<PartnerDto>>(list);
     }
 
-    public PartnersDots Add(CreatePartnersInput input)
+    public PartnerDto Add(CreatePartnerInput input)
     {
         var partner = _mapper.Map<Partner>(input);
         var createdpartner = _crudService.Add<Partner, Guid>(partner);
         _crudService.SaveChanges();
-        return _mapper.Map<PartnersDots>(createdpartner);
+        return _mapper.Map<PartnerDto>(createdpartner);
     }
-    public List<PartnersDots> AddMany(List<CreatePartnersInput> inputs)
+    public List<PartnerDto> AddMany(List<CreatePartnerInput> inputs)
     {
         var partner = _mapper.Map<List<Partner>>(inputs);
         var createdpartner = _crudService.AddAndGetRange<Partner, Guid>(partner);
         _crudService.SaveChanges();
-        return _mapper.Map<List<PartnersDots>>(createdpartner);
+        return _mapper.Map<List<PartnerDto>>(createdpartner);
     }
 
-    public PartnersDots Update(UpdatePartnersInput input)
+    public PartnerDto Update(UpdatePartnerInput input)
     {
         var partner = _mapper.Map<Partner>(input);
         var updatedpartner = _crudService.Update<Partner, Guid>(partner);
         _crudService.SaveChanges();
-        return _mapper.Map<PartnersDots>(updatedpartner);
+        return _mapper.Map<PartnerDto>(updatedpartner);
     }
-    public List<PartnersDots> UpdateMany(List<UpdatePartnersInput> inputs)
+    public List<PartnerDto> UpdateMany(List<UpdatePartnerInput> inputs)
     {
         var partner = _mapper.Map<List<Partner>>(inputs);
         var updatedpartner = _crudService.UpdateAndGetRange<Partner, Guid>(partner);
         _crudService.SaveChanges();
-        return _mapper.Map<List<PartnersDots>>(updatedpartner);
+        return _mapper.Map<List<PartnerDto>>(updatedpartner);
     }
 
     public bool Delete(Guid id)

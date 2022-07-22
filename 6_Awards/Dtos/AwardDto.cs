@@ -1,6 +1,6 @@
 ﻿namespace Dtos;
 
-public class AwardsDto
+public class AwardDto
 {
     public Guid Id { get; set; }
     public string TitleAr { get; set; }

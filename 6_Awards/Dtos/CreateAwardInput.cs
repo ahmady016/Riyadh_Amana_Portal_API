@@ -2,7 +2,7 @@
 
 namespace Dtos;
 
-public class CreateAwardsInput
+public class CreateAwardInput
 {
     [Required]
     [StringLength(80)]

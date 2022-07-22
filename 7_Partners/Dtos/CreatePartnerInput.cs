@@ -2,7 +2,7 @@
 
 namespace Dtos;
 
-public class CreatePartnersInput
+public class CreatePartnerInput
 {
     [Required]
     [StringLength(100)]

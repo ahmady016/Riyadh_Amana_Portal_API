@@ -1,6 +1,6 @@
 ﻿namespace Dtos;
 
-public class PartnersDots
+public class PartnerDto
 {
     public Guid Id { get; set; }
     public string PartnershipTitleAr { get; set; }
