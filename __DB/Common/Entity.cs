@@ -47,9 +47,9 @@ public abstract class EntityConfig<T, Tkey> : IEntityTypeConfiguration<T> where 
 
         entity.Property(e => e.CreatedAt)
             .IsRequired()
-            .HasDefaultValueSql("GETDATE()")
+            .HasDefaultValueSql("SYSDATETIME()")
             .HasColumnName("created_at")
-            .HasColumnType("datetime");
+            .HasColumnType("datetime2(3)");
 
         entity.Property(e => e.CreatedBy)
             .IsRequired()
@@ -60,7 +60,7 @@ public abstract class EntityConfig<T, Tkey> : IEntityTypeConfiguration<T> where 
 
         entity.Property(e => e.UpdatedAt)
             .HasColumnName("updated_at")
-            .HasColumnType("datetime");
+            .HasColumnType("datetime2(3)");
 
         entity.Property(e => e.UpdatedBy)
             .HasMaxLength(100)
@@ -69,7 +69,7 @@ public abstract class EntityConfig<T, Tkey> : IEntityTypeConfiguration<T> where 
 
         entity.Property(e => e.DeletedAt)
             .HasColumnName("deleted_at")
-            .HasColumnType("datetime");
+            .HasColumnType("datetime2(3)");
 
         entity.Property(e => e.DeletedBy)
             .HasMaxLength(100)
@@ -78,7 +78,7 @@ public abstract class EntityConfig<T, Tkey> : IEntityTypeConfiguration<T> where 
 
         entity.Property(e => e.ActivatedAt)
             .HasColumnName("activated_at")
-            .HasColumnType("datetime");
+            .HasColumnType("datetime2(3)");
 
         entity.Property(e => e.ActivatedBy)
             .HasMaxLength(100)
