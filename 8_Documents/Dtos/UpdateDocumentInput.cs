@@ -10,11 +10,4 @@ public class UpdateDocumentInput : CreateDocumentInput
         ErrorMessage = "Not a valid Id value"
     )]
     public Guid Id { get; set; }
-
-    [Required]
-    [DataType(DataType.DateTime)]
-    public DateTime CreatedAt { get; set; }
-
-    [Required]
-    public string CreatedBy { get; set; }
 }

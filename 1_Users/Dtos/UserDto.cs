@@ -12,6 +12,4 @@ public class UserDto
     public string NationalId { get; set; }
     public string Email { get; set; }
     public string Mobile { get; set; }
-    public DateTime? CreatedAt { get; set; }
-    public string CreatedBy { get; set; }
 }

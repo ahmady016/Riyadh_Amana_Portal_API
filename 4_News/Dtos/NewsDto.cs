@@ -16,6 +16,4 @@ public class NewsDto
     public string HijriDate { get; set; }
     public string Tags { get; set; }
     public bool? IsInHome { get; set; } = false;
-    public DateTime? CreatedAt { get; set; }
-    public string CreatedBy { get; set; }
 }
