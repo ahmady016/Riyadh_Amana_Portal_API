@@ -1,5 +1,7 @@
 ﻿
 using AutoMapper;
+using System.Net;
+
 using Common;
 using DB;
 using DB.Common;
@@ -24,6 +26,42 @@ public class ContactUsService : IContactUsService
         _crudService = curdService;
         _mapper = mapper;
         _logger = logger;
+    }
+
+    private ContactUs GetById(Guid id)
+    {
+        var contactUsItem = _crudService.Find<ContactUs, Guid>(id);
+        if (contactUsItem is null)
+        {
+            _errorMessage = $"ContactUs Record with Id: {id} Not Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+        return contactUsItem;
+    }
+    private List<ContactUs> GetByIds(List<Guid> ids)
+    {
+        var contactUsList = _crudService.GetList<ContactUs, Guid>(e => ids.Contains(e.Id));
+        if (contactUsList.Count == 0)
+        {
+            _errorMessage = $"No Any ContactUs Records Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+        return contactUsList;
+    }
+    private static void FillRestPropsWithOldValues(ContactUs oldItem, ContactUs newItem)
+    {
+        newItem.CreatedAt = oldItem.CreatedAt;
+        newItem.CreatedBy = oldItem.CreatedBy;
+        newItem.UpdatedAt = oldItem.UpdatedAt;
+        newItem.UpdatedBy = oldItem.UpdatedBy;
+        newItem.IsActive = oldItem.IsActive;
+        newItem.ActivatedAt = oldItem.ActivatedAt;
+        newItem.ActivatedBy = oldItem.ActivatedBy;
+        newItem.IsDeleted = oldItem.IsDeleted;
+        newItem.DeletedAt = oldItem.DeletedAt;
+        newItem.DeletedBy = oldItem.DeletedBy;
     }
 
     public List<ContactUsDto> List(string type)
@@ -55,14 +93,8 @@ public class ContactUsService : IContactUsService
 
     public ContactUsDto Find(Guid id)
     {
-        var news = _crudService.Find<ContactUs, Guid>(id);
-        if (news == null)
-        {
-            _errorMessage = $"ContactUs Record with Id: {id} Not Found";
-            _logger.LogError(_errorMessage);
-            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
-        }
-        return _mapper.Map<ContactUsDto>(news);
+        var contactUsItem = GetById(id);
+        return _mapper.Map<ContactUsDto>(contactUsItem);
     }
     public List<ContactUsDto> FindList(string ids)
     {
@@ -72,9 +104,8 @@ public class ContactUsService : IContactUsService
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.BadRequest);
         }
-
-        var _ids = ids.SplitAndRemoveEmpty(',').ToList();
-        var list = _crudService.GetList<ContactUs, Guid>(e => _ids.Contains(e.Id.ToString()));
+        var _ids = ids.SplitAndRemoveEmpty(',').Select(Guid.Parse).ToList();
+        var list = GetByIds(_ids);
         return _mapper.Map<List<ContactUsDto>>(list);
     }
 
@@ -95,43 +126,41 @@ public class ContactUsService : IContactUsService
 
     public ContactUsDto Update(UpdateContactUsInput input)
     {
-        var contactUsItem = _mapper.Map<ContactUs>(input);
-        var updatedContactUsItem = _crudService.Update<ContactUs, Guid>(contactUsItem);
+        var oldContactUsItem = GetById(input.Id);
+        var newContactUsItem = _mapper.Map<ContactUs>(input);
+
+        FillRestPropsWithOldValues(oldContactUsItem, newContactUsItem);
+        var updatedContactUsItem = _crudService.Update<ContactUs, Guid>(newContactUsItem);
         _crudService.SaveChanges();
+        
         return _mapper.Map<ContactUsDto>(updatedContactUsItem);
     }
     public List<ContactUsDto> UpdateMany(List<UpdateContactUsInput> inputs)
     {
-        var contactUsList = _mapper.Map<List<ContactUs>>(inputs);
-        var updatedContactUsList = _crudService.UpdateAndGetRange<ContactUs, Guid>(contactUsList);
+        var oldContactUsList = GetByIds(inputs.Select(x => x.Id).ToList());
+        var newContactUsList = _mapper.Map<List<ContactUs>>(inputs);
+
+        for (int i = 0; i < oldContactUsList.Count; i++)
+            FillRestPropsWithOldValues(oldContactUsList[i], newContactUsList[i]);
+        var updatedContactUsList = _crudService.UpdateAndGetRange<ContactUs, Guid>(newContactUsList);
         _crudService.SaveChanges();
+        
         return _mapper.Map<List<ContactUsDto>>(updatedContactUsList);
     }
 
     public bool Delete(Guid id)
     {
-        var contactUsItem = _crudService.Find<ContactUs, Guid>(id);
-        if (contactUsItem is not null)
-        {
-            _crudService.SoftDelete<ContactUs, Guid>(contactUsItem);
-            _crudService.SaveChanges();
-            return true;
-        }
-        _errorMessage = $"ContactUs record Not Found!!!";
-        _logger.LogError(_errorMessage);
-        throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
+        var contactUsItem = GetById(id);
+        _crudService.SoftDelete<ContactUs, Guid>(contactUsItem);
+        _crudService.SaveChanges();
+        return true;
     }
     public bool Activate(Guid id)
     {
-        var contactUsItem = _crudService.Find<ContactUs, Guid>(id);
-        if (contactUsItem is not null)
-        {
-            _crudService.Activate<ContactUs, Guid>(contactUsItem);
-            _crudService.SaveChanges();
-            return true;
-        }
-        _errorMessage = $"ContactUs record Not Found!!!";
-        _logger.LogError(_errorMessage);
-        throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
+        var contactUsItem = GetById(id);
+        _crudService.Activate<ContactUs, Guid>(contactUsItem);
+        _crudService.SaveChanges();
+        return true;
     }
+
 }

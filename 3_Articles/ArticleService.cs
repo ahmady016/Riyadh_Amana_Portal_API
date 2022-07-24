@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using System.Net;
+
 using Common;
 using DB;
 using DB.Common;
@@ -23,6 +25,42 @@ public class ArticleService : IArticleService
         _crudService = curdService;
         _mapper = mapper;
         _logger = logger;
+    }
+
+    private Article GetById(Guid id)
+    {
+        var article = _crudService.Find<Article, Guid>(id);
+        if (article is null)
+        {
+            _errorMessage = $"Article Record with Id: {id} Not Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+        return article;
+    }
+    private List<Article> GetByIds(List<Guid> ids)
+    {
+        var articles = _crudService.GetList<Article, Guid>(e => ids.Contains(e.Id));
+        if (articles.Count == 0)
+        {
+            _errorMessage = $"No Any Article Records Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+        return articles;
+    }
+    private static void FillRestPropsWithOldValues(Article oldItem, Article newItem)
+    {
+        newItem.CreatedAt = oldItem.CreatedAt;
+        newItem.CreatedBy = oldItem.CreatedBy;
+        newItem.UpdatedAt = oldItem.UpdatedAt;
+        newItem.UpdatedBy = oldItem.UpdatedBy;
+        newItem.IsActive = oldItem.IsActive;
+        newItem.ActivatedAt = oldItem.ActivatedAt;
+        newItem.ActivatedBy = oldItem.ActivatedBy;
+        newItem.IsDeleted = oldItem.IsDeleted;
+        newItem.DeletedAt = oldItem.DeletedAt;
+        newItem.DeletedBy = oldItem.DeletedBy;
     }
 
     public List<ArticleDto> List(string type)
@@ -54,13 +92,7 @@ public class ArticleService : IArticleService
 
     public ArticleDto Find(Guid id)
     {
-        var article = _crudService.Find<Article, Guid>(id);
-        if (article == null)
-        {
-            _errorMessage = $"Article Record with Id: {id} Not Found";
-            _logger.LogError(_errorMessage);
-            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
-        }
+        var article = GetById(id);
         return _mapper.Map<ArticleDto>(article);
     }
     public List<ArticleDto> FindList(string ids)
@@ -72,8 +104,8 @@ public class ArticleService : IArticleService
             throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.BadRequest);
         }
 
-        var _ids = ids.SplitAndRemoveEmpty(',').ToList();
-        var list = _crudService.GetList<Article, Guid>(e => _ids.Contains(e.Id.ToString()));
+        var _ids = ids.SplitAndRemoveEmpty(',').Select(Guid.Parse).ToList();
+        var list = GetByIds(_ids);
         return _mapper.Map<List<ArticleDto>>(list);
     }
 
@@ -94,44 +126,41 @@ public class ArticleService : IArticleService
 
     public ArticleDto Update(UpdateArticleInput input)
     {
-        var article = _mapper.Map<Article>(input);
-        var updatedArticle = _crudService.Update<Article, Guid>(article);
+        var oldArticle = GetById(input.Id);
+        var newArticle = _mapper.Map<Article>(input);
+
+        FillRestPropsWithOldValues(oldArticle, newArticle);
+        var updatedArticle = _crudService.Update<Article, Guid>(newArticle);
         _crudService.SaveChanges();
+
         return _mapper.Map<ArticleDto>(updatedArticle);
     }
     public List<ArticleDto> UpdateMany(List<UpdateArticleInput> inputs)
     {
-        var articles = _mapper.Map<List<Article>>(inputs);
-        var updatedArticles = _crudService.UpdateAndGetRange<Article, Guid>(articles);
+        var oldArticles = GetByIds(inputs.Select(x => x.Id).ToList());
+        var newArticles = _mapper.Map<List<Article>>(inputs);
+
+        for (int i = 0; i < oldArticles.Count; i++)
+            FillRestPropsWithOldValues(oldArticles[i], newArticles[i]);
+        var updatedArticles = _crudService.UpdateAndGetRange<Article, Guid>(newArticles);
         _crudService.SaveChanges();
+
         return _mapper.Map<List<ArticleDto>>(updatedArticles);
     }
 
     public bool Delete(Guid id)
     {
-        var article = _crudService.Find<Article, Guid>(id);
-        if (article is not null)
-        {
-            _crudService.SoftDelete<Article, Guid>(article);
-            _crudService.SaveChanges();
-            return true;
-        }
-        _errorMessage = $"Article record Not Found!!!";
-        _logger.LogError(_errorMessage);
-        throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
+        var article = GetById(id);
+        _crudService.SoftDelete<Article, Guid>(article);
+        _crudService.SaveChanges();
+        return true;
     }
     public bool Activate(Guid id)
     {
-        var article = _crudService.Find<Article, Guid>(id);
-        if (article is not null)
-        {
-            _crudService.Activate<Article, Guid>(article);
-            _crudService.SaveChanges();
-            return true;
-        }
-        _errorMessage = $"Article record Not Found!!!";
-        _logger.LogError(_errorMessage);
-        throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
+        var article = GetById(id);
+        _crudService.Activate<Article, Guid>(article);
+        _crudService.SaveChanges();
+        return true;
     }
 
 }

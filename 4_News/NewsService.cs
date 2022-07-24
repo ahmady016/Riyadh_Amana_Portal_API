@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using System.Net;
+
 using DB;
 using DB.Entities;
 using DB.Common;
@@ -23,6 +25,42 @@ public class NewsService : INewsService
         _crudService = curdService;
         _mapper = mapper;
         _logger = logger;
+    }
+
+    private News GetById(Guid id)
+    {
+        var newsItem = _crudService.Find<News, Guid>(id);
+        if (newsItem is null)
+        {
+            _errorMessage = $"News Record with Id: {id} Not Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+        return newsItem;
+    }
+    private List<News> GetByIds(List<Guid> ids)
+    {
+        var newsList = _crudService.GetList<News, Guid>(e => ids.Contains(e.Id));
+        if (newsList.Count == 0)
+        {
+            _errorMessage = $"No Any News Records Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+        return newsList;
+    }
+    private static void FillRestPropsWithOldValues(News oldItem, News newItem)
+    {
+        newItem.CreatedAt = oldItem.CreatedAt;
+        newItem.CreatedBy = oldItem.CreatedBy;
+        newItem.UpdatedAt = oldItem.UpdatedAt;
+        newItem.UpdatedBy = oldItem.UpdatedBy;
+        newItem.IsActive = oldItem.IsActive;
+        newItem.ActivatedAt = oldItem.ActivatedAt;
+        newItem.ActivatedBy = oldItem.ActivatedBy;
+        newItem.IsDeleted = oldItem.IsDeleted;
+        newItem.DeletedAt = oldItem.DeletedAt;
+        newItem.DeletedBy = oldItem.DeletedBy;
     }
 
     public List<NewsDto> List(string type)
@@ -54,26 +92,19 @@ public class NewsService : INewsService
 
     public NewsDto Find(Guid id)
     {
-        var news = _crudService.Find<News, Guid>(id);
-        if (news == null)
-        {
-            _errorMessage = $"News Record with Id: {id} Not Found";
-            _logger.LogError(_errorMessage);
-            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
-        }
+        var news = GetById(id);
         return _mapper.Map<NewsDto>(news);
     }
     public List<NewsDto> FindList(string ids)
     {
-        if (ids == null)
+        if (ids is null)
         {
             _errorMessage = $"News: Must supply comma separated string of ids";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.BadRequest);
         }
-
-        var _ids = ids.SplitAndRemoveEmpty(',').ToList();
-        var list = _crudService.GetList<News, Guid>(e => _ids.Contains(e.Id.ToString()));
+        var _ids = ids.SplitAndRemoveEmpty(',').Select(Guid.Parse).ToList();
+        var list = GetByIds(_ids);
         return _mapper.Map<List<NewsDto>>(list);
     }
 
@@ -94,44 +125,41 @@ public class NewsService : INewsService
 
     public NewsDto Update(UpdateNewsInput input)
     {
-        var news = _mapper.Map<News>(input);
-        var updatedNews = _crudService.Update<News, Guid>(news);
+        var oldItem = GetById(input.Id);
+        var newItem = _mapper.Map<News>(input);
+
+        FillRestPropsWithOldValues(oldItem, newItem);
+        var updatedNews = _crudService.Update<News, Guid>(newItem);
         _crudService.SaveChanges();
+
         return _mapper.Map<NewsDto>(updatedNews);
     }
     public List<NewsDto> UpdateMany(List<UpdateNewsInput> inputs)
     {
-        var newsList = _mapper.Map<List<News>>(inputs);
-        var updatedNewsList = _crudService.UpdateAndGetRange<News, Guid>(newsList);
+        var oldList = GetByIds(inputs.Select(x => x.Id).ToList());
+        var newList = _mapper.Map<List<News>>(inputs);
+
+        for (int i = 0; i < oldList.Count; i++)
+            FillRestPropsWithOldValues(oldList[i], newList[i]);
+        var updatedNewsList = _crudService.UpdateAndGetRange<News, Guid>(newList);
         _crudService.SaveChanges();
+        
         return _mapper.Map<List<NewsDto>>(updatedNewsList);
     }
 
     public bool Delete(Guid id)
     {
-        var news = _crudService.Find<News, Guid>(id);
-        if (news is not null)
-        {
-            _crudService.SoftDelete<News, Guid>(news);
-            _crudService.SaveChanges();
-            return true;
-        }
-        _errorMessage = $"News record Not Found!!!";
-        _logger.LogError(_errorMessage);
-        throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
+        var newsItem = GetById(id);
+        _crudService.SoftDelete<News, Guid>(newsItem);
+        _crudService.SaveChanges();
+        return true;
     }
     public bool Activate(Guid id)
     {
-        var news = _crudService.Find<News, Guid>(id);
-        if (news is not null)
-        {
-            _crudService.Activate<News, Guid>(news);
-            _crudService.SaveChanges();
-            return true;
-        }
-        _errorMessage = $"News record Not Found!!!";
-        _logger.LogError(_errorMessage);
-        throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
+        var newsItem = GetById(id);
+        _crudService.Activate<News, Guid>(newsItem);
+        _crudService.SaveChanges();
+        return true;
     }
 
 }

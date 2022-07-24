@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using System.Net;
+
 using Common;
 using DB;
 using DB.Common;
@@ -23,6 +25,42 @@ public class AdvertisementService : IAdvertisementService
         _crudService = curdService;
         _mapper = mapper;
         _logger = logger;
+    }
+
+    private Advertisement GetById(Guid id)
+    {
+        var advertisement = _crudService.Find<Advertisement, Guid>(id);
+        if (advertisement == null)
+        {
+            _errorMessage = $"Advertisement Record with Id: {id} Not Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+        return advertisement;
+    }
+    private List<Advertisement> GetByIds(List<Guid> ids)
+    {
+        var list = _crudService.GetList<Advertisement, Guid>(e => ids.Contains(e.Id));
+        if (list.Count == 0)
+        {
+            _errorMessage = $"No Any Advertisements Records Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+        return list;
+    }
+    private static void FillRestPropsWithOldValues(Advertisement oldItem, Advertisement newItem)
+    {
+        newItem.CreatedAt = oldItem.CreatedAt;
+        newItem.CreatedBy = oldItem.CreatedBy;
+        newItem.UpdatedAt = oldItem.UpdatedAt;
+        newItem.UpdatedBy = oldItem.UpdatedBy;
+        newItem.IsActive = oldItem.IsActive;
+        newItem.ActivatedAt = oldItem.ActivatedAt;
+        newItem.ActivatedBy = oldItem.ActivatedBy;
+        newItem.IsDeleted = oldItem.IsDeleted;
+        newItem.DeletedAt = oldItem.DeletedAt;
+        newItem.DeletedBy = oldItem.DeletedBy;
     }
 
     public List<AdvertisementDto> List(string type)
@@ -54,14 +92,8 @@ public class AdvertisementService : IAdvertisementService
     
     public AdvertisementDto Find(Guid id)
     {
-        var user = _crudService.Find<Advertisement, Guid>(id);
-        if (user == null)
-        {
-            _errorMessage = $"Advertisement Record with Id: {id} Not Found";
-            _logger.LogError(_errorMessage);
-            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
-        }
-        return _mapper.Map<AdvertisementDto>(user);
+        var advertisement = GetById(id);
+        return _mapper.Map<AdvertisementDto>(advertisement);
     }
     public List<AdvertisementDto> FindList(string ids)
     {
@@ -71,8 +103,8 @@ public class AdvertisementService : IAdvertisementService
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.BadRequest);
         }
-        var _ids = ids.SplitAndRemoveEmpty(',').ToList();
-        var list = _crudService.GetList<Advertisement, Guid>(e => _ids.Contains(e.Id.ToString()));
+        var _ids = ids.SplitAndRemoveEmpty(',').Select(Guid.Parse).ToList();
+        var list = GetByIds(_ids);
         return _mapper.Map<List<AdvertisementDto>>(list);
     }
 
@@ -93,44 +125,41 @@ public class AdvertisementService : IAdvertisementService
 
     public AdvertisementDto Update(UpdateAdvertisementInput input)
     {
-        var advertisement = _mapper.Map<Advertisement>(input);
-        var updatedAdvertisement = _crudService.Update<Advertisement, Guid>(advertisement);
+        var oldAdvertisement = GetById(input.Id);
+        var newAdvertisement = _mapper.Map<Advertisement>(input);
+
+        FillRestPropsWithOldValues(oldAdvertisement, newAdvertisement);
+        var updatedAdvertisement = _crudService.Update<Advertisement, Guid>(newAdvertisement);
         _crudService.SaveChanges();
+        
         return _mapper.Map<AdvertisementDto>(updatedAdvertisement);
     }
     public List<AdvertisementDto> UpdateMany(List<UpdateAdvertisementInput> inputs)
     {
-        var advertisements = _mapper.Map<List<Advertisement>>(inputs);
-        var updatedAdvertisements = _crudService.UpdateAndGetRange<Advertisement, Guid>(advertisements);
+        var oldAdvertisements = GetByIds(inputs.Select(x => x.Id).ToList());
+        var newAdvertisements = _mapper.Map<List<Advertisement>>(inputs);
+        
+        for (int i = 0; i < oldAdvertisements.Count; i++)
+            FillRestPropsWithOldValues(oldAdvertisements[i], newAdvertisements[i]);
+        var updatedAdvertisements = _crudService.UpdateAndGetRange<Advertisement, Guid>(newAdvertisements);
         _crudService.SaveChanges();
+
         return _mapper.Map<List<AdvertisementDto>>(updatedAdvertisements);
     }
 
     public bool Delete(Guid id)
     {
-        var advertisement = _crudService.Find<Advertisement, Guid>(id);
-        if (advertisement is not null)
-        {
-            _crudService.SoftDelete<Advertisement, Guid>(advertisement);
-            _crudService.SaveChanges();
-            return true;
-        }
-        _errorMessage = $"Advertisement record Not Found!!!";
-        _logger.LogError(_errorMessage);
-        throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
+        var advertisement = GetById(id);
+        _crudService.SoftDelete<Advertisement, Guid>(advertisement);
+        _crudService.SaveChanges();
+        return true;
     }
     public bool Activate(Guid id)
     {
-        var advertisement = _crudService.Find<Advertisement, Guid>(id);
-        if (advertisement is not null)
-        {
-            _crudService.Activate<Advertisement, Guid>(advertisement);
-            _crudService.SaveChanges();
-            return true;
-        }
-        _errorMessage = $"Advertisement record Not Found!!!";
-        _logger.LogError(_errorMessage);
-        throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
+        var advertisement = GetById(id);
+        _crudService.Activate<Advertisement, Guid>(advertisement);
+        _crudService.SaveChanges();
+        return true;
     }
 
 }

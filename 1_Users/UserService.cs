@@ -86,6 +86,42 @@ public class UserService : IUserService
         return Tuple.Create(accessToken, refreshToken);
     }
 
+    private User GetById(Guid id)
+    {
+        var user = _crudService.Find<User, Guid>(id);
+        if (user == null)
+        {
+            _errorMessage = $"User Record with Id: {id} Not Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
+        }
+        return user;
+    }
+    private List<User> GetByIds(List<Guid> ids)
+    {
+        var users = _crudService.GetList<User, Guid>(e => ids.Contains(e.Id));
+        if (users.Count == 0)
+        {
+            _errorMessage = $"No Any Advertisements Records Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+        return users;
+    }
+    private static void FillRestPropsWithOldValues(User oldItem, User newItem)
+    {
+        newItem.CreatedAt = oldItem.CreatedAt;
+        newItem.CreatedBy = oldItem.CreatedBy;
+        newItem.UpdatedAt = oldItem.UpdatedAt;
+        newItem.UpdatedBy = oldItem.UpdatedBy;
+        newItem.IsActive = oldItem.IsActive;
+        newItem.ActivatedAt = oldItem.ActivatedAt;
+        newItem.ActivatedBy = oldItem.ActivatedBy;
+        newItem.IsDeleted = oldItem.IsDeleted;
+        newItem.DeletedAt = oldItem.DeletedAt;
+        newItem.DeletedBy = oldItem.DeletedBy;
+    }
+
     public AuthDto Register(RegisterInput input, string ipAddress = null)
     {
         // return error if email already existed
@@ -241,44 +277,41 @@ public class UserService : IUserService
 
     public UserDto Update(UpdateUserInput input)
     {
-        var user = _mapper.Map<User>(input);
-        var updatedUser = _crudService.Update<User, Guid>(user);
+        var oldUser = GetById(input.Id);
+        var newUser = _mapper.Map<User>(input);
+
+        FillRestPropsWithOldValues(oldUser, newUser);
+        var updatedUser = _crudService.Update<User, Guid>(newUser);
         _crudService.SaveChanges();
+
         return _mapper.Map<UserDto>(updatedUser);
     }
     public List<UserDto> UpdateMany(List<UpdateUserInput> inputs)
     {
-        var users = _mapper.Map<List<User>>(inputs);
-        var updatedUsers = _crudService.UpdateAndGetRange<User, Guid>(users);
+        var oldUsers = GetByIds(inputs.Select(x => x.Id).ToList());
+        var newUsers = _mapper.Map<List<User>>(inputs);
+
+        for (int i = 0; i < oldUsers.Count; i++)
+            FillRestPropsWithOldValues(oldUsers[i], newUsers[i]);
+        var updatedUsers = _crudService.UpdateAndGetRange<User, Guid>(newUsers);
         _crudService.SaveChanges();
+
         return _mapper.Map<List<UserDto>>(updatedUsers);
     }
 
     public bool Delete(Guid id)
     {
-        var user = _crudService.Find<User, Guid>(id);
-        if (user is not null)
-        {
-            _crudService.SoftDelete<User, Guid>(user);
-            _crudService.SaveChanges();
-            return true;
-        }
-        _errorMessage = $"User record Not Found!!!";
-        _logger.LogError(_errorMessage);
-        throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
+        var user = GetById(id);
+        _crudService.SoftDelete<User, Guid>(user);
+        _crudService.SaveChanges();
+        return true;
     }
     public bool Activate(Guid id)
     {
-        var user = _crudService.Find<User, Guid>(id);
-        if (user is not null)
-        {
-            _crudService.Activate<User, Guid>(user);
-            _crudService.SaveChanges();
-            return true;
-        }
-        _errorMessage = $"User record Not Found!!!";
-        _logger.LogError(_errorMessage);
-        throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
+        var user = GetById(id);
+        _crudService.Activate<User, Guid>(user);
+        _crudService.SaveChanges();
+        return true;
     }
 
     public List<UserDto> List(string type)
@@ -310,13 +343,7 @@ public class UserService : IUserService
 
     public UserDto Find(Guid id)
     {
-        var user = _crudService.Find<User, Guid>(id);
-        if (user == null)
-        {
-            _errorMessage = $"User Record with Id: {id} Not Found";
-            _logger.LogError(_errorMessage);
-            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.NotFound);
-        }
+        var user = GetById(id);
         return _mapper.Map<UserDto>(user);
     }
     public List<UserDto> FindList(string ids)
@@ -328,8 +355,8 @@ public class UserService : IUserService
             throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.BadRequest);
         }
 
-        var _ids = ids.SplitAndRemoveEmpty(',').ToList();
-        var list = _crudService.GetList<User, Guid>(e => _ids.Contains(e.Id.ToString()));
+        var _ids = ids.SplitAndRemoveEmpty(',').Select(Guid.Parse).ToList();
+        var list = GetByIds(_ids);
         return _mapper.Map<List<UserDto>>(list);
     }
 
