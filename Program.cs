@@ -24,12 +24,12 @@ using AppFeatures;
 var builder = WebApplication.CreateBuilder(args);
 
 #region Configure Serilog Logging
-//var logger = new LoggerConfiguration()
-//  .ReadFrom.Configuration(builder.Configuration)
-//  .Enrich.FromLogContext()
-//  .CreateLogger();
+var logger = new LoggerConfiguration()
+  .ReadFrom.Configuration(builder.Configuration)
+  .Enrich.FromLogContext()
+  .CreateLogger();
 
-//builder.Logging.AddSerilog(logger);
+builder.Logging.AddSerilog(logger);
 #endregion
 
 #region Add Services to the DI Container
@@ -93,14 +93,6 @@ builder.Services.AddSwaggerGen();
 #region Build the App and Configure the HTTP request pipeline
 var app = builder.Build();
 
-// auth
-app.UseAuthentication();
-app.UseAuthorization();
-
-// swagger docs
-app.UseSwagger(options => options.SerializeAsV2 = true);
-app.UseSwaggerUI();
-
 // global exception handler
 app.UseExceptionHandler(appError =>
 {
@@ -114,10 +106,14 @@ app.UseExceptionHandler(appError =>
     });
 });
 
-app.UseStaticFiles();
+// Auth
+app.UseAuthentication();
 
-app.UseRouting();
+// swagger docs
+app.UseSwagger(options => options.SerializeAsV2 = true);
+app.UseSwaggerUI();
 
+// Allow CORS
 app.UseCors(config => config
     .AllowAnyMethod()
     .AllowAnyHeader()
@@ -125,9 +121,18 @@ app.UseCors(config => config
     .AllowCredentials()
    );
 
-app.UseAuthorization();
+// Serve Static Files
+app.UseStaticFiles();
 
+// setup API routes
+app.UseRouting();
+// Authorize
+app.UseAuthorization();
+// API routes
 app.MapControllers();
+
+// handle client side routes [catch all routes for SPA]
+app.MapFallbackToFile("index.html");
 
 app.Run();
 #endregion 
