@@ -43,5 +43,8 @@ public class AutoMapperProfile : Profile
         CreateMap<Document, CreateDocumentInput>().ReverseMap();
         CreateMap<Document, UpdateDocumentInput>().ReverseMap();
 
+        CreateMap<AppFeature, AppFeatureDto>().ReverseMap();
+        CreateMap<AppFeature, CreateAppFeatureInput>().ReverseMap();
+        CreateMap<AppFeature, UpdateAppFeatureInput>().ReverseMap();
     }
 }

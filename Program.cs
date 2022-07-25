@@ -19,6 +19,7 @@ using _ContactUs;
 using Awards;
 using Partners;
 using Documents;
+using AppFeatures;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,7 @@ builder.Services.AddScoped<IContactUsService, ContactUsService>();
 builder.Services.AddScoped<IAwardService, AwardService>();
 builder.Services.AddScoped<IPartnerService, PartnerService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IAppFeatureService, AppFeatureService>();
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

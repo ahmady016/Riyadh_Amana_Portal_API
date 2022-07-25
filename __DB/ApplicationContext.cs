@@ -25,6 +25,7 @@ public partial class ApplicationContext : DbContext
     public virtual DbSet<Award> Awards { get; set; }
     public virtual DbSet<Partner> Partners { get; set; }
     public virtual DbSet<Document> Documents { get; set; }
+    public virtual DbSet<AppFeature> AppFeatures { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -39,6 +40,7 @@ public partial class ApplicationContext : DbContext
         modelBuilder.ApplyConfiguration(new AwardConfig());
         modelBuilder.ApplyConfiguration(new PartnerConfig());
         modelBuilder.ApplyConfiguration(new DocumentConfig());
+        modelBuilder.ApplyConfiguration(new AppFeatureConfig());
 
         OnModelCreatingPartial(modelBuilder);
     }
