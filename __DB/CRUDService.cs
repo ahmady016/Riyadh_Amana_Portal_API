@@ -15,7 +15,9 @@ public class CRUDService : ICRUDService
     #region Queries [Select]
     public T Find<T, TKey>(TKey id) where T : Entity<TKey>
     {
-        return _db.Set<T>().Find(id);
+        var entity = _db.Set<T>().Find(id);
+        _db.Entry(entity).State = EntityState.Detached;
+        return entity;
     }
     public T GetOne<T>(Expression<Func<T, bool>> where) where T : class
     {
