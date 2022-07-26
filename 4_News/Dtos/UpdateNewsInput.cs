@@ -2,7 +2,7 @@
 
 namespace Dtos;
 
-public class UpdateNewsInput
+public class UpdateNewsInput : CreateNewsInput
 {
     [Required]
     [RegularExpression(
