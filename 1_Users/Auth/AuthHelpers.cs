@@ -73,7 +73,7 @@ public static class AuthHelpers
         };
     }
 
-    private static IEnumerable<Claim> ValidateTokenAndGetClaims(string token)
+    public static Guid ValidateTokenAndGetUserId(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenValidationParameters = GetTokenValidationOptions(validateLifetime: true);
@@ -81,9 +81,10 @@ public static class AuthHelpers
         
         if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             throw new SecurityTokenException("Invalid token");
-            
-        return principal.Claims;
-    }
 
+        var userClaim = principal.Claims.FirstOrDefault();
+
+        return Guid.Parse(userClaim.Value);
+    }
 
 }

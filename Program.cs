@@ -1,8 +1,5 @@
-using System.Net;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
@@ -94,20 +91,10 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // global exception handler
-app.UseExceptionHandler(appError =>
-{
-    appError.Run(async context =>
-    {
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-        var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-        if (contextFeature != null)
-            await context.Response.WriteAsync(JsonSerializer.Serialize(contextFeature.Error));
-    });
-});
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
-// Auth
-app.UseAuthentication();
+// custom jwt auth middleware
+app.UseMiddleware<JwtMiddleware>();
 
 // swagger docs
 app.UseSwagger(options => options.SerializeAsV2 = true);
@@ -126,8 +113,7 @@ app.UseStaticFiles();
 
 // setup API routes
 app.UseRouting();
-// Authorize
-app.UseAuthorization();
+
 // API routes
 app.MapControllers();
 
@@ -135,4 +121,4 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();
-#endregion 
+#endregion
