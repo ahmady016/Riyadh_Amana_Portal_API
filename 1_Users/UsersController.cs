@@ -60,6 +60,13 @@ public class UsersController : ControllerBase
         return Ok(new { Message = "Password Changed Successfully" });
     }
 
+    [HttpPost()]
+    public IActionResult ChangeEmail(ChangeEmailInput input)
+    {
+        _service.ChangeEmail(input);
+        return Ok(new { Message = "Email Changed Successfully" });
+    }
+
     [HttpGet("{userId}")]
     public IActionResult Logout(Guid userId)
     {

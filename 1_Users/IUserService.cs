@@ -22,6 +22,7 @@ public interface IUserService
     AuthDto RefreshTheTokens(string token, string ipAddress);
     bool RevokeTheToken(string token, string ipAddress);
     bool ChangePassword(ChangePasswordInput input);
+    bool ChangeEmail(ChangeEmailInput input);
     bool Logout(Guid userId);
 
     UserDto Update(UpdateUserInput input);
