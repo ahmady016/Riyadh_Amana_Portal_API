@@ -93,12 +93,12 @@ var app = builder.Build();
 // global exception handler
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
-// custom jwt auth middleware
-app.UseMiddleware<JwtMiddleware>();
-
 // swagger docs
 app.UseSwagger(options => options.SerializeAsV2 = true);
 app.UseSwaggerUI();
+
+// custom jwt auth middleware
+app.UseMiddleware<JwtMiddleware>();
 
 // Allow CORS
 app.UseCors(config => config

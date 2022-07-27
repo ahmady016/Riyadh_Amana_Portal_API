@@ -13,11 +13,11 @@ public class JwtMiddleware
     public async Task Invoke(HttpContext context, IUserService userService)
     {
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-        
-        var userId = AuthHelpers.ValidateTokenAndGetUserId(token);
-
-        context.Items["User"] = userService.Find(userId);
-
+        if (!String.IsNullOrEmpty(token))
+        {
+            var userId = AuthHelpers.ValidateTokenAndGetUserId(token);
+            context.Items["User"] = userService.Find(userId);
+        }
         await _next(context);
     }
 }
