@@ -26,6 +26,8 @@ public partial class ApplicationContext : DbContext
     public virtual DbSet<Partner> Partners { get; set; }
     public virtual DbSet<Document> Documents { get; set; }
     public virtual DbSet<AppFeature> AppFeatures { get; set; }
+    public virtual DbSet<Album> Albums { get; set; }
+    public virtual DbSet<Photo> Photos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,6 +43,8 @@ public partial class ApplicationContext : DbContext
         modelBuilder.ApplyConfiguration(new PartnerConfig());
         modelBuilder.ApplyConfiguration(new DocumentConfig());
         modelBuilder.ApplyConfiguration(new AppFeatureConfig());
+        modelBuilder.ApplyConfiguration(new AlbumConfig());
+        modelBuilder.ApplyConfiguration(new PhotoConfig());
 
         OnModelCreatingPartial(modelBuilder);
     }
