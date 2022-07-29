@@ -46,5 +46,15 @@ public class AutoMapperProfile : Profile
         CreateMap<AppFeature, AppFeatureDto>().ReverseMap();
         CreateMap<AppFeature, CreateAppFeatureInput>().ReverseMap();
         CreateMap<AppFeature, UpdateAppFeatureInput>().ReverseMap();
+
+        CreateMap<Album, AlbumDto>().ReverseMap();
+        CreateMap<Album, CreateAlbumInput>().ReverseMap();
+        CreateMap<Album, CreateAlbumWithPhotosInput>().ReverseMap();
+        CreateMap<Album, UpdateAlbumInput>().ReverseMap();
+
+        CreateMap<Photo, PhotoDto>().ReverseMap();
+        CreateMap<Photo, CreatePhotoInput>().ReverseMap();
+        CreateMap<Photo, UpdatePhotoInput>().ReverseMap();
+
     }
 }
