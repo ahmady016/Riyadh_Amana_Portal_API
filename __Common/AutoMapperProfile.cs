@@ -56,5 +56,14 @@ public class AutoMapperProfile : Profile
         CreateMap<Photo, CreatePhotoInput>().ReverseMap();
         CreateMap<Photo, UpdatePhotoInput>().ReverseMap();
 
+        CreateMap<AppPage, AppPageDto>().ReverseMap();
+        CreateMap<AppPage, CreateAppPageInput>().ReverseMap();
+        CreateMap<AppPage, CreateAppPageWithKeysInput>().ReverseMap();
+        CreateMap<AppPage, UpdateAppPageInput>().ReverseMap();
+
+        CreateMap<PageKey, PageKeyDto>().ReverseMap();
+        CreateMap<PageKey, CreatePageKeyInput>().ReverseMap();
+        CreateMap<PageKey, UpdatePageKeyInput>().ReverseMap();
+
     }
 }
