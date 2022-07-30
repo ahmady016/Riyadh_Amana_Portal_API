@@ -17,6 +17,7 @@ using Awards;
 using Partners;
 using Documents;
 using AppFeatures;
+using Albums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +51,7 @@ builder.Services.AddScoped<IAwardService, AwardService>();
 builder.Services.AddScoped<IPartnerService, PartnerService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IAppFeatureService, AppFeatureService>();
+builder.Services.AddScoped<IAlbumAndPhotoService, AlbumAndPhotoService>();
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
