@@ -67,6 +67,13 @@ public class RefreshTokenConfig : EntityConfig<RefreshToken, Guid>
             .HasColumnName("user_id")
             .HasColumnType("uniqueidentifier");
 
+        entity.HasIndex(e => e.Value)
+            .HasDatabaseName("refresh_tokens_value_unique_index")
+            .IsUnique();
+
+        entity.HasIndex(e => e.UserId)
+            .HasDatabaseName("refresh_tokens_user_id_index");
+
         entity.HasOne(refresh_token => refresh_token.User)
             .WithMany(user => user.RefreshTokens)
             .HasForeignKey(refresh_token => refresh_token.UserId)

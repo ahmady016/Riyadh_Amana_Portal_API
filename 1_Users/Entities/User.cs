@@ -77,5 +77,9 @@ public class UserConfig : EntityConfig<User, Guid>
             .HasColumnName("mobile")
             .HasColumnType("varchar(20)");
 
+        entity.HasIndex(e => e.Email)
+            .HasDatabaseName("users_email_unique_index")
+            .IsUnique();
+
     }
 }
