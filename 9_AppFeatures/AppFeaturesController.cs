@@ -5,10 +5,10 @@ namespace AppFeatures;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-public class AppFeatureController : ControllerBase
+public class AppFeaturesController : ControllerBase
 {
     private readonly IAppFeatureService _service;
-    public AppFeatureController(IAppFeatureService service)
+    public AppFeaturesController(IAppFeatureService service)
     {
         _service = service;
     }
