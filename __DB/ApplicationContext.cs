@@ -30,6 +30,8 @@ public partial class ApplicationContext : DbContext
     public virtual DbSet<Photo> Photos { get; set; }
     public virtual DbSet<AppPage> AppPages { get; set; }
     public virtual DbSet<PageKey> PagesKeys { get; set; }
+    public virtual DbSet<Comment> Comments { get; set; }
+    public virtual DbSet<Reply> Replies { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,6 +51,8 @@ public partial class ApplicationContext : DbContext
         modelBuilder.ApplyConfiguration(new PhotoConfig());
         modelBuilder.ApplyConfiguration(new AppPageConfig());
         modelBuilder.ApplyConfiguration(new PageKeyConfig());
+        modelBuilder.ApplyConfiguration(new CommentConfig());
+        modelBuilder.ApplyConfiguration(new ReplyConfig());
 
         OnModelCreatingPartial(modelBuilder);
     }
