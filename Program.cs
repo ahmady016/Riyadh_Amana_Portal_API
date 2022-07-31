@@ -116,6 +116,9 @@ app.UseStaticFiles();
 // setup API routes
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 // API routes
 app.MapControllers();
 

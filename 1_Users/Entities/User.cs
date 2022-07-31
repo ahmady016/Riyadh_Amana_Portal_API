@@ -67,9 +67,9 @@ public class UserConfig : EntityConfig<User, Guid>
 
         entity.Property(e => e.Password)
             .IsRequired()
-            .HasMaxLength(50)
+            .HasMaxLength(75)
             .HasColumnName("password")
-            .HasColumnType("varchar(50)");
+            .HasColumnType("varchar(75)");
 
         entity.Property(e => e.Mobile)
             .IsRequired()
