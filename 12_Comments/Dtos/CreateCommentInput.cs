@@ -16,10 +16,7 @@ public class CreateCommentInput
     [StringLength(100, MinimumLength = 15, ErrorMessage = "CommenterEmail Must be between 15 and 100 characters")]
     public string CommenterEmail { get; set; }
 
-    [Required]
-    [StringLength(2000)]
+    [Required(ErrorMessage = "Text is required")]
+    [StringLength(2000, MinimumLength = 5, ErrorMessage = "Text Must be between 5 and 2000 characters")]
     public string Text { get; set; }
-    public bool IsApproved { get; set; } = false;
-    public DateTime? ApprovedAt { get; set; }
-    public string ApprovedBy { get; set; }
 }

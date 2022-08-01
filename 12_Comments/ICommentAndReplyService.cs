@@ -15,7 +15,7 @@ public interface ICommentAndReplyService
     List<CommentDto> UpdateManyComments(List<UpdateCommentInput> inputs);
     bool DeleteComment(Guid id);
     bool ActivateComment(Guid id);
-    //-------------------------------------------------------------------------------
+
     List<ReplyDto> ListReplies(string type);
     PageResult<ReplyDto> ListRepliesPage(string type, int pageSize, int pageNumber);
     ReplyDto FindOneReply(Guid id);

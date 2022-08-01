@@ -65,7 +65,6 @@ public class AutoMapperProfile : Profile
         CreateMap<PageKey, CreatePageKeyInput>().ReverseMap();
         CreateMap<PageKey, UpdatePageKeyInput>().ReverseMap();
 
-        //------------------------------------------
         CreateMap<Comment, CommentDto>().ReverseMap();
         CreateMap<Comment, CreateCommentInput>().ReverseMap();
         CreateMap<Comment, UpdateCommentInput>().ReverseMap();

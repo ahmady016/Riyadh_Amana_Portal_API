@@ -32,7 +32,7 @@ public class CommentAndReplyService : ICommentAndReplyService
         var album = _crudService.Find<Comment, Guid>(id);
         if (album is null)
         {
-            _errorMessage = $"Album Record with Id: {id} Not Found";
+            _errorMessage = $"Comment Record with Id: {id} Not Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
         }
@@ -43,7 +43,7 @@ public class CommentAndReplyService : ICommentAndReplyService
         var comments = _crudService.GetList<Comment, Guid>(e => ids.Contains(e.Id));
         if (comments.Count == 0)
         {
-            _errorMessage = $"No Any Album Records Found";
+            _errorMessage = $"No Any Comment Records Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
         }
@@ -68,7 +68,7 @@ public class CommentAndReplyService : ICommentAndReplyService
         var reply = _crudService.Find<Reply, Guid>(id);
         if (reply is null)
         {
-            _errorMessage = $"Photo Record with Id: {id} Not Found";
+            _errorMessage = $"Reply Record with Id: {id} Not Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
         }
@@ -79,7 +79,7 @@ public class CommentAndReplyService : ICommentAndReplyService
         var replies = _crudService.GetList<Reply, Guid>(e => ids.Contains(e.Id));
         if (replies.Count == 0)
         {
-            _errorMessage = $"No Any Photo Records Found";
+            _errorMessage = $"No Any Reply Records Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
         }
@@ -135,7 +135,7 @@ public class CommentAndReplyService : ICommentAndReplyService
     {
         if (String.IsNullOrEmpty(ids) || String.IsNullOrWhiteSpace(ids))
         {
-            _errorMessage = $"Album: Must supply comma separated string of ids";
+            _errorMessage = $"Comment: Must supply comma separated string of ids";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
@@ -197,7 +197,7 @@ public class CommentAndReplyService : ICommentAndReplyService
         _crudService.SaveChanges();
         return true;
     }
-    //----------------------------------------------------------
+    
     public List<ReplyDto> ListReplies(string type)
     {
         var list = type.ToLower() switch
@@ -233,7 +233,7 @@ public class CommentAndReplyService : ICommentAndReplyService
     {
         if (String.IsNullOrEmpty(ids) || String.IsNullOrWhiteSpace(ids))
         {
-            _errorMessage = $"Replies: Must supply comma separated string of ids";
+            _errorMessage = $"Reply: Must supply comma separated string of ids";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
@@ -295,11 +295,5 @@ public class CommentAndReplyService : ICommentAndReplyService
         _crudService.SaveChanges();
         return true;
     }
-
-    //CommentDto ICommentAndReplyService.FindOneComment(Guid id)
-    //{
-    //    var album = GetCommentById(id);
-    //    return _mapper.Map<CommentDto>(album);
-    //}
 
 }

@@ -1,5 +1,5 @@
-﻿using Dtos;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Dtos;
 
 namespace Comments;
 
@@ -16,19 +16,19 @@ public class CommentsAndRepliesController : ControllerBase
 
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// AlbumsAndPhotos/ListAlbums/all
+    /// CommentsAndReplies/ListComments/all
     /// </summary>
-    /// <returns>List of AlbumDto</returns>
+    /// <returns>List of CommentDto</returns>
     [HttpGet("{type}")]
-    public virtual IActionResult ListAlbums([FromRoute] string type)
+    public virtual IActionResult ListComments([FromRoute] string type)
     {
         return Ok(_service.ListComments(type));
     }
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// AlbumsAndPhotos/ListAlbumsPage/all
+    /// CommentsAndReplies/ListCommentsPage/all
     /// </summary>
-    /// <returns>List of AlbumDto</returns>
+    /// <returns>List of CommentDto</returns>
     [HttpGet("{type}")]
     public virtual IActionResult ListCommentsPage(
         [FromRoute] string type,
@@ -39,37 +39,37 @@ public class CommentsAndRepliesController : ControllerBase
         return Ok(_service.ListCommentsPage(type, pageSize ?? 10, pageNumber ?? 1));
     }
     /// <summary>
-    /// AlbumsAndPhotos/FindAlbum/[id]
+    /// CommentsAndReplies/FindComment/[id]
     /// </summary>
-    /// <returns>AlbumDto</returns>
+    /// <returns>CommentDto</returns>
     [HttpGet("{id}")]
     public IActionResult FindComment(Guid id)
     {
         return Ok(_service.FindOneComment(id));
     }
     /// <summary>
-    /// AlbumsAndPhotos/FindAlbums/[id, id, id]
+    /// CommentsAndReplies/FindComments/[id, id, id]
     /// </summary>
-    /// <returns>List Of AlbumDto</returns>
+    /// <returns>List Of CommentDto</returns>
     [HttpGet("{ids}")]
-    public IActionResult FindAlbums(string ids)
+    public IActionResult FindComments(string ids)
     {
         return Ok(_service.FindManyComments(ids));
     }
 
     /// <summary>
-    /// AlbumsAndPhotos/AddAlbum
+    /// CommentsAndReplies/AddComment
     /// </summary>
-    /// <returns>AlbumDto</returns>
+    /// <returns>CommentDto</returns>
     [HttpPost]
-    public virtual IActionResult AddAlbum([FromBody] CreateCommentInput input)
+    public virtual IActionResult AddComment([FromBody] CreateCommentInput input)
     {
         return Ok(_service.AddComment(input));
     }
     /// <summary>
-    /// AlbumsAndPhotos/AddManyAlbums
+    /// CommentsAndReplies/AddManyComments
     /// </summary>
-    /// <returns>List Of AlbumDto</returns>
+    /// <returns>List Of CommentDto</returns>
     [HttpPost]
     public virtual IActionResult AddManyComments([FromBody] List<CreateCommentInput> inputs)
     {
@@ -77,18 +77,18 @@ public class CommentsAndRepliesController : ControllerBase
     }
 
     /// <summary>
-    /// AlbumsAndPhotos/UpdateAlbum
+    /// CommentsAndReplies/UpdateComment
     /// </summary>
-    /// <returns>AlbumDto</returns>
+    /// <returns>CommentDto</returns>
     [HttpPut]
     public virtual IActionResult UpdateComment([FromBody] UpdateCommentInput input)
     {
         return Ok(_service.UpdateComment(input));
     }
     /// <summary>
-    /// AlbumsAndPhotos/UpdateManyAlbums
+    /// CommentsAndReplies/UpdateManyComments
     /// </summary>
-    /// <returns>List Of AlbumDto</returns>
+    /// <returns>List Of CommentDto</returns>
     [HttpPut]
     public virtual IActionResult UpdateManyComments([FromBody] List<UpdateCommentInput> inputs)
     {
@@ -96,7 +96,7 @@ public class CommentsAndRepliesController : ControllerBase
     }
 
     /// <summary>
-    /// AlbumsAndPhotos/DeleteAlbum
+    /// CommentsAndReplies/DeleteComment
     /// </summary>
     /// <returns>bool</returns>
     [HttpDelete]
@@ -105,7 +105,7 @@ public class CommentsAndRepliesController : ControllerBase
         return Ok(_service.DeleteComment(id));
     }
     /// <summary>
-    /// AlbumsAndPhotos/ActivateAlbum
+    /// CommentsAndReplies/ActivateComment
     /// </summary>
     /// <returns>bool</returns>
     [HttpPut]
@@ -117,24 +117,21 @@ public class CommentsAndRepliesController : ControllerBase
 
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// AlbumsAndPhotos/ListPhotos/all
+    /// CommentsAndReplies/ListReplies/all
     /// </summary>
-    /// <returns>List of PhotoDto</returns>
-    /// 
-
-    //----------------------------------------------------------------------------------------
+    /// <returns>List of ReplyDto</returns>
     [HttpGet("{type}")]
-    public virtual IActionResult ListPhotos([FromRoute] string type)
+    public virtual IActionResult ListReplies([FromRoute] string type)
     {
         return Ok(_service.ListReplies(type));
     }
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// AlbumsAndPhotos/ListPhotosPage/all
+    /// CommentsAndReplies/ListRepliesPage/all
     /// </summary>
-    /// <returns>List of PhotoDto</returns>
+    /// <returns>List of ReplyDto</returns>
     [HttpGet("{type}")]
-    public virtual IActionResult ListPhotosPage(
+    public virtual IActionResult ListRepliesPage(
         [FromRoute] string type,
         [FromQuery] int? pageSize,
         [FromQuery] int? pageNumber
@@ -143,18 +140,18 @@ public class CommentsAndRepliesController : ControllerBase
         return Ok(_service.ListRepliesPage(type, pageSize ?? 10, pageNumber ?? 1));
     }
     /// <summary>
-    /// AlbumsAndPhotos/FindPhoto/[id]
+    /// CommentsAndReplies/FindReply/[id]
     /// </summary>
-    /// <returns>PhotoDto</returns>
+    /// <returns>ReplyDto</returns>
     [HttpGet("{id}")]
-    public IActionResult FindPhoto(Guid id)
+    public IActionResult FindReply(Guid id)
     {
         return Ok(_service.FindOneReply(id));
     }
     /// <summary>
-    /// AlbumsAndPhotos/FindPhotos/[id, id, id]
+    /// CommentsAndReplies/FindReplies/[id, id, id]
     /// </summary>
-    /// <returns>List Of PhotoDto</returns>
+    /// <returns>List Of ReplyDto</returns>
     [HttpGet("{ids}")]
     public IActionResult FindReplies(string ids)
     {
@@ -162,18 +159,18 @@ public class CommentsAndRepliesController : ControllerBase
     }
 
     /// <summary>
-    /// AlbumsAndPhotos/AddPhoto
+    /// CommentsAndReplies/AddReply
     /// </summary>
-    /// <returns>PhotoDto</returns>
+    /// <returns>ReplyDto</returns>
     [HttpPost]
     public virtual IActionResult AddReply([FromBody] CreateReplyInput input)
     {
         return Ok(_service.AddReply(input));
     }
     /// <summary>
-    /// AlbumsAndPhotos/AddManyPhotos
+    /// CommentsAndReplies/AddManyReplies
     /// </summary>
-    /// <returns>List Of PhotoDto</returns>
+    /// <returns>List Of ReplyDto</returns>
     [HttpPost]
     public virtual IActionResult AddManyReplies([FromBody] List<CreateReplyInput> inputs)
     {
@@ -181,18 +178,18 @@ public class CommentsAndRepliesController : ControllerBase
     }
 
     /// <summary>
-    /// AlbumsAndPhotos/UpdatePhoto
+    /// CommentsAndReplies/UpdateReply
     /// </summary>
-    /// <returns>PhotoDto</returns>
+    /// <returns>ReplyDto</returns>
     [HttpPut]
     public virtual IActionResult UpdateReply([FromBody] UpdateReplyInput input)
     {
         return Ok(_service.UpdateReply(input));
     }
     /// <summary>
-    /// AlbumsAndPhotos/UpdateManyPhotos
+    /// CommentsAndReplies/UpdateManyPhotos
     /// </summary>
-    /// <returns>List Of PhotoDto</returns>
+    /// <returns>List Of ReplyDto</returns>
     [HttpPut]
     public virtual IActionResult UpdateManyPhotos([FromBody] List<UpdateReplyInput> inputs)
     {
@@ -200,7 +197,7 @@ public class CommentsAndRepliesController : ControllerBase
     }
 
     /// <summary>
-    /// AlbumsAndPhotos/DeletePhoto
+    /// CommentsAndReplies/DeleteReply
     /// </summary>
     /// <returns>bool</returns>
     [HttpDelete]
@@ -209,7 +206,7 @@ public class CommentsAndRepliesController : ControllerBase
         return Ok(_service.DeleteReply(id));
     }
     /// <summary>
-    /// AlbumsAndPhotos/ActivatePhoto
+    /// CommentsAndReplies/ActivateReply
     /// </summary>
     /// <returns>bool</returns>
     [HttpPut]
@@ -217,4 +214,5 @@ public class CommentsAndRepliesController : ControllerBase
     {
         return Ok(_service.ActivateReply(id));
     }
+
 }

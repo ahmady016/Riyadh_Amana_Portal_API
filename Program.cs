@@ -18,6 +18,7 @@ using Partners;
 using Documents;
 using AppFeatures;
 using Albums;
+using Comments;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,7 @@ builder.Services.AddScoped<IPartnerService, PartnerService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IAppFeatureService, AppFeatureService>();
 builder.Services.AddScoped<IAlbumAndPhotoService, AlbumAndPhotoService>();
+builder.Services.AddScoped<ICommentAndReplyService, CommentAndReplyService>();
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
