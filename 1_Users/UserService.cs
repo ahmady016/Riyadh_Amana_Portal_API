@@ -232,7 +232,7 @@ public class UserService : IUserService
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
-        if(BCrypt.Net.BCrypt.HashPassword(input.OldPassword) != user.Password)
+        if(!BCrypt.Net.BCrypt.Verify(input.OldPassword, user.Password))
         {
             _errorMessage = $"Worng Old Password!!!";
             _logger.LogError(_errorMessage);
@@ -289,6 +289,9 @@ public class UserService : IUserService
         var oldUser = GetById(input.Id);
         var newUser = _mapper.Map<User>(input);
 
+        newUser.Email = oldUser.Email;
+        newUser.Password = oldUser.Password;
+
         FillRestPropsWithOldValues(oldUser, newUser);
         var updatedUser = _crudService.Update<User, Guid>(newUser);
         _crudService.SaveChanges();
@@ -301,7 +304,11 @@ public class UserService : IUserService
         var newUsers = _mapper.Map<List<User>>(inputs);
 
         for (int i = 0; i < oldUsers.Count; i++)
+        {
+            newUsers[i].Email = oldUsers[i].Email;
+            newUsers[i].Password = oldUsers[i].Password;
             FillRestPropsWithOldValues(oldUsers[i], newUsers[i]);
+        }
         var updatedUsers = _crudService.UpdateAndGetRange<User, Guid>(newUsers);
         _crudService.SaveChanges();
 
