@@ -37,4 +37,10 @@ public class CreatePhotoInput
     [Required(ErrorMessage = "ThumbUrl is required")]
     [StringLength(400, MinimumLength = 5, ErrorMessage = "ThumbUrl Must be between 5 and 400 characters")]
     public string ThumbUrl { get; set; }
+
+    [RegularExpression(
+        @"^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$",
+        ErrorMessage = "Not a valid AlbumId value"
+    )]
+    public Guid? AlbumId { get; set; }
 }
