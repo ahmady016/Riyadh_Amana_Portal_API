@@ -40,14 +40,14 @@ public class UsersController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{token}")]
-    public IActionResult RefreshToken([FromRoute] string token)
+    [HttpGet]
+    public IActionResult RefreshToken([FromQuery] string token)
     {
         var result = _service.RefreshTheTokens(token, GetIPAddress());
         return Ok(result);
     }
-    [HttpGet("{token}")]
-    public IActionResult RevokeToken([FromRoute] string token)
+    [HttpGet]
+    public IActionResult RevokeToken([FromQuery] string token)
     {
         _service.RevokeTheToken(token, GetIPAddress());
         return Ok(new { Message = "Token is Revoked" });
