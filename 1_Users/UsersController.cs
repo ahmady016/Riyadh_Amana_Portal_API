@@ -34,22 +34,22 @@ public class UsersController : ControllerBase
     }
     [AllowAnonymous]
     [HttpPost]
-    public IActionResult Login(LoginDto login)
+    public IActionResult Login(LoginInput login)
     {
         var result = _service.Login(login, GetIPAddress());
         return Ok(result);
     }
 
-    [HttpGet]
-    public IActionResult RefreshToken([FromQuery] string token)
+    [HttpPost]
+    public IActionResult RefreshToken([FromBody] RefreshTokenInput input)
     {
-        var result = _service.RefreshTheTokens(token, GetIPAddress());
+        var result = _service.RefreshTheTokens(input.Token, GetIPAddress());
         return Ok(result);
     }
-    [HttpGet]
-    public IActionResult RevokeToken([FromQuery] string token)
+    [HttpPost]
+    public IActionResult RevokeToken([FromBody] RefreshTokenInput input)
     {
-        _service.RevokeTheToken(token, GetIPAddress());
+        _service.RevokeTheToken(input.Token, GetIPAddress());
         return Ok(new { Message = "Token is Revoked" });
     }
 

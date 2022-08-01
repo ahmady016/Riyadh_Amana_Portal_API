@@ -18,7 +18,7 @@ public interface IUserService
     #endregion
 
     AuthDto Register(RegisterInput input, string ipAddress);
-    AuthDto Login(LoginDto login, string ipAddress);
+    AuthDto Login(LoginInput login, string ipAddress);
     AuthDto RefreshTheTokens(string token, string ipAddress);
     bool RevokeTheToken(string token, string ipAddress);
     bool ChangePassword(ChangePasswordInput input);
