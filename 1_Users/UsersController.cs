@@ -41,26 +41,26 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{token}")]
-    public IActionResult RefreshToken(string token)
+    public IActionResult RefreshToken([FromRoute] string token)
     {
         var result = _service.RefreshTheTokens(token, GetIPAddress());
         return Ok(result);
     }
     [HttpGet("{token}")]
-    public IActionResult RevokeToken(string token)
+    public IActionResult RevokeToken([FromRoute] string token)
     {
         _service.RevokeTheToken(token, GetIPAddress());
         return Ok(new { Message = "Token is Revoked" });
     }
 
-    [HttpPost()]
+    [HttpPost]
     public IActionResult ChangePassword(ChangePasswordInput input)
     {
         _service.ChangePassword(input);
         return Ok(new { Message = "Password Changed Successfully" });
     }
 
-    [HttpPost()]
+    [HttpPost]
     public IActionResult ChangeEmail(ChangeEmailInput input)
     {
         _service.ChangeEmail(input);
@@ -99,7 +99,7 @@ public class UsersController : ControllerBase
     /// Users/Delete
     /// </summary>
     /// <returns>bool</returns>
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public virtual IActionResult Delete(Guid id)
     {
         return Ok(_service.Delete(id));
@@ -109,7 +109,7 @@ public class UsersController : ControllerBase
     /// Users/Activate
     /// </summary>
     /// <returns>bool</returns>
-    [HttpPut]
+    [HttpPut("{id}")]
     public virtual IActionResult Activate(Guid id)
     {
         return Ok(_service.Activate(id));
