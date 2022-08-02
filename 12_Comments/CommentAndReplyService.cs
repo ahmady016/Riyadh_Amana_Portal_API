@@ -1,10 +1,12 @@
-﻿using AutoMapper;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Net;
+using AutoMapper;
+
 using Common;
 using DB;
 using DB.Common;
 using DB.Entities;
 using Dtos;
-using System.Net;
 
 namespace Comments;
 
@@ -128,7 +130,18 @@ public class CommentAndReplyService : ICommentAndReplyService
     }
     public CommentDto FindOneComment(Guid id)
     {
-        var comment = GetCommentById(id);
+        var comment = _crudService.GetQuery<Comment>()
+            .Include(a => a.Replies)
+            .Where(a => a.Id == id)
+            .FirstOrDefault();
+
+        if (comment is null)
+        {
+            _errorMessage = $"Comment Record with Id: {id} Not Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+
         return _mapper.Map<CommentDto>(comment);
     }
     public List<CommentDto> FindManyComments(string ids)

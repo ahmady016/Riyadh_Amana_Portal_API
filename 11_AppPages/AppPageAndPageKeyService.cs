@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Net;
 using AutoMapper;
+
 using Common;
 using DB;
 using DB.Common;
@@ -127,8 +129,19 @@ public class AppPageAndPageKeyService : IAppPageAndPageKeyService
         };
     }
     public AppPageDto FindOneAppPage(Guid id)
-    {
-        var appPage = GetAppPageById(id);
+    {   
+        var appPage = _crudService.GetQuery<AppPage>()
+            .Include(a => a.Keys)
+            .Where(a => a.Id == id)
+            .FirstOrDefault();
+
+        if (appPage is null)
+        {
+            _errorMessage = $"AppPage Record with Id: {id} Not Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+
         return _mapper.Map<AppPageDto>(appPage);
     }
     public List<AppPageDto> FindManyAppPages(string ids)
