@@ -71,8 +71,8 @@ public class UserService : IUserService
     {
         // remove old inactive refresh tokens from user based on TTL in app settings
         _crudService.GetListAndDelete<RefreshToken>(rf =>
-            rf.UserId == userId && !rf.IsActive && !rf.IsValid &&
-            rf.CreatedAt.AddDays(RefreshTokenValidityInDays) <= DateTime.UtcNow.AddHours(3)
+            rf.UserId == userId && !rf.IsActive &&
+            rf.CreatedAt.AddDays(RefreshTokenValidityInDays) <= DateTime.Now
         );
         _crudService.SaveChanges();
     }
@@ -213,13 +213,6 @@ public class UserService : IUserService
     }
     public bool RevokeTheToken(string token, string ipAddress = null)
     {
-        if (string.IsNullOrEmpty(token))
-        {
-            _errorMessage = "Token is required !!!";
-            _logger.LogError(_errorMessage);
-            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
-        }
-
         var oldRefreshToken = GetRefreshToken(token);
         if (!oldRefreshToken.IsValid)
         {
