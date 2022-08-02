@@ -14,5 +14,5 @@ public class CommentDto
     public DateTime? ApprovedAt { get; set; }
     public string ApprovedBy { get; set; }
 
-    public List<Reply> Replies { get; set; }
+    public List<ReplyDto> Replies { get; set; }
 }
