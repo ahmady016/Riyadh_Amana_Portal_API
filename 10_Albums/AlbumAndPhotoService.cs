@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Net;
 using AutoMapper;
+
 using Common;
 using DB;
 using DB.Common;
@@ -128,7 +130,18 @@ public class AlbumAndPhotoService : IAlbumAndPhotoService
     }
     public AlbumDto FindOneAlbum(Guid id)
     {
-        var album = GetAlbumById(id);
+        var album = _crudService.GetQuery<Album>()
+            .Include(a => a.Photos)
+            .Where(a => a.Id == id)
+            .FirstOrDefault();
+
+        if (album is null)
+        {
+            _errorMessage = $"Album Record with Id: {id} Not Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+
         return _mapper.Map<AlbumDto>(album);
     }
     public List<AlbumDto> FindManyAlbums(string ids)
