@@ -35,6 +35,8 @@ public partial class ApplicationContext : DbContext
     public virtual DbSet<Nav> Navs { get; set; }
     public virtual DbSet<NavLink> NavsLinks { get; set; }
     public virtual DbSet<Video> Videos { get; set; }
+    public virtual DbSet<Lookup> Lookups { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -59,6 +61,7 @@ public partial class ApplicationContext : DbContext
         modelBuilder.ApplyConfiguration(new NavConfig());
         modelBuilder.ApplyConfiguration(new NavLinkConfig());
         modelBuilder.ApplyConfiguration(new VideoConfig());
+        modelBuilder.ApplyConfiguration(new LookupConfig());
 
         OnModelCreatingPartial(modelBuilder);
     }
