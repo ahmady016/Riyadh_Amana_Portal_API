@@ -52,7 +52,7 @@ public class NavsAndNavsLinksController : ControllerBase
     /// </summary>
     /// <returns>List Of NavDto</returns>
     [HttpGet("{ids}")]
-    public IActionResult FindNavs(string ids)
+    public IActionResult FindNavs([FromRoute] string ids)
     {
         return Ok(_service.FindManyNavs(ids));
     }
@@ -67,11 +67,11 @@ public class NavsAndNavsLinksController : ControllerBase
         return Ok(_service.AddNav(input));
     }
     /// <summary>
-    /// NavsAndNavsLinks/AddNavWithNavLinks
+    /// NavsAndNavsLinks/AddNavWithLinks
     /// </summary>
     /// <returns>NavDto</returns>
     [HttpPost]
-    public virtual IActionResult AddNavWithNavLinks([FromBody] CreateNavWithLinksInput input)
+    public virtual IActionResult AddNavWithLinks([FromBody] CreateNavWithLinksInput input)
     {
         return Ok(_service.AddNavWithLinks(input));
     }
@@ -172,7 +172,7 @@ public class NavsAndNavsLinksController : ControllerBase
     /// </summary>
     /// <returns>NavLinkDto</returns>
     [HttpPost]
-    public virtual IActionResult AddNavLink([FromBody] CreateNavLinkInput input)
+    public virtual IActionResult AddNavLink([FromBody] CreateNavLinkWithNavIdInput input)
     {
         return Ok(_service.AddNavLink(input));
     }

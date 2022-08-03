@@ -21,7 +21,7 @@ public interface INavAndNavLinkService
     PageResult<NavLinkDto> ListNavLinksPage(string type, int pageSize, int pageNumber);
     NavLinkDto FindOneNavLink(Guid id);
     List<NavLinkDto> FindManyNavLinks(string ids);
-    NavLinkDto AddNavLink(CreateNavLinkInput input);
+    NavLinkDto AddNavLink(CreateNavLinkWithNavIdInput input);
     List<NavLinkDto> AddManyNavLinks(List<CreateNavLinkInput> inputs);
     NavLinkDto UpdateNavLink(UpdateNavLinkInput input);
     List<NavLinkDto> UpdateManyNavLinks(List<UpdateNavLinkInput> inputs);

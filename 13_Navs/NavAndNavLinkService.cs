@@ -309,7 +309,7 @@ public class NavAndNavLinkService : INavAndNavLinkService
         return _mapper.Map<List<NavLinkDto>>(list);
     }
 
-    public NavLinkDto AddNavLink(CreateNavLinkInput input)
+    public NavLinkDto AddNavLink(CreateNavLinkWithNavIdInput input)
     {
         var oldLink = _crudService.GetOne<NavLink>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
         if (oldLink is not null)
