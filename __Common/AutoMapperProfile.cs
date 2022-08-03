@@ -73,5 +73,9 @@ public class AutoMapperProfile : Profile
         CreateMap<Reply, CreateReplyInput>().ReverseMap();
         CreateMap<Reply, UpdateReplyInput>().ReverseMap();
 
+        CreateMap<Video, VideoDto>().ReverseMap();
+        CreateMap<Video, CreateVideoInput>().ReverseMap();
+        CreateMap<Video, UpdateVideoInput>().ReverseMap();
+
     }
 }
