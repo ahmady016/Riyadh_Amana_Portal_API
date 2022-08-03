@@ -54,7 +54,7 @@ public class AutoMapperProfile : Profile
 
         CreateMap<Photo, PhotoDto>().ReverseMap();
         CreateMap<Photo, CreatePhotoInput>().ReverseMap();
-        CreateMap<Photo, UpdatePhotoInput>().ReverseMap();
+        CreateMap<Photo, UpdatePhotoInput>().ReverseMap(); 
 
         CreateMap<AppPage, AppPageDto>().ReverseMap();
         CreateMap<AppPage, CreateAppPageInput>().ReverseMap();
@@ -72,6 +72,16 @@ public class AutoMapperProfile : Profile
         CreateMap<Reply, ReplyDto>().ReverseMap();
         CreateMap<Reply, CreateReplyInput>().ReverseMap();
         CreateMap<Reply, UpdateReplyInput>().ReverseMap();
+
+        CreateMap<Nav, NavDto>().ReverseMap();
+        CreateMap<Nav, CreateNavInput>().ReverseMap();
+        CreateMap<Nav, CreateNavWithLinksInput>().ReverseMap();
+        CreateMap<Nav, UpdateNavInput>().ReverseMap();
+
+        CreateMap<NavLink, NavLinkDto>().ReverseMap();
+        CreateMap<NavLink, CreateNavLinkInput>().ReverseMap();
+        CreateMap<NavLink, CreateNavLinkWithNavIdInput>().ReverseMap();
+        CreateMap<NavLink, UpdateNavLinkInput>().ReverseMap();
 
     }
 }
