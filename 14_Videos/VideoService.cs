@@ -9,7 +9,7 @@ using Dtos;
 
 namespace Videos;
 
-public class VideoService
+public class VideoService : IVideoService
 {
     private readonly ICRUDService _crudService;
     private readonly IMapper _mapper;

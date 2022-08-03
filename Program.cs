@@ -20,6 +20,8 @@ using AppFeatures;
 using Albums;
 using AppPages;
 using Comments;
+using Navs;
+using Videos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +58,8 @@ builder.Services.AddScoped<IAppFeatureService, AppFeatureService>();
 builder.Services.AddScoped<IAlbumAndPhotoService, AlbumAndPhotoService>();
 builder.Services.AddScoped<IAppPageAndPageKeyService, AppPageAndPageKeyService>();
 builder.Services.AddScoped<ICommentAndReplyService, CommentAndReplyService>();
+builder.Services.AddScoped<INavAndNavLinkService, NavAndNavLinkService>();
+builder.Services.AddScoped<IVideoService, VideoService>();
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
