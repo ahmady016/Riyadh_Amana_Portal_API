@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Videos;
 
-public class VideosController : Controller
+[ApiController]
+[Route("api/[controller]/[action]")]
+public class VideosController : ControllerBase
 {
     private readonly IVideoService _service;
     public VideosController(IVideoService service)
