@@ -4,6 +4,7 @@ using DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace amana_mono.__DB.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20220802192207_Make_Title_Unique_In_Nav_Entity")]
+    partial class Make_Title_Unique_In_Nav_Entity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -808,6 +810,7 @@ namespace amana_mono.__DB.Migrations
                         .HasColumnName("email");
 
                     b.Property<string>("FileUrl")
+                        .IsRequired()
                         .HasMaxLength(400)
                         .HasColumnType("varchar(400)")
                         .HasColumnName("file_url");
@@ -1130,7 +1133,7 @@ namespace amana_mono.__DB.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
-                    b.Property<Guid>("NavId")
+                    b.Property<Guid?>("NavId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("nav_id");
 
@@ -1162,14 +1165,6 @@ namespace amana_mono.__DB.Migrations
                         .HasColumnName("url");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TitleAr")
-                        .IsUnique()
-                        .HasDatabaseName("navs_links_title_ar_unique_index");
-
-                    b.HasIndex("TitleEn")
-                        .IsUnique()
-                        .HasDatabaseName("navs_links_title_en_unique_index");
 
                     b.HasIndex(new[] { "NavId" }, "navs_links_nav_index");
 
@@ -2172,120 +2167,12 @@ namespace amana_mono.__DB.Migrations
             modelBuilder.Entity("DB.Entities.NavLink", b =>
                 {
                     b.HasOne("DB.Entities.Nav", "Nav")
-                        .WithMany("Links")
+                        .WithMany("NavsLinks")
                         .HasForeignKey("NavId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
                         .HasConstraintName("navs_navs_links_fk");
 
                     b.Navigation("Nav");
-                });
-
-            modelBuilder.Entity("DB.Entities.Video", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<DateTime?>("ActivatedAt")
-                        .HasColumnType("datetime2(3)")
-                        .HasColumnName("activated_at");
-
-                    b.Property<string>("ActivatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("activated_by");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2(3)")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("SYSDATETIME()");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasDefaultValue("app_dev")
-                        .HasColumnName("created_by");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2(3)")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<string>("DeletedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("deleted_by");
-
-                    b.Property<string>("DescriptionAr")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
-                        .HasColumnName("description_ar");
-
-                    b.Property<string>("DescriptionEn")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("description_en");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_active");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_deleted");
-
-                    b.Property<string>("ThumbUrl")
-                        .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("varchar(400)")
-                        .HasColumnName("thumb_url");
-
-                    b.Property<string>("TitleAr")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("title_ar");
-
-                    b.Property<string>("TitleEn")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("title_en");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2(3)")
-                        .HasColumnName("updated_at");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("updated_by");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("varchar(400)")
-                        .HasColumnName("url");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "TitleAr" }, "title_ar_unique_index")
-                        .IsUnique();
-
-                    b.HasIndex(new[] { "TitleEn" }, "title_en_unique_index")
-                        .IsUnique();
-
-                    b.ToTable("videos", (string)null);
-
                 });
 
             modelBuilder.Entity("DB.Entities.PageKey", b =>
@@ -2373,7 +2260,7 @@ namespace amana_mono.__DB.Migrations
 
             modelBuilder.Entity("DB.Entities.Nav", b =>
                 {
-                    b.Navigation("Links");
+                    b.Navigation("NavsLinks");
                 });
 
             modelBuilder.Entity("DB.Entities.Permission", b =>
