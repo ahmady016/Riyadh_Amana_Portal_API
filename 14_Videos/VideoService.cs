@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using System.Net;
+
 using Common;
 using DB;
 using DB.Common;
 using DB.Entities;
 using Dtos;
-using System.Net;
 
 namespace Videos;
 
@@ -31,7 +32,7 @@ public class VideoService
         var video = _crudService.Find<Video, Guid>(id);
         if (video == null)
         {
-            _errorMessage = $"Advertisement Record with Id: {id} Not Found";
+            _errorMessage = $"Video Record with Id: {id} Not Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
         }
@@ -42,7 +43,7 @@ public class VideoService
         var list = _crudService.GetList<Video, Guid>(e => ids.Contains(e.Id));
         if (list.Count == 0)
         {
-            _errorMessage = $"No Any Advertisements Records Found";
+            _errorMessage = $"No Any Videos Records Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
         }
@@ -100,7 +101,7 @@ public class VideoService
         {
             _errorMessage = $"Video: Must supply comma separated string of ids";
             _logger.LogError(_errorMessage);
-            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.BadRequest);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
         var _ids = ids.SplitAndRemoveEmpty(',').Select(Guid.Parse).ToList();
         var list = GetByIds(_ids);
@@ -160,4 +161,5 @@ public class VideoService
         _crudService.SaveChanges();
         return true;
     }
+
 }

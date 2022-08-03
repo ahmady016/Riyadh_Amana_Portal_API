@@ -36,7 +36,7 @@ public class VideosController : Controller
     }
 
     /// <summary>
-    /// Video/Find/[id]
+    /// Videos/Find/[id]
     /// </summary>
     /// <returns>VideoDto</returns>
     [HttpGet("{id}")]
@@ -46,7 +46,7 @@ public class VideosController : Controller
     }
 
     /// <summary>
-    /// Video/FindList/[id, id, id]
+    /// Videos/FindList/[id, id, id]
     /// </summary>
     /// <returns>List Of VideoDto</returns>
     [HttpGet("{ids}")]
@@ -56,7 +56,7 @@ public class VideosController : Controller
     }
 
     /// <summary>
-    /// Video/Add
+    /// Videos/Add
     /// </summary>
     /// <returns>VideoDto</returns>
     [HttpPost]
@@ -66,7 +66,7 @@ public class VideosController : Controller
     }
 
     /// <summary>
-    /// Video/AddMany
+    /// Videos/AddMany
     /// </summary>
     /// <returns>List Of VideoDto</returns>
     [HttpPost]
@@ -76,7 +76,7 @@ public class VideosController : Controller
     }
 
     /// <summary>
-    /// Video/Update
+    /// Videos/Update
     /// </summary>
     /// <returns>VideoDto</returns>
     [HttpPut]
@@ -86,7 +86,7 @@ public class VideosController : Controller
     }
 
     /// <summary>
-    /// Video/UpdateMany
+    /// Videos/UpdateMany
     /// </summary>
     /// <returns>List Of VideoDto</returns>
     [HttpPut]
@@ -96,7 +96,7 @@ public class VideosController : Controller
     }
 
     /// <summary>
-    /// Video/Delete
+    /// Videos/Delete
     /// </summary>
     /// <returns>bool</returns>
     [HttpDelete]
@@ -106,7 +106,7 @@ public class VideosController : Controller
     }
 
     /// <summary>
-    /// Video/Activate
+    /// Videos/Activate
     /// </summary>
     /// <returns>bool</returns>
     [HttpPut]

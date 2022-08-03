@@ -6,8 +6,8 @@ public class UpdateVideoInput : CreateVideoInput
 {
     [Required]
     [RegularExpression(
-    @"^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$",
-    ErrorMessage = "Not a valid Id value"
+        @"^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$",
+        ErrorMessage = "Not a valid Id value"
     )]
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
 }
