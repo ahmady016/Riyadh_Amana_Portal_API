@@ -174,10 +174,23 @@ public class NavAndNavLinkService : INavAndNavLinkService
     }
     public NavDto AddNavWithLinks(CreateNavWithLinksInput input)
     {
+        // check for duplicate [TitleAr OR TitleEn] in Nav Item
         var oldNav = _crudService.GetOne<Nav>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
         if (oldNav is not null)
         {
             _errorMessage = $"Nav: TitleAr or TitleEn is already existed.";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
+        }
+
+        // check for duplicate [TitleAr OR TitleEn] in Links Items
+        var titlesArList = input.Links.Select(e => e.TitleAr).ToList();
+        var titlesEnList = input.Links.Select(e => e.TitleEn).ToList();
+
+        var NavsExisted = _crudService.GetList<NavLink, Guid>(e => titlesArList.Contains(e.TitleAr) || titlesEnList.Contains(e.TitleEn));
+        if (NavsExisted.Count != 0)
+        {
+            _errorMessage = $"NavsLinks List Is rejected , Some TitleAr or TitleEn is already existed.";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
