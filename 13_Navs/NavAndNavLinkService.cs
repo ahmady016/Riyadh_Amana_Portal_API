@@ -6,6 +6,7 @@ using DB;
 using DB.Common;
 using DB.Entities;
 using Dtos;
+using Microsoft.EntityFrameworkCore;
 
 namespace Navs;
 
@@ -129,8 +130,19 @@ public class NavAndNavLinkService : INavAndNavLinkService
     }
     public NavDto FindOneNav(Guid id)
     {
-        var Nav = GetNavById(id);
-        return _mapper.Map<NavDto>(Nav);
+        var navItem = _crudService.GetQuery<Nav>()
+            .Include(a => a.Links)
+            .Where(a => a.Id == id)
+            .FirstOrDefault();
+
+        if (navItem is null)
+        {
+            _errorMessage = $"Nav Record with Id: {id} Not Found";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
+        }
+
+        return _mapper.Map<NavDto>(navItem);
     }
     public List<NavDto> FindManyNavs(string ids)
     {
