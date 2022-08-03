@@ -70,7 +70,6 @@ public class ContactUsConfig : EntityConfig<ContactUs, Guid>
             .HasColumnType("nvarchar(400)");
 
         entity.Property(e => e.FileUrl)
-            .IsRequired()
             .HasMaxLength(400)
             .HasColumnName("file_url")
             .HasColumnType("varchar(400)");

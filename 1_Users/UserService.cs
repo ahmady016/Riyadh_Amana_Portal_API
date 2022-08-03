@@ -41,11 +41,15 @@ public class UserService : IUserService
             .Include(rf => rf.User)
             .Where(rf => rf.Value == token)
             .FirstOrDefault();
-        if (refreshToken is not null) return refreshToken;
 
-        _errorMessage = "Token Not Found !!!";
-        _logger.LogError(_errorMessage);
-        throw new HttpRequestException(_errorMessage, null, HttpStatusCode.Unauthorized);
+        if (refreshToken is null)
+        {
+            _errorMessage = "Token Not Found !!!";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.Unauthorized);
+        }
+
+        return refreshToken;
     }
     private static void RevokeRefreshToken(RefreshToken token, string ipAddress = null, string reason = null)
     {
@@ -67,8 +71,8 @@ public class UserService : IUserService
     {
         // remove old inactive refresh tokens from user based on TTL in app settings
         _crudService.GetListAndDelete<RefreshToken>(rf =>
-            rf.UserId == userId && !rf.IsActive && !rf.IsValid &&
-            rf.CreatedAt.AddDays(RefreshTokenValidityInDays) <= DateTime.UtcNow.AddHours(3)
+            rf.UserId == userId && !rf.IsActive &&
+            rf.CreatedAt.AddDays(RefreshTokenValidityInDays) <= DateTime.Now
         );
         _crudService.SaveChanges();
     }
@@ -76,13 +80,19 @@ public class UserService : IUserService
     {
         // genetate accessToken and refreshToken
         var accessToken = AuthHelpers.GenerateAccessToken(user);
+        
+        // get all old refresh tokens
         var usedRefreshTokens = _crudService.GetQuery<RefreshToken>()
             .Select(r => r.Value)
             .ToList();
+        // generate new unique refresh token
         var refreshToken = AuthHelpers.GenerateRefreshToken(user.Id, usedRefreshTokens, ipAddress);
+        
         // save the new created refreshToken to db
         _crudService.Add<RefreshToken, Guid>(refreshToken);
         _crudService.SaveChanges();
+        
+        // return the new created tokens
         return Tuple.Create(accessToken, refreshToken);
     }
 
@@ -137,6 +147,7 @@ public class UserService : IUserService
         var newUser = _mapper.Map<User>(input);
         newUser.Password = BCrypt.Net.BCrypt.HashPassword(input.Password);
 
+
         // save user to db
         var addedUser = _crudService.Add<User, Guid>(newUser);
         _crudService.SaveChanges();
@@ -152,7 +163,7 @@ public class UserService : IUserService
             RefreshToken = tokens.Item2.Value
         };
     }
-    public AuthDto Login(LoginDto login, string ipAddress = null)
+    public AuthDto Login(LoginInput login, string ipAddress = null)
     {
         // return error if email or password are wrong
         var existedUser = _crudService.GetOne<User>(u => u.Email == login.Email);
@@ -202,13 +213,6 @@ public class UserService : IUserService
     }
     public bool RevokeTheToken(string token, string ipAddress = null)
     {
-        if (string.IsNullOrEmpty(token))
-        {
-            _errorMessage = "Token is required !!!";
-            _logger.LogError(_errorMessage);
-            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
-        }
-
         var oldRefreshToken = GetRefreshToken(token);
         if (!oldRefreshToken.IsValid)
         {

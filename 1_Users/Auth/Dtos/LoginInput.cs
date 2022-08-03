@@ -2,7 +2,7 @@
 
 namespace Auth.Dtos;
 
-public class LoginDto
+public class LoginInput
 {
     [Required]
     [StringLength(100)]

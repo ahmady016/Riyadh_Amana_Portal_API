@@ -31,7 +31,7 @@ public static class AuthHelpers
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(SecretKey), SecurityAlgorithms.HmacSha256Signature),
             Issuer = TokenIssuer,
             Audience = TokenAudience,
-            Expires = DateTime.Now.AddHours(AccessTokenValidityHours + 3),
+            Expires = DateTime.Now.AddHours(AccessTokenValidityHours),
         };
         var securityToken = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(securityToken);
@@ -52,8 +52,8 @@ public static class AuthHelpers
         return new RefreshToken
         {
             Value = GetUniqueToken(usedRefreshTokens),
-            CreatedAt = DateTime.UtcNow.AddHours(3),
-            ExpiresAt = DateTime.UtcNow.AddHours(3).AddDays(RefreshTokenValidityDays),
+            CreatedAt = DateTime.Now,
+            ExpiresAt = DateTime.Now.AddDays(RefreshTokenValidityDays),
             CreatedIP = ipAddress,
             UserId = userId
         };
