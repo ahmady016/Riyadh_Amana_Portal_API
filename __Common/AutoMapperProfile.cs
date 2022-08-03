@@ -83,5 +83,9 @@ public class AutoMapperProfile : Profile
         CreateMap<NavLink, CreateNavLinkWithNavIdInput>().ReverseMap();
         CreateMap<NavLink, UpdateNavLinkInput>().ReverseMap();
 
+        CreateMap<Video, VideoDto>().ReverseMap();
+        CreateMap<Video, CreateVideoInput>().ReverseMap();
+        CreateMap<Video, UpdateVideoInput>().ReverseMap();
+
     }
 }
