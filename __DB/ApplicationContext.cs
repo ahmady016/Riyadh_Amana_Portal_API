@@ -37,7 +37,6 @@ public partial class ApplicationContext : DbContext
     public virtual DbSet<Video> Videos { get; set; }
     public virtual DbSet<Lookup> Lookups { get; set; }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new UserConfig());
