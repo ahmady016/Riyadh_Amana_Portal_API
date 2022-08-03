@@ -5,10 +5,10 @@ namespace Navs;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-public class NavsAndNavLinksController : ControllerBase
+public class NavsAndNavsLinksController : ControllerBase
 {
     private readonly INavAndNavLinkService _service;
-    public NavsAndNavLinksController(INavAndNavLinkService service)
+    public NavsAndNavsLinksController(INavAndNavLinkService service)
     {
         _service = service;
     }
@@ -16,7 +16,7 @@ public class NavsAndNavLinksController : ControllerBase
 
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// NavsAndNavLinks/ListNavs/all
+    /// NavsAndNavsLinks/ListNavs/all
     /// </summary>
     /// <returns>List of NavDto</returns>
     [HttpGet("{type}")]
@@ -26,7 +26,7 @@ public class NavsAndNavLinksController : ControllerBase
     }
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// NavsAndNavLinks/ListNavsPage/all
+    /// NavsAndNavsLinks/ListNavsPage/all
     /// </summary>
     /// <returns>List of NavDto</returns>
     [HttpGet("{type}")]
@@ -39,7 +39,7 @@ public class NavsAndNavLinksController : ControllerBase
         return Ok(_service.ListNavsPage(type, pageSize ?? 10, pageNumber ?? 1));
     }
     /// <summary>
-    /// NavsAndNavLinks/FindNav/[id]
+    /// NavsAndNavsLinks/FindNav/[id]
     /// </summary>
     /// <returns>NavDto</returns>
     [HttpGet("{id}")]
@@ -48,7 +48,7 @@ public class NavsAndNavLinksController : ControllerBase
         return Ok(_service.FindOneNav(id));
     }
     /// <summary>
-    /// NavsAndNavLinks/FindNavs/[id, id, id]
+    /// NavsAndNavsLinks/FindNavs/[id, id, id]
     /// </summary>
     /// <returns>List Of NavDto</returns>
     [HttpGet("{ids}")]
@@ -58,7 +58,7 @@ public class NavsAndNavLinksController : ControllerBase
     }
 
     /// <summary>
-    /// NavsAndNavLinks/AddNav
+    /// NavsAndNavsLinks/AddNav
     /// </summary>
     /// <returns>NavDto</returns>
     [HttpPost]
@@ -67,7 +67,7 @@ public class NavsAndNavLinksController : ControllerBase
         return Ok(_service.AddNav(input));
     }
     /// <summary>
-    /// NavsAndNavLinks/AddNavWithNavLinks
+    /// NavsAndNavsLinks/AddNavWithNavLinks
     /// </summary>
     /// <returns>NavDto</returns>
     [HttpPost]
@@ -76,7 +76,7 @@ public class NavsAndNavLinksController : ControllerBase
         return Ok(_service.AddNavWithLinks(input));
     }
     /// <summary>
-    /// NavsAndNavLinks/AddManyNavs
+    /// NavsAndNavsLinks/AddManyNavs
     /// </summary>
     /// <returns>List Of NavDto</returns>
     [HttpPost]
@@ -86,7 +86,7 @@ public class NavsAndNavLinksController : ControllerBase
     }
 
     /// <summary>
-    /// NavsAndNavLinks/UpdateNav
+    /// NavsAndNavsLinks/UpdateNav
     /// </summary>
     /// <returns>NavDto</returns>
     [HttpPut]
@@ -95,7 +95,7 @@ public class NavsAndNavLinksController : ControllerBase
         return Ok(_service.UpdateNav(input));
     }
     /// <summary>
-    /// NavsAndNavLinks/UpdateManyNavs
+    /// NavsAndNavsLinks/UpdateManyNavs
     /// </summary>
     /// <returns>List Of NavDto</returns>
     [HttpPut]
@@ -105,7 +105,7 @@ public class NavsAndNavLinksController : ControllerBase
     }
 
     /// <summary>
-    /// NavsAndNavLinks/DeleteNav
+    /// NavsAndNavsLinks/DeleteNav
     /// </summary>
     /// <returns>bool</returns>
     [HttpDelete]
@@ -114,7 +114,7 @@ public class NavsAndNavLinksController : ControllerBase
         return Ok(_service.DeleteNav(id));
     }
     /// <summary>
-    /// NavsAndNavLinks/ActivateNav
+    /// NavsAndNavsLinks/ActivateNav
     /// </summary>
     /// <returns>bool</returns>
     [HttpPut]
@@ -126,7 +126,7 @@ public class NavsAndNavLinksController : ControllerBase
 
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// NavsAndNavLinks/ListNavLinks/all
+    /// NavsAndNavsLinks/ListNavLinks/all
     /// </summary>
     /// <returns>List of NavLinkDto</returns>
     [HttpGet("{type}")]
@@ -136,7 +136,7 @@ public class NavsAndNavLinksController : ControllerBase
     }
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// NavsAndNavLinks/ListNavLinksPage/all
+    /// NavsAndNavsLinks/ListNavLinksPage/all
     /// </summary>
     /// <returns>List of NavLinkDto</returns>
     [HttpGet("{type}")]
@@ -149,7 +149,7 @@ public class NavsAndNavLinksController : ControllerBase
         return Ok(_service.ListNavLinksPage(type, pageSize ?? 10, pageNumber ?? 1));
     }
     /// <summary>
-    /// NavsAndNavLinks/FindNavLink/[id]
+    /// NavsAndNavsLinks/FindNavLink/[id]
     /// </summary>
     /// <returns>NavLinkDto</returns>
     [HttpGet("{id}")]
@@ -158,7 +158,7 @@ public class NavsAndNavLinksController : ControllerBase
         return Ok(_service.FindOneNavLink(id));
     }
     /// <summary>
-    /// NavsAndNavLinks/FindNavLinks/[id, id, id]
+    /// NavsAndNavsLinks/FindNavLinks/[id, id, id]
     /// </summary>
     /// <returns>List Of NavLinkDto</returns>
     [HttpGet("{ids}")]
@@ -168,7 +168,7 @@ public class NavsAndNavLinksController : ControllerBase
     }
 
     /// <summary>
-    /// NavsAndNavLinks/AddNavLink
+    /// NavsAndNavsLinks/AddNavLink
     /// </summary>
     /// <returns>NavLinkDto</returns>
     [HttpPost]
@@ -177,7 +177,7 @@ public class NavsAndNavLinksController : ControllerBase
         return Ok(_service.AddNavLink(input));
     }
     /// <summary>
-    /// NavsAndNavLinks/AddManyNavLinks
+    /// NavsAndNavsLinks/AddManyNavLinks
     /// </summary>
     /// <returns>List Of NavLinkDto</returns>
     [HttpPost]
@@ -187,7 +187,7 @@ public class NavsAndNavLinksController : ControllerBase
     }
 
     /// <summary>
-    /// NavsAndNavLinks/UpdateNavLink
+    /// NavsAndNavsLinks/UpdateNavLink
     /// </summary>
     /// <returns>NavLinkDto</returns>
     [HttpPut]
@@ -196,7 +196,7 @@ public class NavsAndNavLinksController : ControllerBase
         return Ok(_service.UpdateNavLink(input));
     }
     /// <summary>
-    /// NavsAndNavLinks/UpdateManyNavLinks
+    /// NavsAndNavsLinks/UpdateManyNavLinks
     /// </summary>
     /// <returns>List Of NavLinkDto</returns>
     [HttpPut]
@@ -206,7 +206,7 @@ public class NavsAndNavLinksController : ControllerBase
     }
 
     /// <summary>
-    /// NavsAndNavLinks/DeleteNavLink
+    /// NavsAndNavsLinks/DeleteNavLink
     /// </summary>
     /// <returns>bool</returns>
     [HttpDelete]
@@ -215,7 +215,7 @@ public class NavsAndNavLinksController : ControllerBase
         return Ok(_service.DeleteNavLink(id));
     }
     /// <summary>
-    /// NavsAndNavLinks/ActivateNavLink
+    /// NavsAndNavsLinks/ActivateNavLink
     /// </summary>
     /// <returns>bool</returns>
     [HttpPut]
