@@ -32,6 +32,8 @@ public partial class ApplicationContext : DbContext
     public virtual DbSet<PageKey> PagesKeys { get; set; }
     public virtual DbSet<Comment> Comments { get; set; }
     public virtual DbSet<Reply> Replies { get; set; }
+    public virtual DbSet<Nav> Navs { get; set; }
+    public virtual DbSet<NavLink> NavsLinks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,6 +55,8 @@ public partial class ApplicationContext : DbContext
         modelBuilder.ApplyConfiguration(new PageKeyConfig());
         modelBuilder.ApplyConfiguration(new CommentConfig());
         modelBuilder.ApplyConfiguration(new ReplyConfig());
+        modelBuilder.ApplyConfiguration(new NavConfig());
+        modelBuilder.ApplyConfiguration(new NavLinkConfig());
 
         OnModelCreatingPartial(modelBuilder);
     }

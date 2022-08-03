@@ -4,6 +4,7 @@ using DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace amana_mono.__DB.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20220802185337_Add_Nav_with_NavLink_Entities")]
+    partial class Add_Nav_with_NavLink_Entities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1057,14 +1059,6 @@ namespace amana_mono.__DB.Migrations
                         .HasColumnName("updated_by");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TitleAr")
-                        .IsUnique()
-                        .HasDatabaseName("navs_title_ar_unique_index");
-
-                    b.HasIndex("TitleEn")
-                        .IsUnique()
-                        .HasDatabaseName("navs_title_en_unique_index");
 
                     b.ToTable("navs", (string)null);
                 });
