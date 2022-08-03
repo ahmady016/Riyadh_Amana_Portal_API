@@ -154,6 +154,7 @@ public class NavAndNavLinkService : INavAndNavLinkService
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
+
         var Nav = _mapper.Map<Nav>(input);
         var createdNav = _crudService.Add<Nav, Guid>(Nav);
         _crudService.SaveChanges();
@@ -168,6 +169,7 @@ public class NavAndNavLinkService : INavAndNavLinkService
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
+
         var Nav = _mapper.Map<Nav>(input);
         var createdNav = _crudService.Add<Nav, Guid>(Nav);
         _crudService.SaveChanges();
@@ -175,15 +177,17 @@ public class NavAndNavLinkService : INavAndNavLinkService
     }
     public List<NavDto> AddManyNavs(List<CreateNavInput> inputs)
     {
-        var titleArList = inputs.Select(e=>e.TitleAr).ToList();
-        var titleEnList = inputs.Select(e=>e.TitleEn).ToList();
-        var NavsExisted = _crudService.GetList<Nav,Guid>(e=> titleArList.Contains(e.TitleAr) || titleEnList.Contains(e.TitleEn));
+        var titlesArList = inputs.Select(e=>e.TitleAr).ToList();
+        var titlesEnList = inputs.Select(e=>e.TitleEn).ToList();
+
+        var NavsExisted = _crudService.GetList<Nav,Guid>(e=> titlesArList.Contains(e.TitleAr) || titlesEnList.Contains(e.TitleEn));
         if (NavsExisted.Count != 0)
         {
             _errorMessage = $"Nav: Navs List Is rejected , Some TitleAr or TitleEn is already existed.";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
+
         var Navs = _mapper.Map<List<Nav>>(inputs);
         var createdNavs = _crudService.AddAndGetRange<Nav, Guid>(Navs);
         _crudService.SaveChanges();
@@ -213,8 +217,18 @@ public class NavAndNavLinkService : INavAndNavLinkService
     {
         var oldNavs = GetNavsByIds(inputs.Select(x => x.Id).ToList());
 
-        var oldNavsTitlesAr = oldNavs.Where(m => !inputs.Select(e => e.TitleAr).Contains(m.TitleAr)).Select(e => e.TitleAr).ToList();
-        var oldNavsTitleEn = oldNavs.Where(m => !inputs.Select(e => e.TitleEn).Contains(m.TitleEn)).Select(e => e.TitleEn).ToList();
+        var titlesArList = inputs.Select(e => e.TitleAr).ToList();
+        var titlesEnList = inputs.Select(e => e.TitleEn).ToList();
+
+        var oldNavsTitlesAr = oldNavs
+            .Where(m => !titlesArList.Contains(m.TitleAr))
+            .Select(e => e.TitleAr)
+            .ToList();
+        var oldNavsTitleEn = oldNavs
+            .Where(m => !titlesEnList.Contains(m.TitleEn))
+            .Select(e => e.TitleEn)
+            .ToList();
+
         if (oldNavsTitlesAr.Count != 0 || oldNavsTitleEn.Count != 0)
         {
             var NavsExisted = _crudService.GetList<NavLink, Guid>(e => oldNavsTitlesAr.Contains(e.TitleAr) || oldNavsTitleEn.Contains(e.TitleEn));
@@ -225,7 +239,6 @@ public class NavAndNavLinkService : INavAndNavLinkService
                 throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
             }
         }
-
 
         var newNavs = _mapper.Map<List<Nav>>(inputs);
 

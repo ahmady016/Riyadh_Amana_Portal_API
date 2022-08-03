@@ -2179,6 +2179,7 @@ namespace amana_mono.__DB.Migrations
                         .HasConstraintName("navs_navs_links_fk");
 
                     b.Navigation("Nav");
+                });
 
             modelBuilder.Entity("DB.Entities.Video", b =>
                 {
