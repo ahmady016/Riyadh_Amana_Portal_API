@@ -5,8 +5,8 @@ namespace Navs;
 
 public interface INavAndNavLinkService
 {
-    List<NavDto> ListNavs(string type);
-    PageResult<NavDto> ListNavsPage(string type, int pageSize, int pageNumber);
+    List<NavWithLinksCountDto> ListNavs(string type);
+    PageResult<NavWithLinksCountDto> ListNavsPage(string type, int pageSize, int pageNumber);
     NavDto FindOneNav(Guid id);
     List<NavDto> FindManyNavs(string ids);
     NavDto AddNav(CreateNavInput input);

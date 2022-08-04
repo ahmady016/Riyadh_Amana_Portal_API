@@ -102,17 +102,7 @@ public class NavAndNavLinkService : INavAndNavLinkService
     }
     #endregion
 
-    public List<NavDto> ListNavs(string type)
-    {
-        var list = type.ToLower() switch
-        {
-            "all" => _crudService.GetAll<Nav, Guid>(),
-            "deleted" => _crudService.GetList<Nav, Guid>(e => e.IsDeleted),
-            _ => _crudService.GetList<Nav, Guid>(e => !e.IsDeleted),
-        };
-        return _mapper.Map<List<NavDto>>(list);
-    }
-    public PageResult<NavDto> ListNavsPage(string type, int pageSize, int pageNumber)
+    public List<NavWithLinksCountDto> ListNavs(string type)
     {
         var query = type.ToLower() switch
         {
@@ -120,13 +110,41 @@ public class NavAndNavLinkService : INavAndNavLinkService
             "deleted" => _crudService.GetQuery<Nav>(e => e.IsDeleted),
             _ => _crudService.GetQuery<Nav>(e => !e.IsDeleted),
         };
-        var page = _crudService.GetPage(query, pageSize, pageNumber);
-        return new PageResult<NavDto>()
+        return query
+            .Include(nav => nav.Links)
+            .Select(nav => new NavWithLinksCountDto
+            {
+                Id = nav.Id,
+                TitleAr = nav.TitleAr,
+                TitleEn = nav.TitleEn,
+                DescriptionAr = nav.DescriptionAr,
+                DescriptionEn = nav.DescriptionEn,
+                IconUrl = nav.IconUrl,
+                LinksCount = nav.Links.Count
+            })
+            .ToList();
+    }
+    public PageResult<NavWithLinksCountDto> ListNavsPage(string type, int pageSize, int pageNumber)
+    {
+        var navQuery = type.ToLower() switch
         {
-            PageItems = _mapper.Map<List<NavDto>>(page.PageItems),
-            TotalItems = page.TotalItems,
-            TotalPages = page.TotalPages
+            "all" => _crudService.GetQuery<Nav>(),
+            "deleted" => _crudService.GetQuery<Nav>(e => e.IsDeleted),
+            _ => _crudService.GetQuery<Nav>(e => !e.IsDeleted),
         };
+        var resultQuery = navQuery
+            .Include(nav => nav.Links)
+            .Select(nav => new NavWithLinksCountDto
+            {
+                Id = nav.Id,
+                TitleAr = nav.TitleAr,
+                TitleEn = nav.TitleEn,
+                DescriptionAr = nav.DescriptionAr,
+                DescriptionEn = nav.DescriptionEn,
+                IconUrl = nav.IconUrl,
+                LinksCount = nav.Links.Count
+            });
+        return _crudService.GetPage(resultQuery, pageSize, pageNumber);
     }
     public NavDto FindOneNav(Guid id)
     {

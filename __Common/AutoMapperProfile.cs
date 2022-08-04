@@ -74,6 +74,7 @@ public class AutoMapperProfile : Profile
         CreateMap<Reply, UpdateReplyInput>().ReverseMap();
 
         CreateMap<Nav, NavDto>().ReverseMap();
+        CreateMap<Nav, NavWithLinksCountDto>().ReverseMap();
         CreateMap<Nav, CreateNavInput>().ReverseMap();
         CreateMap<Nav, CreateNavWithLinksInput>().ReverseMap();
         CreateMap<Nav, UpdateNavInput>().ReverseMap();
