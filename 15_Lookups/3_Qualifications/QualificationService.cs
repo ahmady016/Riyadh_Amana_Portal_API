@@ -44,13 +44,12 @@ public class QualificationService : IQualificationService
         var qualifications = _crudService.GetList<Qualification, Guid>(e => ids.Contains(e.Id));
         if (qualifications.Count == 0)
         {
-            _errorMessage = $"No Any Qualification Records Found";
+            _errorMessage = $"No Any Qualifications Records Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
         }
         return qualifications;
     }
-
     private static void FillRestPropsWithOldValues(Lookup oldItem, Lookup newItem)
     {
         newItem.CreatedAt = oldItem.CreatedAt;
@@ -66,7 +65,7 @@ public class QualificationService : IQualificationService
     }
     #endregion
 
-    public List<LookupDto> ListQualifications(string type)
+    public List<LookupDto> List(string type)
     {
         var list = type.ToLower() switch
         {
@@ -76,7 +75,7 @@ public class QualificationService : IQualificationService
         };
         return _mapper.Map<List<LookupDto>>(list);
     }
-    public PageResult<LookupDto> ListQualificationsPage(string type, int pageSize, int pageNumber)
+    public PageResult<LookupDto> ListPage(string type, int pageSize, int pageNumber)
     {
         var query = type.ToLower() switch
         {
@@ -92,12 +91,12 @@ public class QualificationService : IQualificationService
             TotalPages = page.TotalPages
         };
     }
-    public LookupDto FindOneQualification(Guid id)
+    public LookupDto FindOne(Guid id)
     {
         var qualification = GetQualificationById(id);
         return _mapper.Map<LookupDto>(qualification);
     }
-    public List<LookupDto> FindManyQualifications(string ids)
+    public List<LookupDto> FindMany(string ids)
     {
         if (String.IsNullOrEmpty(ids) || String.IsNullOrWhiteSpace(ids))
         {
@@ -110,42 +109,58 @@ public class QualificationService : IQualificationService
         return _mapper.Map<List<LookupDto>>(list);
     }
 
-    public LookupDto AddQualification(CreateLookupInput input)
+    public LookupDto Add(CreateLookupInput input)
     {
+        // check if any titles are existed in db
         var oldQualification = _crudService.GetOne<Qualification>(e=> e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
+        // if any titles existed then reject the input
         if (oldQualification is not null)
         {
             _errorMessage = $"Qualification: TitleAr or TitleEn is already existed.";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
+
+        // if not do the normal Add action
         var qualification = _mapper.Map<Qualification>(input);
         var createdQualification = _crudService.Add<Qualification, Guid>(qualification);
         _crudService.SaveChanges();
+
         return _mapper.Map<LookupDto>(createdQualification);
     }
-    public List<LookupDto> AddManyQualifications(List<CreateLookupInput> inputs)
+    public List<LookupDto> AddMany(List<CreateLookupInput> inputs)
     {
-        var titleArList = inputs.Select(e=>e.TitleAr).ToList();
-        var titleEnList = inputs.Select(e=>e.TitleEn).ToList();
-        var qualificationsExisted = _crudService.GetList<Qualification, Guid>(e=> titleArList.Contains(e.TitleAr) || titleEnList.Contains(e.TitleEn));
-        if (qualificationsExisted.Count != 0)
+        // get all new titles
+        var titlesArList = inputs.Select(e => e.TitleAr).ToList();
+        var titlesEnList = inputs.Select(e => e.TitleEn).ToList();
+
+        // check if any title aleary exist in db
+        var existedQualifications = _crudService.GetList<Qualification, Guid>(e=> titlesArList.Contains(e.TitleAr) || titlesEnList.Contains(e.TitleEn));
+        if (existedQualifications.Count != 0)
         {
-            _errorMessage = $"Qualification: Qualifications List Is rejected , Some TitleAr or TitleEn is already existed.";
+            _errorMessage = $"Qualifications List was rejected , Some TitleAr or TitleEn is already existed.";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
+
+        // if all inputs titles are not exited in db do the normal add many action
         var qualifications = _mapper.Map<List<Qualification>>(inputs);
         var createdQualifications = _crudService.AddAndGetRange<Qualification, Guid>(qualifications);
         _crudService.SaveChanges();
+
         return _mapper.Map<List<LookupDto>>(createdQualifications);
     }
 
-    public LookupDto UpdateQualification(UpdateLookupInput input)
+    public LookupDto Update(UpdateLookupInput input)
     {
+        // get old db item
         var oldQualification = GetQualificationById(input.Id);
+        
+        // if any titles changed
         if (oldQualification.TitleAr != input.TitleAr || oldQualification.TitleEn != input.TitleEn ) {
+            // check for its existance in db
             var qualificationExisted = _crudService.GetOne<Qualification>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
+            // if existed reject update input
             if (qualificationExisted is not null) {
                 _errorMessage = $"Qualification: TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
@@ -153,6 +168,7 @@ public class QualificationService : IQualificationService
             }
         }
 
+        // if no titles changed or the changed ones not existed in db do the normal update
         var newQualification = _mapper.Map<Qualification>(input);
         FillRestPropsWithOldValues(oldQualification, newQualification);
         var updatedQualification = _crudService.Update<Qualification, Guid>(newQualification);
@@ -160,24 +176,39 @@ public class QualificationService : IQualificationService
 
         return _mapper.Map<LookupDto>(updatedQualification);
     }
-    public List<LookupDto> UpdateManyQualifications(List<UpdateLookupInput> inputs)
+    public List<LookupDto> UpdateMany(List<UpdateLookupInput> inputs)
     {
+        // get oldQualifications List from db
         var oldQualifications = GetQualificationsByIds(inputs.Select(x => x.Id).ToList());
 
-        var oldQualificationsTitlesAr = oldQualifications.Where(m => !inputs.Select(e => e.TitleAr).Contains(m.TitleAr)).Select(e => e.TitleAr).ToList();
-        var oldQualificationsTitleEn = oldQualifications.Where(m => !inputs.Select(e => e.TitleEn).Contains(m.TitleEn)).Select(e => e.TitleEn).ToList();
-        if (oldQualificationsTitlesAr.Count != 0 || oldQualificationsTitleEn.Count != 0)
+        // get inputsTitles and oldQualificationsTitles
+        var inputsTitlesAr = inputs.Select(e => e.TitleAr);
+        var inputsTitlesEn = inputs.Select(e => e.TitleEn);
+        var qualificationsTitlesAr = oldQualifications.Select(e => e.TitleAr);
+        var qualificationsTitlesEn = oldQualifications.Select(e => e.TitleEn);
+
+        // get changedQualificationsTitles
+        var changedQualificationsTitlesAr = inputsTitlesAr
+            .Where(x => !qualificationsTitlesAr.Contains(x))
+            .ToList();
+        var changedQualificationsTitlesEn = inputsTitlesEn
+            .Where(x => !qualificationsTitlesEn.Contains(x))
+            .ToList();
+
+        // if any titles changed check if aleary existed in db
+        if (changedQualificationsTitlesAr.Count > 0 || changedQualificationsTitlesEn.Count > 0)
         {
-            var qualificationsExisted = _crudService.GetList<Qualification, Guid>(e => oldQualificationsTitlesAr.Contains(e.TitleAr) || oldQualificationsTitleEn.Contains(e.TitleEn));
-            if (qualificationsExisted.Count != 0)
+            var existedQualifications = _crudService.GetList<Qualification, Guid>(e => changedQualificationsTitlesAr.Contains(e.TitleAr) || changedQualificationsTitlesEn.Contains(e.TitleEn));
+            // if any existance found in db reject all inputs
+            if (existedQualifications.Count > 0)
             {
-                _errorMessage = $"Qualification: Qualifications List Is rejected , Some TitleAr or TitleEn is already existed.";
+                _errorMessage = $"Qualifications List was rejected , Some TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
                 throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
             }
         }
 
-
+        // do the normal update many items action
         var newQualifications = _mapper.Map<List<Qualification>>(inputs);
 
         for (int i = 0; i < oldQualifications.Count; i++)
@@ -188,18 +219,19 @@ public class QualificationService : IQualificationService
         return _mapper.Map<List<LookupDto>>(updatedQualifications);
     }
 
-    public bool DeleteQualification(Guid id)
+    public bool Delete(Guid id)
     {
         var qualification = GetQualificationById(id);
         _crudService.SoftDelete<Qualification, Guid>(qualification);
         _crudService.SaveChanges();
         return true;
     }
-    public bool ActivateQualification(Guid id)
+    public bool Activate(Guid id)
     {
         var qualification = GetQualificationById(id);
         _crudService.Activate<Qualification, Guid>(qualification);
         _crudService.SaveChanges();
         return true;
     } 
+
 }

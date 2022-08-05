@@ -5,15 +5,14 @@ namespace Lookups;
 
 public interface IQualificationService
 {
-    List<LookupDto> ListQualifications(string type);
-    PageResult<LookupDto> ListQualificationsPage(string type, int pageSize, int pageNumber);
-    LookupDto FindOneQualification(Guid id);
-    List<LookupDto> FindManyQualifications(string ids);
-    LookupDto AddQualification(CreateLookupInput input);
-    List<LookupDto> AddManyQualifications(List<CreateLookupInput> inputs);
-    LookupDto UpdateQualification(UpdateLookupInput input);
-    List<LookupDto> UpdateManyQualifications(List<UpdateLookupInput> inputs);
-    bool DeleteQualification(Guid id);
-    bool ActivateQualification(Guid id);
-
+    List<LookupDto> List(string type);
+    PageResult<LookupDto> ListPage(string type, int pageSize, int pageNumber);
+    LookupDto FindOne(Guid id);
+    List<LookupDto> FindMany(string ids);
+    LookupDto Add(CreateLookupInput input);
+    List<LookupDto> AddMany(List<CreateLookupInput> inputs);
+    LookupDto Update(UpdateLookupInput input);
+    List<LookupDto> UpdateMany(List<UpdateLookupInput> inputs);
+    bool Delete(Guid id);
+    bool Activate(Guid id);
 }

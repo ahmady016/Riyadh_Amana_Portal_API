@@ -112,7 +112,9 @@ public class CityService : ICityService
 
     public LookupDto Add(CreateLookupInput input)
     {
+        // check if any titles are existed in db
         var oldCity = _crudService.GetOne<City>(e=> e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
+        // if any titles existed then reject the input
         if (oldCity is not null)
         {
             _errorMessage = $"City: TitleAr or TitleEn is already existed.";
@@ -120,6 +122,7 @@ public class CityService : ICityService
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
 
+        // if not do the normal Add action
         var City = _mapper.Map<City>(input);
         var createdCity = _crudService.Add<City, Guid>(City);
         _crudService.SaveChanges();
@@ -133,9 +136,9 @@ public class CityService : ICityService
         var titlesEnList = inputs.Select(e=>e.TitleEn).ToList();
 
         // check if any title aleary exist in db
-        var citiesExisted = _crudService.GetList<City, Guid>(e=> titlesArList.Contains(e.TitleAr) || titlesEnList.Contains(e.TitleEn));
+        var existedCities = _crudService.GetList<City, Guid>(e=> titlesArList.Contains(e.TitleAr) || titlesEnList.Contains(e.TitleEn));
         // if any new title aleary existed so reject all inputs
-        if (citiesExisted.Count > 0)
+        if (existedCities.Count > 0)
         {
             _errorMessage = $"Cities List was rejected , Some TitleAr or TitleEn is already existed.";
             _logger.LogError(_errorMessage);
@@ -159,7 +162,7 @@ public class CityService : ICityService
         if (oldCity.TitleAr != input.TitleAr || oldCity.TitleEn != input.TitleEn ) {
             // check for its existance in db
             var CityExisted = _crudService.GetOne<City>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
-            // if any existed reject all inputs
+            // if existed reject update input
             if (CityExisted is not null) {
                 _errorMessage = $"City: TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
@@ -195,10 +198,10 @@ public class CityService : ICityService
             .ToList();
 
         // if any titles changed check if aleary existed in db
-        // and if any existance found in db reject all inputs
         if (changedCitiesTitlesAr.Count > 0 || changedCitiesTitlesEn.Count > 0)
         {
             var CitiesExisted = _crudService.GetList<City, Guid>(e => changedCitiesTitlesAr.Contains(e.TitleAr) || changedCitiesTitlesEn.Contains(e.TitleEn));
+            // if any existance found in db reject all inputs
             if (CitiesExisted.Count > 0)
             {
                 _errorMessage = $"Cities List Is rejected , Some TitleAr or TitleEn is already existed.";

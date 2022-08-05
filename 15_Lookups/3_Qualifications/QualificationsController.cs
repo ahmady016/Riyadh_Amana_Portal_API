@@ -13,104 +13,104 @@ public class QualificationsController : ControllerBase
         _service = service;
     }
 
-
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// Qualifications/ListQualifications/all
+    /// Qualifications/List/all
     /// </summary>
     /// <returns>List of LookupDto</returns>
     [HttpGet("{type}")]
-    public virtual IActionResult ListQualifications([FromRoute] string type)
+    public virtual IActionResult List([FromRoute] string type)
     {
-        return Ok(_service.ListQualifications(type));
+        return Ok(_service.List(type));
     }
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// Qualifications/ListQualificationsPage/all
+    /// Qualifications/ListPage/all
     /// </summary>
     /// <returns>List of LookupDto</returns>
     [HttpGet("{type}")]
-    public virtual IActionResult ListQualificationsPage(
+    public virtual IActionResult ListPage(
         [FromRoute] string type,
         [FromQuery] int? pageSize,
         [FromQuery] int? pageNumber
     )
     {
-        return Ok(_service.ListQualificationsPage(type, pageSize ?? 10, pageNumber ?? 1));
+        return Ok(_service.ListPage(type, pageSize ?? 10, pageNumber ?? 1));
     }
     /// <summary>
-    /// Qualifications/FindQualification/[id]
+    /// Qualifications/FindOne/[id]
     /// </summary>
     /// <returns>LookupDto</returns>
     [HttpGet("{id}")]
-    public IActionResult FindQualification(Guid id)
+    public IActionResult FindOne(Guid id)
     {
-        return Ok(_service.FindOneQualification(id));
+        return Ok(_service.FindOne(id));
     }
     /// <summary>
-    /// Qualifications/FindQualifications/[id, id, id]
+    /// Qualifications/FindMany/[id, id, id]
     /// </summary>
     /// <returns>List Of LookupDto</returns>
     [HttpGet("{ids}")]
-    public IActionResult FindQualifications(string ids)
+    public IActionResult FindMany(string ids)
     {
-        return Ok(_service.FindManyQualifications(ids));
+        return Ok(_service.FindMany(ids));
     }
 
     /// <summary>
-    /// Qualifications/AddQualification
+    /// Qualifications/Add
     /// </summary>
     /// <returns>LookupDto</returns>
     [HttpPost]
-    public virtual IActionResult AddQualification([FromBody] CreateLookupInput input)
+    public virtual IActionResult Add([FromBody] CreateLookupInput input)
     {
-        return Ok(_service.AddQualification(input));
+        return Ok(_service.Add(input));
     }
     /// <summary>
-    /// Qualifications/AddManyQualifications
+    /// Qualifications/AddMany
     /// </summary>
     /// <returns>List Of LookupDto</returns>
     [HttpPost]
-    public virtual IActionResult AddManyQualifications([FromBody] List<CreateLookupInput> inputs)
+    public virtual IActionResult AddMany([FromBody] List<CreateLookupInput> inputs)
     {
-        return Ok(_service.AddManyQualifications(inputs));
+        return Ok(_service.AddMany(inputs));
     }
 
     /// <summary>
-    /// Qualifications/UpdateQualification
+    /// Qualifications/Update
     /// </summary>
     /// <returns>LookupDto</returns>
     [HttpPut]
-    public virtual IActionResult UpdateQualification([FromBody] UpdateLookupInput input)
+    public virtual IActionResult Update([FromBody] UpdateLookupInput input)
     {
-        return Ok(_service.UpdateQualification(input));
+        return Ok(_service.Update(input));
     }
     /// <summary>
-    /// Qualifications/UpdateManyQualifications
+    /// Qualifications/UpdateMany
     /// </summary>
     /// <returns>List Of LookupDto</returns>
     [HttpPut]
-    public virtual IActionResult UpdateManyQualifications([FromBody] List<UpdateLookupInput> inputs)
+    public virtual IActionResult UpdateMany([FromBody] List<UpdateLookupInput> inputs)
     {
-        return Ok(_service.UpdateManyQualifications(inputs));
+        return Ok(_service.UpdateMany(inputs));
     }
 
     /// <summary>
-    /// Qualifications/DeleteQualification
+    /// Qualifications/Delete
     /// </summary>
     /// <returns>bool</returns>
     [HttpDelete]
-    public virtual IActionResult DeleteQualification(Guid id)
+    public virtual IActionResult Delete(Guid id)
     {
-        return Ok(_service.DeleteQualification(id));
+        return Ok(_service.Delete(id));
     }
     /// <summary>
-    /// Qualifications/ActivateQualification
+    /// Qualifications/Activate
     /// </summary>
     /// <returns>bool</returns>
     [HttpPut]
-    public virtual IActionResult ActivateQualification(Guid id)
+    public virtual IActionResult Activate(Guid id)
     {
-        return Ok(_service.ActivateQualification(id));
+        return Ok(_service.Activate(id));
     }
+
 }

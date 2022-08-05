@@ -111,7 +111,9 @@ public class NationalityService : INationalityService
 
     public LookupDto Add(CreateLookupInput input)
     {
+        // check if any titles are existed in db
         var oldNationality = _crudService.GetOne<Nationality>(e=> e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
+        // if any titles existed then reject the input
         if (oldNationality is not null)
         {
             _errorMessage = $"Nationality: TitleAr or TitleEn is already existed.";
@@ -119,9 +121,11 @@ public class NationalityService : INationalityService
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
 
+        // if not do the normal Add action
         var nationality = _mapper.Map<Nationality>(input);
         var createdNationality = _crudService.Add<Nationality, Guid>(nationality);
         _crudService.SaveChanges();
+
         return _mapper.Map<LookupDto>(createdNationality);
     }
     public List<LookupDto> AddMany(List<CreateLookupInput> inputs)
@@ -131,9 +135,9 @@ public class NationalityService : INationalityService
         var titlesEnList = inputs.Select(e=>e.TitleEn).ToList();
         
         // check if any title aleary exist in db
-        var nationalitiesExisted = _crudService.GetList<Nationality, Guid>(e=> titlesArList.Contains(e.TitleAr) || titlesEnList.Contains(e.TitleEn));
+        var existedNationalities = _crudService.GetList<Nationality, Guid>(e=> titlesArList.Contains(e.TitleAr) || titlesEnList.Contains(e.TitleEn));
         // if any new title aleary existed so reject all inputs
-        if (nationalitiesExisted.Count != 0)
+        if (existedNationalities.Count != 0)
         {
             _errorMessage = $"Nationalities List was rejected , Some TitleAr or TitleEn is already existed.";
             _logger.LogError(_errorMessage);
@@ -157,7 +161,7 @@ public class NationalityService : INationalityService
         if (oldNationality.TitleAr != input.TitleAr || oldNationality.TitleEn != input.TitleEn ) {
             // check for its existance in db
             var nationalityExisted = _crudService.GetOne<Nationality>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
-            // if any existed reject all inputs
+            // if existed reject update input
             if (nationalityExisted is not null) {
                 _errorMessage = $"Nationality: TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
@@ -193,10 +197,10 @@ public class NationalityService : INationalityService
             .ToList();
 
         // if any titles changed check if aleary existed in db
-        // and if any existance found in db reject all inputs
         if (changedNationalitiesTitlesAr.Count > 0 || changedNationalitiesTitlesEn.Count > 0)
         {
             var nationalitiesExisted = _crudService.GetList<Nationality, Guid>(e => changedNationalitiesTitlesAr.Contains(e.TitleAr) || changedNationalitiesTitlesEn.Contains(e.TitleEn));
+            // if any existance found in db reject all inputs
             if (nationalitiesExisted.Count > 0)
             {
                 _errorMessage = $"Nationalities List was rejected, Some TitleAr or TitleEn is already existed.";
