@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using System.Net;
+﻿using System.Net;
 using AutoMapper;
+
 using Common;
 using DB;
 using DB.Common;
@@ -33,7 +33,7 @@ public class CityService : ICityService
         var city = _crudService.Find<City, Guid>(id);
         if (city is null)
         {
-            _errorMessage = $"city Record with Id: {id} Not Found";
+            _errorMessage = $"City Record with Id: {id} Not Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
         }
@@ -44,7 +44,7 @@ public class CityService : ICityService
         var cities = _crudService.GetList<City, Guid>(e => ids.Contains(e.Id));
         if (cities.Count == 0)
         {
-            _errorMessage = $"No Any citiy Records Found";
+            _errorMessage = $"No Any Cities Records Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
         }
@@ -66,7 +66,7 @@ public class CityService : ICityService
     }
     #endregion
 
-    public List<LookupDto> ListCities(string type)
+    public List<LookupDto> List(string type)
     {
         var list = type.ToLower() switch
         {
@@ -76,7 +76,7 @@ public class CityService : ICityService
         };
         return _mapper.Map<List<LookupDto>>(list);
     }
-    public PageResult<LookupDto> ListCitiesPage(string type, int pageSize, int pageNumber)
+    public PageResult<LookupDto> ListPage(string type, int pageSize, int pageNumber)
     {
         var query = type.ToLower() switch
         {
@@ -92,12 +92,12 @@ public class CityService : ICityService
             TotalPages = page.TotalPages
         };
     }
-    public LookupDto FindOneCity(Guid id)
+    public LookupDto FindOne(Guid id)
     {
         var city = GetCityById(id);
         return _mapper.Map<LookupDto>(city);
     }
-    public List<LookupDto> FindManyCities(string ids)
+    public List<LookupDto> FindMany(string ids)
     {
         if (String.IsNullOrEmpty(ids) || String.IsNullOrWhiteSpace(ids))
         {
@@ -110,7 +110,7 @@ public class CityService : ICityService
         return _mapper.Map<List<LookupDto>>(list);
     }
 
-    public LookupDto AddCity(CreateLookupInput input)
+    public LookupDto Add(CreateLookupInput input)
     {
         var oldCity = _crudService.GetOne<City>(e=> e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
         if (oldCity is not null)
@@ -119,29 +119,38 @@ public class CityService : ICityService
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
+
         var City = _mapper.Map<City>(input);
         var createdCity = _crudService.Add<City, Guid>(City);
         _crudService.SaveChanges();
+
         return _mapper.Map<LookupDto>(createdCity);
     }
-    public List<LookupDto> AddManyCities(List<CreateLookupInput> inputs)
+    public List<LookupDto> AddMany(List<CreateLookupInput> inputs)
     {
+        // get all new titles
         var titleArList = inputs.Select(e=>e.TitleAr).ToList();
         var titleEnList = inputs.Select(e=>e.TitleEn).ToList();
+
+        // check if any title aleary exist in db
         var CitiesExisted = _crudService.GetList<City, Guid>(e=> titleArList.Contains(e.TitleAr) || titleEnList.Contains(e.TitleEn));
-        if (CitiesExisted.Count != 0)
+        // if any new title aleary existed so reject all inputs
+        if (CitiesExisted.Count > 0)
         {
-            _errorMessage = $"City: Cities List Is rejected , Some TitleAr or TitleEn is already existed.";
+            _errorMessage = $"Cities List was rejected , Some TitleAr or TitleEn is already existed.";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
+
+        // if all inputs titles are not exited in db do the normal add many action
         var Cities = _mapper.Map<List<City>>(inputs);
         var createdCities = _crudService.AddAndGetRange<City, Guid>(Cities);
         _crudService.SaveChanges();
+
         return _mapper.Map<List<LookupDto>>(createdCities);
     }
 
-    public LookupDto UpdateCity(UpdateLookupInput input)
+    public LookupDto Update(UpdateLookupInput input)
     {
         var oldCity = GetCityById(input.Id);
         if (oldCity.TitleAr != input.TitleAr || oldCity.TitleEn != input.TitleEn ) {
@@ -160,24 +169,39 @@ public class CityService : ICityService
 
         return _mapper.Map<LookupDto>(updatedCity);
     }
-    public List<LookupDto> UpdateManyCities(List<UpdateLookupInput> inputs)
+    public List<LookupDto> UpdateMany(List<UpdateLookupInput> inputs)
     {
+        // get oldCities List from db
         var oldCities = GetCitiesByIds(inputs.Select(x => x.Id).ToList());
 
-        var oldCitiesTitlesAr = oldCities.Where(m => !inputs.Select(e => e.TitleAr).Contains(m.TitleAr)).Select(e => e.TitleAr).ToList();
-        var oldCitiesTitleEn = oldCities.Where(m => !inputs.Select(e => e.TitleEn).Contains(m.TitleEn)).Select(e => e.TitleEn).ToList();
-        if (oldCitiesTitlesAr.Count != 0 || oldCitiesTitleEn.Count != 0)
+        // get inputsTitles and oldCitiesTitles
+        var inputsTitlesAr = inputs.Select(e => e.TitleAr);
+        var inputsTitlesEn = inputs.Select(e => e.TitleEn);
+        var citiesTitlesAr = oldCities.Select(e => e.TitleAr);
+        var citiesTitlesEn = oldCities.Select(e => e.TitleEn);
+
+        // get changedCitiesTitles
+        var changedCitiesTitlesAr = inputsTitlesAr
+            .Where(x => !citiesTitlesAr.Contains(x))
+            .ToList();
+        var changedCitiesTitlesEn = inputsTitlesEn
+            .Where(x => !citiesTitlesEn.Contains(x))
+            .ToList();
+
+        // if any titles changed check if aleary existed in db
+        // and if any existance found in db reject all inputs
+        if (changedCitiesTitlesAr.Count > 0 || changedCitiesTitlesEn.Count > 0)
         {
-            var CitiesExisted = _crudService.GetList<City, Guid>(e => oldCitiesTitlesAr.Contains(e.TitleAr) || oldCitiesTitleEn.Contains(e.TitleEn));
-            if (CitiesExisted.Count != 0)
+            var CitiesExisted = _crudService.GetList<City, Guid>(e => changedCitiesTitlesAr.Contains(e.TitleAr) || changedCitiesTitlesEn.Contains(e.TitleEn));
+            if (CitiesExisted.Count > 0)
             {
-                _errorMessage = $"City: Cities List Is rejected , Some TitleAr or TitleEn is already existed.";
+                _errorMessage = $"Cities List Is rejected , Some TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
                 throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
             }
         }
 
-
+        // do the update many items action
         var newCities = _mapper.Map<List<City>>(inputs);
 
         for (int i = 0; i < oldCities.Count; i++)
@@ -188,14 +212,14 @@ public class CityService : ICityService
         return _mapper.Map<List<LookupDto>>(updatedCities);
     }
 
-    public bool DeleteCity(Guid id)
+    public bool Delete(Guid id)
     {
         var City = GetCityById(id);
         _crudService.SoftDelete<City, Guid>(City);
         _crudService.SaveChanges();
         return true;
     }
-    public bool ActivateCity(Guid id)
+    public bool Activate(Guid id)
     {
         var City = GetCityById(id);
         _crudService.Activate<City, Guid>(City);

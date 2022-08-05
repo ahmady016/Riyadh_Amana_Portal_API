@@ -16,101 +16,101 @@ public class CitiesController : ControllerBase
 
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// Cities/ListCities/all
+    /// Cities/List/all
     /// </summary>
     /// <returns>List of LookupDto</returns>
     [HttpGet("{type}")]
-    public virtual IActionResult ListCities([FromRoute] string type)
+    public virtual IActionResult List([FromRoute] string type)
     {
-        return Ok(_service.ListCities(type));
+        return Ok(_service.List(type));
     }
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// Cities/ListCitiesPage/all
+    /// Cities/ListPage/all
     /// </summary>
     /// <returns>List of LookupDto</returns>
     [HttpGet("{type}")]
-    public virtual IActionResult ListCitiesPage(
+    public virtual IActionResult ListPage(
         [FromRoute] string type,
         [FromQuery] int? pageSize,
         [FromQuery] int? pageNumber
     )
     {
-        return Ok(_service.ListCitiesPage(type, pageSize ?? 10, pageNumber ?? 1));
+        return Ok(_service.ListPage(type, pageSize ?? 10, pageNumber ?? 1));
     }
     /// <summary>
-    /// Cities/FindCity/[id]
+    /// Cities/FindOne/[id]
     /// </summary>
     /// <returns>LookupDto</returns>
     [HttpGet("{id}")]
-    public IActionResult FindCity(Guid id)
+    public IActionResult FindOne(Guid id)
     {
-        return Ok(_service.FindOneCity(id));
+        return Ok(_service.FindOne(id));
     }
     /// <summary>
-    /// Cities/FindCities/[id, id, id]
+    /// Cities/FindMany/[id, id, id]
     /// </summary>
     /// <returns>List Of LookupDto</returns>
     [HttpGet("{ids}")]
-    public IActionResult FindCities(string ids)
+    public IActionResult FindMany(string ids)
     {
-        return Ok(_service.FindManyCities(ids));
+        return Ok(_service.FindMany(ids));
     }
 
     /// <summary>
-    /// Cities/AddCity
+    /// Cities/Add
     /// </summary>
     /// <returns>LookupDto</returns>
     [HttpPost]
-    public virtual IActionResult AddCity([FromBody] CreateLookupInput input)
+    public virtual IActionResult Add([FromBody] CreateLookupInput input)
     {
-        return Ok(_service.AddCity(input));
+        return Ok(_service.Add(input));
     }
     /// <summary>
-    /// Cities/AddManyCities
+    /// Cities/AddMany
     /// </summary>
     /// <returns>List Of LookupDto</returns>
     [HttpPost]
-    public virtual IActionResult AddManyCities([FromBody] List<CreateLookupInput> inputs)
+    public virtual IActionResult AddMany([FromBody] List<CreateLookupInput> inputs)
     {
-        return Ok(_service.AddManyCities(inputs));
+        return Ok(_service.AddMany(inputs));
     }
 
     /// <summary>
-    /// Cities/UpdateCity
+    /// Cities/Update
     /// </summary>
     /// <returns>LookupDto</returns>
     [HttpPut]
-    public virtual IActionResult UpdateCity([FromBody] UpdateLookupInput input)
+    public virtual IActionResult Update([FromBody] UpdateLookupInput input)
     {
-        return Ok(_service.UpdateCity(input));
+        return Ok(_service.Update(input));
     }
     /// <summary>
-    /// Cities/UpdateManyCities
+    /// Cities/UpdateMany
     /// </summary>
     /// <returns>List Of LookupDto</returns>
     [HttpPut]
-    public virtual IActionResult UpdateManyCities([FromBody] List<UpdateLookupInput> inputs)
+    public virtual IActionResult UpdateMany([FromBody] List<UpdateLookupInput> inputs)
     {
-        return Ok(_service.UpdateManyCities(inputs));
+        return Ok(_service.UpdateMany(inputs));
     }
 
     /// <summary>
-    /// Cities/DeleteCity
+    /// Cities/Delete
     /// </summary>
     /// <returns>bool</returns>
     [HttpDelete]
-    public virtual IActionResult DeleteCity(Guid id)
+    public virtual IActionResult Delete(Guid id)
     {
-        return Ok(_service.DeleteCity(id));
+        return Ok(_service.Delete(id));
     }
     /// <summary>
-    /// Cities/ActivateCity
+    /// Cities/Activate
     /// </summary>
     /// <returns>bool</returns>
     [HttpPut]
-    public virtual IActionResult ActivateCity(Guid id)
+    public virtual IActionResult Activate(Guid id)
     {
-        return Ok(_service.ActivateCity(id));
+        return Ok(_service.Activate(id));
     }
 }
