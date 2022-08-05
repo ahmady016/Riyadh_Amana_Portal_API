@@ -1,18 +1,18 @@
-﻿using Dtos;
-using DB.Common;
+﻿using DB.Common;
+using Dtos;
 
 namespace Lookups;
 
 public interface INationalityService
 { 
-    List<LookupDto> ListNationalities(string type);
-    PageResult<LookupDto> ListNationalitiesPage(string type, int pageSize, int pageNumber);
-    LookupDto FindOneNationality(Guid id);
-    List<LookupDto> FindManyNationalities(string ids);
-    LookupDto AddNationality(CreateLookupInput input);
-    List<LookupDto> AddManyNationalities(List<CreateLookupInput> inputs);
-    LookupDto UpdateNationality(UpdateLookupInput input);
-    List<LookupDto> UpdateManyNationalities(List<UpdateLookupInput> inputs);
-    bool DeleteNationality(Guid id);
-    bool ActivateNationality(Guid id);
+    List<LookupDto> List(string type);
+    PageResult<LookupDto> ListPage(string type, int pageSize, int pageNumber);
+    LookupDto FindOne(Guid id);
+    List<LookupDto> FindMany(string ids);
+    LookupDto Add(CreateLookupInput input);
+    List<LookupDto> AddMany(List<CreateLookupInput> inputs);
+    LookupDto Update(UpdateLookupInput input);
+    List<LookupDto> UpdateMany(List<UpdateLookupInput> inputs);
+    bool Delete(Guid id);
+    bool Activate(Guid id);
 }

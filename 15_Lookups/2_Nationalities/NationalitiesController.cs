@@ -13,104 +13,104 @@ public class NationalitiesController : ControllerBase
         _service = service;
     }
 
-
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// Nationalities/ListNationalities/all
+    /// Nationalities/List/all
     /// </summary>
     /// <returns>List of LookupDto</returns>
     [HttpGet("{type}")]
-    public virtual IActionResult ListNationalities([FromRoute] string type)
+    public virtual IActionResult List([FromRoute] string type)
     {
-        return Ok(_service.ListNationalities(type));
+        return Ok(_service.List(type));
     }
     /// <summary>
     /// listType values (all/deleted/existed)
-    /// Nationalities/ListNationalitiesPage/all
+    /// Nationalities/ListPage/all
     /// </summary>
     /// <returns>List of LookupDto</returns>
     [HttpGet("{type}")]
-    public virtual IActionResult ListNationalitiesPage(
+    public virtual IActionResult ListPage(
         [FromRoute] string type,
         [FromQuery] int? pageSize,
         [FromQuery] int? pageNumber
     )
     {
-        return Ok(_service.ListNationalitiesPage(type, pageSize ?? 10, pageNumber ?? 1));
+        return Ok(_service.ListPage(type, pageSize ?? 10, pageNumber ?? 1));
     }
     /// <summary>
-    /// Nationalities/FindNationality/[id]
+    /// Nationalities/FindOne/[id]
     /// </summary>
     /// <returns>LookupDto</returns>
     [HttpGet("{id}")]
-    public IActionResult FindNationality(Guid id)
+    public IActionResult FindOne(Guid id)
     {
-        return Ok(_service.FindOneNationality(id));
+        return Ok(_service.FindOne(id));
     }
     /// <summary>
-    /// Nationalities/FindNationalities/[id, id, id]
+    /// Nationalities/FindMany/[id, id, id]
     /// </summary>
     /// <returns>List Of LookupDto</returns>
     [HttpGet("{ids}")]
-    public IActionResult FindNationalities(string ids)
+    public IActionResult FindMany(string ids)
     {
-        return Ok(_service.FindManyNationalities(ids));
+        return Ok(_service.FindMany(ids));
     }
 
     /// <summary>
-    /// Nationalities/AddNationality
+    /// Nationalities/Add
     /// </summary>
     /// <returns>LookupDto</returns>
     [HttpPost]
-    public virtual IActionResult AddNationality([FromBody] CreateLookupInput input)
+    public virtual IActionResult Add([FromBody] CreateLookupInput input)
     {
-        return Ok(_service.AddNationality(input));
+        return Ok(_service.Add(input));
     }
     /// <summary>
-    /// Nationalities/AddManyNationalities
+    /// Nationalities/AddMany
     /// </summary>
     /// <returns>List Of LookupDto</returns>
     [HttpPost]
-    public virtual IActionResult AddManyNationalities([FromBody] List<CreateLookupInput> inputs)
+    public virtual IActionResult AddMany([FromBody] List<CreateLookupInput> inputs)
     {
-        return Ok(_service.AddManyNationalities(inputs));
+        return Ok(_service.AddMany(inputs));
     }
 
     /// <summary>
-    /// Nationalities/UpdateNationality
+    /// Nationalities/Update
     /// </summary>
     /// <returns>LookupDto</returns>
     [HttpPut]
-    public virtual IActionResult UpdateNationality([FromBody] UpdateLookupInput input)
+    public virtual IActionResult Update([FromBody] UpdateLookupInput input)
     {
-        return Ok(_service.UpdateNationality(input));
+        return Ok(_service.Update(input));
     }
     /// <summary>
-    /// Nationalities/UpdateManyNationalities
+    /// Nationalities/UpdateMany
     /// </summary>
     /// <returns>List Of LookupDto</returns>
     [HttpPut]
-    public virtual IActionResult UpdateManyNationalities([FromBody] List<UpdateLookupInput> inputs)
+    public virtual IActionResult UpdateMany([FromBody] List<UpdateLookupInput> inputs)
     {
-        return Ok(_service.UpdateManyNationalities(inputs));
+        return Ok(_service.UpdateMany(inputs));
     }
 
     /// <summary>
-    /// Nationalities/DeleteNationality
+    /// Nationalities/Delete
     /// </summary>
     /// <returns>bool</returns>
     [HttpDelete]
-    public virtual IActionResult DeleteNationality(Guid id)
+    public virtual IActionResult Delete(Guid id)
     {
-        return Ok(_service.DeleteNationality(id));
+        return Ok(_service.Delete(id));
     }
     /// <summary>
-    /// Nationalities/ActivateNationality
+    /// Nationalities/Activate
     /// </summary>
     /// <returns>bool</returns>
     [HttpPut]
-    public virtual IActionResult ActivateNationality(Guid id)
+    public virtual IActionResult Activate(Guid id)
     {
-        return Ok(_service.ActivateNationality(id));
+        return Ok(_service.Activate(id));
     }
+
 }

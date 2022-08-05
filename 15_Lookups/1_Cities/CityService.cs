@@ -129,13 +129,13 @@ public class CityService : ICityService
     public List<LookupDto> AddMany(List<CreateLookupInput> inputs)
     {
         // get all new titles
-        var titleArList = inputs.Select(e=>e.TitleAr).ToList();
-        var titleEnList = inputs.Select(e=>e.TitleEn).ToList();
+        var titlesArList = inputs.Select(e=>e.TitleAr).ToList();
+        var titlesEnList = inputs.Select(e=>e.TitleEn).ToList();
 
         // check if any title aleary exist in db
-        var CitiesExisted = _crudService.GetList<City, Guid>(e=> titleArList.Contains(e.TitleAr) || titleEnList.Contains(e.TitleEn));
+        var citiesExisted = _crudService.GetList<City, Guid>(e=> titlesArList.Contains(e.TitleAr) || titlesEnList.Contains(e.TitleEn));
         // if any new title aleary existed so reject all inputs
-        if (CitiesExisted.Count > 0)
+        if (citiesExisted.Count > 0)
         {
             _errorMessage = $"Cities List was rejected , Some TitleAr or TitleEn is already existed.";
             _logger.LogError(_errorMessage);
@@ -152,9 +152,14 @@ public class CityService : ICityService
 
     public LookupDto Update(UpdateLookupInput input)
     {
+        // get old db item
         var oldCity = GetCityById(input.Id);
+
+        // if any titles changed
         if (oldCity.TitleAr != input.TitleAr || oldCity.TitleEn != input.TitleEn ) {
+            // check for its existance in db
             var CityExisted = _crudService.GetOne<City>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
+            // if any existed reject all inputs
             if (CityExisted is not null) {
                 _errorMessage = $"City: TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
@@ -162,6 +167,7 @@ public class CityService : ICityService
             }
         }
 
+        // if no titles changed or the changed ones not existed in db do the normal update
         var newCity = _mapper.Map<City>(input);
         FillRestPropsWithOldValues(oldCity, newCity);
         var updatedCity = _crudService.Update<City, Guid>(newCity);
@@ -201,7 +207,7 @@ public class CityService : ICityService
             }
         }
 
-        // do the update many items action
+        // do the normal update many items action
         var newCities = _mapper.Map<List<City>>(inputs);
 
         for (int i = 0; i < oldCities.Count; i++)

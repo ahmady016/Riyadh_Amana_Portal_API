@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using System.Net;
+﻿using System.Net;
 using AutoMapper;
+
 using Common;
 using DB;
 using DB.Common;
@@ -44,13 +44,12 @@ public class NationalityService : INationalityService
         var nationalities = _crudService.GetList<Nationality, Guid>(e => ids.Contains(e.Id));
         if (nationalities.Count == 0)
         {
-            _errorMessage = $"No Any nationality Records Found";
+            _errorMessage = $"No Any Nationalities Records Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
         }
         return nationalities;
     }
-
     private static void FillRestPropsWithOldValues(Lookup oldItem, Lookup newItem)
     {
         newItem.CreatedAt = oldItem.CreatedAt;
@@ -66,7 +65,7 @@ public class NationalityService : INationalityService
     }
     #endregion
 
-    public List<LookupDto> ListNationalities(string type)
+    public List<LookupDto> List(string type)
     {
         var list = type.ToLower() switch
         {
@@ -76,7 +75,7 @@ public class NationalityService : INationalityService
         };
         return _mapper.Map<List<LookupDto>>(list);
     }
-    public PageResult<LookupDto> ListNationalitiesPage(string type, int pageSize, int pageNumber)
+    public PageResult<LookupDto> ListPage(string type, int pageSize, int pageNumber)
     {
         var query = type.ToLower() switch
         {
@@ -92,12 +91,12 @@ public class NationalityService : INationalityService
             TotalPages = page.TotalPages
         };
     }
-    public LookupDto FindOneNationality(Guid id)
+    public LookupDto FindOne(Guid id)
     {
         var nationality = GetNationalityById(id);
         return _mapper.Map<LookupDto>(nationality);
     }
-    public List<LookupDto> FindManyNationalities(string ids)
+    public List<LookupDto> FindMany(string ids)
     {
         if (String.IsNullOrEmpty(ids) || String.IsNullOrWhiteSpace(ids))
         {
@@ -110,7 +109,7 @@ public class NationalityService : INationalityService
         return _mapper.Map<List<LookupDto>>(list);
     }
 
-    public LookupDto AddNationality(CreateLookupInput input)
+    public LookupDto Add(CreateLookupInput input)
     {
         var oldNationality = _crudService.GetOne<Nationality>(e=> e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
         if (oldNationality is not null)
@@ -119,33 +118,46 @@ public class NationalityService : INationalityService
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
+
         var nationality = _mapper.Map<Nationality>(input);
         var createdNationality = _crudService.Add<Nationality, Guid>(nationality);
         _crudService.SaveChanges();
         return _mapper.Map<LookupDto>(createdNationality);
     }
-    public List<LookupDto> AddManyNationalities(List<CreateLookupInput> inputs)
+    public List<LookupDto> AddMany(List<CreateLookupInput> inputs)
     {
-        var titleArList = inputs.Select(e=>e.TitleAr).ToList();
-        var titleEnList = inputs.Select(e=>e.TitleEn).ToList();
-        var nationalitiesExisted = _crudService.GetList<Nationality, Guid>(e=> titleArList.Contains(e.TitleAr) || titleEnList.Contains(e.TitleEn));
+        // get all new titles
+        var titlesArList = inputs.Select(e=>e.TitleAr).ToList();
+        var titlesEnList = inputs.Select(e=>e.TitleEn).ToList();
+        
+        // check if any title aleary exist in db
+        var nationalitiesExisted = _crudService.GetList<Nationality, Guid>(e=> titlesArList.Contains(e.TitleAr) || titlesEnList.Contains(e.TitleEn));
+        // if any new title aleary existed so reject all inputs
         if (nationalitiesExisted.Count != 0)
         {
-            _errorMessage = $"Nationality: Nationalities List Is rejected , Some TitleAr or TitleEn is already existed.";
+            _errorMessage = $"Nationalities List was rejected , Some TitleAr or TitleEn is already existed.";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
+
+        // if all inputs titles are not exited in db do the normal add many action
         var nationalities = _mapper.Map<List<Nationality>>(inputs);
         var createdNationalities = _crudService.AddAndGetRange<Nationality, Guid>(nationalities);
         _crudService.SaveChanges();
+
         return _mapper.Map<List<LookupDto>>(createdNationalities);
     }
 
-    public LookupDto UpdateNationality(UpdateLookupInput input)
+    public LookupDto Update(UpdateLookupInput input)
     {
+        // get old db item
         var oldNationality = GetNationalityById(input.Id);
+
+        // if any titles changed
         if (oldNationality.TitleAr != input.TitleAr || oldNationality.TitleEn != input.TitleEn ) {
+            // check for its existance in db
             var nationalityExisted = _crudService.GetOne<Nationality>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
+            // if any existed reject all inputs
             if (nationalityExisted is not null) {
                 _errorMessage = $"Nationality: TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
@@ -153,6 +165,7 @@ public class NationalityService : INationalityService
             }
         }
 
+        // if no titles changed or the changed ones not existed in db do the normal update
         var newNationality = _mapper.Map<Nationality>(input);
         FillRestPropsWithOldValues(oldNationality, newNationality);
         var updatedNationality = _crudService.Update<Nationality, Guid>(newNationality);
@@ -160,24 +173,39 @@ public class NationalityService : INationalityService
 
         return _mapper.Map<LookupDto>(updatedNationality);
     }
-    public List<LookupDto> UpdateManyNationalities(List<UpdateLookupInput> inputs)
+    public List<LookupDto> UpdateMany(List<UpdateLookupInput> inputs)
     {
+        // get oldNationalities List from db
         var oldNationalities = GetNationalitiesByIds(inputs.Select(x => x.Id).ToList());
 
-        var oldNationalitiesTitlesAr = oldNationalities.Where(m => !inputs.Select(e => e.TitleAr).Contains(m.TitleAr)).Select(e => e.TitleAr).ToList();
-        var oldNationalitiesTitleEn = oldNationalities.Where(m => !inputs.Select(e => e.TitleEn).Contains(m.TitleEn)).Select(e => e.TitleEn).ToList();
-        if (oldNationalitiesTitlesAr.Count != 0 || oldNationalitiesTitleEn.Count != 0)
+        // get inputsTitles and oldNationalitiesTitles
+        var inputsTitlesAr = inputs.Select(e => e.TitleAr);
+        var inputsTitlesEn = inputs.Select(e => e.TitleEn);
+        var nationalitiesTitlesAr = oldNationalities.Select(e => e.TitleAr);
+        var nationalitiesTitlesEn = oldNationalities.Select(e => e.TitleEn);
+
+        // get changedNationalitiesTitles
+        var changedNationalitiesTitlesAr = inputsTitlesAr
+            .Where(x => !nationalitiesTitlesAr.Contains(x))
+            .ToList();
+        var changedNationalitiesTitlesEn = inputsTitlesEn
+            .Where(x => !nationalitiesTitlesEn.Contains(x))
+            .ToList();
+
+        // if any titles changed check if aleary existed in db
+        // and if any existance found in db reject all inputs
+        if (changedNationalitiesTitlesAr.Count > 0 || changedNationalitiesTitlesEn.Count > 0)
         {
-            var nationalitiesExisted = _crudService.GetList<Nationality, Guid>(e => oldNationalitiesTitlesAr.Contains(e.TitleAr) || oldNationalitiesTitleEn.Contains(e.TitleEn));
-            if (nationalitiesExisted.Count != 0)
+            var nationalitiesExisted = _crudService.GetList<Nationality, Guid>(e => changedNationalitiesTitlesAr.Contains(e.TitleAr) || changedNationalitiesTitlesEn.Contains(e.TitleEn));
+            if (nationalitiesExisted.Count > 0)
             {
-                _errorMessage = $"Nationality: Nationalities List Is rejected , Some TitleAr or TitleEn is already existed.";
+                _errorMessage = $"Nationalities List was rejected, Some TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
                 throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
             }
         }
 
-
+        // do the normal update many items action
         var newNationalities = _mapper.Map<List<Nationality>>(inputs);
 
         for (int i = 0; i < oldNationalities.Count; i++)
@@ -188,18 +216,19 @@ public class NationalityService : INationalityService
         return _mapper.Map<List<LookupDto>>(updatedNationalities);
     }
 
-    public bool DeleteNationality(Guid id)
+    public bool Delete(Guid id)
     {
         var nationality = GetNationalityById(id);
         _crudService.SoftDelete<Nationality, Guid>(nationality);
         _crudService.SaveChanges();
         return true;
     }
-    public bool ActivateNationality(Guid id)
+    public bool Activate(Guid id)
     {
         var nationality = GetNationalityById(id);
         _crudService.Activate<Nationality, Guid>(nationality);
         _crudService.SaveChanges();
         return true;
-    } 
+    }
+
 }
