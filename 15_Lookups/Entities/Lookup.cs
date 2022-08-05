@@ -41,5 +41,13 @@ public class LookupConfig : EntityConfig<Lookup, Guid>
             .HasMaxLength(50)
             .HasColumnType("varchar(50)");
 
+        entity.HasIndex(e => e.TitleAr)
+        .HasDatabaseName("lookups_title_ar_unique_index")
+        .IsUnique();
+
+        entity.HasIndex(e => e.TitleEn)
+        .HasDatabaseName("lookups_title_en_unique_index")
+        .IsUnique();
+
     }
 }
