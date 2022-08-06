@@ -188,8 +188,8 @@ public class NavAndNavLinkService : INavAndNavLinkService
         }
 
         // if not do the normal Add action
-        var Nav = _mapper.Map<Nav>(input);
-        var createdNav = _crudService.Add<Nav, Guid>(Nav);
+        var newNav = _mapper.Map<Nav>(input);
+        var createdNav = _crudService.Add<Nav, Guid>(newNav);
         _crudService.SaveChanges();
 
         return _mapper.Map<NavDto>(createdNav);
@@ -220,8 +220,8 @@ public class NavAndNavLinkService : INavAndNavLinkService
         }
 
         // if no existedNav OR existedLinks found then do the normal Add action
-        var Nav = _mapper.Map<Nav>(input);
-        var createdNav = _crudService.Add<Nav, Guid>(Nav);
+        var newNav = _mapper.Map<Nav>(input);
+        var createdNav = _crudService.Add<Nav, Guid>(newNav);
         _crudService.SaveChanges();
 
         return _mapper.Map<NavDto>(createdNav);
@@ -243,8 +243,8 @@ public class NavAndNavLinkService : INavAndNavLinkService
         }
 
         // if all inputs titles are not existed in db do the normal add many action
-        var Navs = _mapper.Map<List<Nav>>(inputs);
-        var createdNavs = _crudService.AddAndGetRange<Nav, Guid>(Navs);
+        var newNavs = _mapper.Map<List<Nav>>(inputs);
+        var createdNavs = _crudService.AddAndGetRange<Nav, Guid>(newNavs);
         _crudService.SaveChanges();
 
         return _mapper.Map<List<NavDto>>(createdNavs);
@@ -268,9 +268,9 @@ public class NavAndNavLinkService : INavAndNavLinkService
         }
 
         // if no titles changed or the changed ones not existed in db do the normal update
-        var newNav = _mapper.Map<Nav>(input);
-        FillRestPropsWithOldValues(oldNav, newNav);
-        var updatedNav = _crudService.Update<Nav, Guid>(newNav);
+        var navToUpdate = _mapper.Map<Nav>(input);
+        FillRestPropsWithOldValues(oldNav, navToUpdate);
+        var updatedNav = _crudService.Update<Nav, Guid>(navToUpdate);
         _crudService.SaveChanges();
 
         return _mapper.Map<NavDto>(updatedNav);
@@ -308,11 +308,11 @@ public class NavAndNavLinkService : INavAndNavLinkService
         }
 
         // do the normal update many items action
-        var newNavs = _mapper.Map<List<Nav>>(inputs);
+        var navsToUpdate = _mapper.Map<List<Nav>>(inputs);
 
         for (int i = 0; i < oldNavs.Count; i++)
-            FillRestPropsWithOldValues(oldNavs[i], newNavs[i]);
-        var updatedNavs = _crudService.UpdateAndGetRange<Nav, Guid>(newNavs);
+            FillRestPropsWithOldValues(oldNavs[i], navsToUpdate[i]);
+        var updatedNavs = _crudService.UpdateAndGetRange<Nav, Guid>(navsToUpdate);
         _crudService.SaveChanges();
 
         return _mapper.Map<List<NavDto>>(updatedNavs);
@@ -379,43 +379,59 @@ public class NavAndNavLinkService : INavAndNavLinkService
 
     public NavLinkDto AddNavLink(CreateNavLinkWithNavIdInput input)
     {
+        // check if any titles are existed in db
         var oldLink = _crudService.GetOne<NavLink>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
+        // if any titles existed then reject the input
         if (oldLink is not null)
         {
             _errorMessage = $"NavLink: TitleAr or TitleEn is already existed.";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
-        var NavLink = _mapper.Map<NavLink>(input);
-        var createdNavLink = _crudService.Add<NavLink, Guid>(NavLink);
+
+        // if not do the normal Add action
+        var newNavLink = _mapper.Map<NavLink>(input);
+        var createdNavLink = _crudService.Add<NavLink, Guid>(newNavLink);
         _crudService.SaveChanges();
+
         return _mapper.Map<NavLinkDto>(createdNavLink);
     }
     public List<NavLinkDto> AddManyNavLinks(List<CreateNavLinkInput> inputs)
     {
-        var titleArList = inputs.Select(e=>e.TitleAr).ToList();
-        var titleEnList = inputs.Select(e=>e.TitleEn).ToList();
-        var NavsExisted = _crudService.GetList<NavLink,Guid>(e => titleArList.Contains(e.TitleAr) || titleEnList.Contains(e.TitleEn));
-        if (NavsExisted.Count != 0)
+        // get all new titles
+        var titlesArList = inputs.Select(e=>e.TitleAr).ToList();
+        var titlesEnList = inputs.Select(e=>e.TitleEn).ToList();
+
+        // check if any titles aleary exist in db
+        var existedLinks = _crudService.GetList<NavLink, Guid>(e => titlesArList.Contains(e.TitleAr) || titlesEnList.Contains(e.TitleEn));
+        // if any new title aleary existed so reject all inputs
+        if (existedLinks.Count != 0)
         {
-            _errorMessage = $"NavLink: NavsLinks List Is rejected , Some TitleAr or TitleEn is already existed.";
+            _errorMessage = $"NavsLinks List was rejected, Some TitleAr or TitleEn is already existed.";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
 
-        var NavLinks = _mapper.Map<List<NavLink>>(inputs);
-        var createdNavLinks = _crudService.AddAndGetRange<NavLink, Guid>(NavLinks);
+        // if all inputs titles are not existed in db do the normal add many action
+        var newLinks = _mapper.Map<List<NavLink>>(inputs);
+        var createdLinks = _crudService.AddAndGetRange<NavLink, Guid>(newLinks);
         _crudService.SaveChanges();
-        return _mapper.Map<List<NavLinkDto>>(createdNavLinks);
+
+        return _mapper.Map<List<NavLinkDto>>(createdLinks);
     }
 
     public NavLinkDto UpdateNavLink(UpdateNavLinkInput input)
     {
+        // get old db item
         var oldNavLink = GetNavLinkById(input.Id);
+
+        // if any titles changed
         if (oldNavLink.TitleAr != input.TitleAr || oldNavLink.TitleEn != input.TitleEn)
         {
-            var LinkExisted = _crudService.GetOne<NavLink>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
-            if (LinkExisted is not null)
+            // check for its existance in db
+            var existedLink = _crudService.GetOne<NavLink>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
+            // if existed reject the update input
+            if (existedLink is not null)
             {
                 _errorMessage = $"NavLink: TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
@@ -423,31 +439,50 @@ public class NavAndNavLinkService : INavAndNavLinkService
             }
         }
 
-        var newNavLink = _mapper.Map<NavLink>(input);
-        FillRestPropsWithOldValues(oldNavLink, newNavLink);
-        var updatedNavLink = _crudService.Update<NavLink, Guid>(newNavLink);
+        // if no titles changed or the changed ones not existed in db do the normal update
+        var navLinkToUpdate = _mapper.Map<NavLink>(input);
+        FillRestPropsWithOldValues(oldNavLink, navLinkToUpdate);
+        var updatedNavLink = _crudService.Update<NavLink, Guid>(navLinkToUpdate);
         _crudService.SaveChanges();
 
         return _mapper.Map<NavLinkDto>(updatedNavLink);
     }
     public List<NavLinkDto> UpdateManyNavLinks(List<UpdateNavLinkInput> inputs)
     {
+        // get oldNavLinks List from db
         var oldNavLinks = GetNavLinksByIds(inputs.Select(x => x.Id).ToList());
-        var oldNavLinksTitlesAr = oldNavLinks.Where(m => !inputs.Select(e=>e.TitleAr).Contains(m.TitleAr)).Select(e => e.TitleAr).ToList();
-        var oldNavLinksTitlesEn = oldNavLinks.Where(m => !inputs.Select(e=>e.TitleEn).Contains(m.TitleEn)).Select(e => e.TitleEn).ToList();
-        if (oldNavLinksTitlesAr.Count != 0 || oldNavLinksTitlesEn.Count != 0) {
-            var LinksExisted = _crudService.GetList<NavLink, Guid>(e => oldNavLinksTitlesAr.Contains(e.TitleAr) || oldNavLinksTitlesEn.Contains(e.TitleEn));
-            if (LinksExisted.Count != 0)
+
+        // get inputsTitles and oldNavLinksTitles
+        var inputsTitlesAr = inputs.Select(e => e.TitleAr);
+        var inputsTitlesEn = inputs.Select(e => e.TitleEn);
+        var navLinksTitlesAr = oldNavLinks.Select(e => e.TitleAr);
+        var navLinksTitlesEn = oldNavLinks.Select(e => e.TitleEn);
+
+        // get changedNavLinksTitles
+        var changedNavLinksTitlesAr = inputsTitlesAr
+            .Where(x => !navLinksTitlesAr.Contains(x))
+            .ToList();
+        var changedNavLinksTitlesEn = inputsTitlesEn
+            .Where(x => !navLinksTitlesEn.Contains(x))
+            .ToList();
+
+        // if any titles changed check if aleary existed in db
+        if (changedNavLinksTitlesAr.Count != 0 || changedNavLinksTitlesEn.Count != 0) {
+            var existedLinks = _crudService.GetList<NavLink, Guid>(e => changedNavLinksTitlesAr.Contains(e.TitleAr) || changedNavLinksTitlesEn.Contains(e.TitleEn));
+            // if any existance found in db reject all inputs
+            if (existedLinks.Count > 0)
             {
-                _errorMessage = $"NavLink: Links List Is rejected , Some TitleAr or TitleEn is already existed.";
+                _errorMessage = $"NavLinks List was rejected, Some TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
                 throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
             }
         }
-        var newNavLinks = _mapper.Map<List<NavLink>>(inputs);
+
+        // do the normal update many items action
+        var navLinksToUpdate = _mapper.Map<List<NavLink>>(inputs);
         for (int i = 0; i < oldNavLinks.Count; i++)
-            FillRestPropsWithOldValues(oldNavLinks[i], newNavLinks[i]);
-        var updatedNavLinks = _crudService.UpdateAndGetRange<NavLink, Guid>(newNavLinks);
+            FillRestPropsWithOldValues(oldNavLinks[i], navLinksToUpdate[i]);
+        var updatedNavLinks = _crudService.UpdateAndGetRange<NavLink, Guid>(navLinksToUpdate);
         _crudService.SaveChanges();
 
         return _mapper.Map<List<NavLinkDto>>(updatedNavLinks);
