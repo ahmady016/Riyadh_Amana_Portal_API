@@ -144,7 +144,7 @@ public class NationalityService : INationalityService
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
 
-        // if all inputs titles are not exited in db do the normal add many action
+        // if all inputs titles are not existed in db do the normal add many action
         var nationalities = _mapper.Map<List<Nationality>>(inputs);
         var createdNationalities = _crudService.AddAndGetRange<Nationality, Guid>(nationalities);
         _crudService.SaveChanges();

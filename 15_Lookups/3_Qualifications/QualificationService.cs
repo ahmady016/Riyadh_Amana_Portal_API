@@ -143,7 +143,7 @@ public class QualificationService : IQualificationService
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
 
-        // if all inputs titles are not exited in db do the normal add many action
+        // if all inputs titles are not existed in db do the normal add many action
         var qualifications = _mapper.Map<List<Qualification>>(inputs);
         var createdQualifications = _crudService.AddAndGetRange<Qualification, Guid>(qualifications);
         _crudService.SaveChanges();

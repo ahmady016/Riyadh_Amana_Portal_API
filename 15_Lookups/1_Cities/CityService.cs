@@ -145,7 +145,7 @@ public class CityService : ICityService
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
 
-        // if all inputs titles are not exited in db do the normal add many action
+        // if all inputs titles are not existed in db do the normal add many action
         var Cities = _mapper.Map<List<City>>(inputs);
         var createdCities = _crudService.AddAndGetRange<City, Guid>(Cities);
         _crudService.SaveChanges();
@@ -162,7 +162,7 @@ public class CityService : ICityService
         if (oldCity.TitleAr != input.TitleAr || oldCity.TitleEn != input.TitleEn ) {
             // check for its existance in db
             var CityExisted = _crudService.GetOne<City>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
-            // if existed reject update input
+            // if existed reject the update input
             if (CityExisted is not null) {
                 _errorMessage = $"City: TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
