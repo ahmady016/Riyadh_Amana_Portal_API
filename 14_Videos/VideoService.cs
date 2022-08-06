@@ -110,41 +110,116 @@ public class VideoService : IVideoService
 
     public VideoDto Add(CreateVideoInput input)
     {
+        // check if any titles are existed in db
+        var oldVideo = _crudService.GetOne<Video>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
+        // if any titles existed then reject the input
+        if (oldVideo is not null)
+        {
+            _errorMessage = $"Video: TitleAr or TitleEn is already existed.";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
+        }
+
+        // if not do the normal Add action
         var video = _mapper.Map<Video>(input);
         var createdvideo = _crudService.Add<Video, Guid>(video);
         _crudService.SaveChanges();
+
         return _mapper.Map<VideoDto>(createdvideo);
     }
     public List<VideoDto> AddMany(List<CreateVideoInput> inputs)
     {
+        // get all inputs new titles
+        var titlesArList = inputs.Select(e => e.TitleAr).ToList();
+        var titlesEnList = inputs.Select(e => e.TitleEn).ToList();
+
+        // check if any titles aleary exist in db
+        var existedVideos = _crudService.GetList<Video, Guid>(e => titlesArList.Contains(e.TitleAr) || titlesEnList.Contains(e.TitleEn));
+        // if any new title aleary existed so reject all inputs
+        if (existedVideos.Count > 0)
+        {
+            _errorMessage = $"Videos List was rejected , Some TitleAr or TitleEn is already existed.";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
+        }
+
+        // if all inputs titles are not existed in db then do the normal add many action
         var videos = _mapper.Map<List<Video>>(inputs);
         var createdvideos = _crudService.AddAndGetRange<Video, Guid>(videos);
         _crudService.SaveChanges();
+
         return _mapper.Map<List<VideoDto>>(createdvideos);
     }
 
     public VideoDto Update(UpdateVideoInput input)
     {
-        var oldvideo = GetById(input.Id);
-        var newvideo = _mapper.Map<Video>(input);
+        // get old db item
+        var oldVideo = GetById(input.Id);
 
-        FillRestPropsWithOldValues(oldvideo, newvideo);
-        var updatedAdvertisement = _crudService.Update<Video, Guid>(newvideo);
+        // if any titles changed
+        if (oldVideo.TitleAr != input.TitleAr || oldVideo.TitleEn != input.TitleEn)
+        {
+            // check for its existance in db
+            var CityExisted = _crudService.GetOne<Video>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
+            // if existed reject the update input
+            if (CityExisted is not null)
+            {
+                _errorMessage = $"Video: TitleAr or TitleEn is already existed.";
+                _logger.LogError(_errorMessage);
+                throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
+            }
+        }
+
+        // if no titles changed or the changed ones not existed in db do the normal update
+        var newVideo = _mapper.Map<Video>(input);
+
+        FillRestPropsWithOldValues(oldVideo, newVideo);
+        var updatedVideo = _crudService.Update<Video, Guid>(newVideo);
         _crudService.SaveChanges();
 
-        return _mapper.Map<VideoDto>(updatedAdvertisement);
+        return _mapper.Map<VideoDto>(updatedVideo);
     }
     public List<VideoDto> UpdateMany(List<UpdateVideoInput> inputs)
     {
-        var oldvideos = GetByIds(inputs.Select(x => x.Id).ToList());
-        var newvideos = _mapper.Map<List<Video>>(inputs);
+        // get oldVideos List from db
+        var oldVideos = GetByIds(inputs.Select(x => x.Id).ToList());
 
-        for (int i = 0; i < oldvideos.Count; i++)
-            FillRestPropsWithOldValues(oldvideos[i], newvideos[i]);
-        var updatedvideos = _crudService.UpdateAndGetRange<Video, Guid>(newvideos);
+        // get inputsTitles and oldVideosTitles
+        var inputsTitlesAr = inputs.Select(e => e.TitleAr);
+        var inputsTitlesEn = inputs.Select(e => e.TitleEn);
+        var videosTitlesAr = oldVideos.Select(e => e.TitleAr);
+        var videosTitlesEn = oldVideos.Select(e => e.TitleEn);
+
+        // get changedVideosTitles
+        var changedVideosTitlesAr = inputsTitlesAr
+            .Where(x => !videosTitlesAr.Contains(x))
+            .ToList();
+        var changedVideosTitlesEn = inputsTitlesEn
+            .Where(x => !videosTitlesEn.Contains(x))
+            .ToList();
+
+        // if any titles changed check if aleary existed in db
+        if (changedVideosTitlesAr.Count > 0 || changedVideosTitlesEn.Count > 0)
+        {
+            var existedVideos = _crudService.GetList<City, Guid>(e => changedVideosTitlesAr.Contains(e.TitleAr) || changedVideosTitlesEn.Contains(e.TitleEn));
+            // if any existance found in db reject all inputs
+            if (existedVideos.Count > 0)
+            {
+                _errorMessage = $"Videos List was rejected, Some TitleAr or TitleEn is already existed.";
+                _logger.LogError(_errorMessage);
+                throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
+            }
+        }
+
+        // do the normal update many items action
+        var newVideos = _mapper.Map<List<Video>>(inputs);
+
+        for (int i = 0; i < oldVideos.Count; i++)
+            FillRestPropsWithOldValues(oldVideos[i], newVideos[i]);
+        var updatedVideos = _crudService.UpdateAndGetRange<Video, Guid>(newVideos);
         _crudService.SaveChanges();
 
-        return _mapper.Map<List<VideoDto>>(updatedvideos);
+        return _mapper.Map<List<VideoDto>>(updatedVideos);
     }
 
     public bool Delete(Guid id)

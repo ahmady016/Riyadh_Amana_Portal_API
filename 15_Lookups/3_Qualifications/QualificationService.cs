@@ -159,9 +159,9 @@ public class QualificationService : IQualificationService
         // if any titles changed
         if (oldQualification.TitleAr != input.TitleAr || oldQualification.TitleEn != input.TitleEn ) {
             // check for its existance in db
-            var qualificationExisted = _crudService.GetOne<Qualification>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
+            var existedQualification = _crudService.GetOne<Qualification>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
             // if existed reject update input
-            if (qualificationExisted is not null) {
+            if (existedQualification is not null) {
                 _errorMessage = $"Qualification: TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
                 throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
@@ -202,7 +202,7 @@ public class QualificationService : IQualificationService
             // if any existance found in db reject all inputs
             if (existedQualifications.Count > 0)
             {
-                _errorMessage = $"Qualifications List was rejected , Some TitleAr or TitleEn is already existed.";
+                _errorMessage = $"Qualifications List was rejected, Some TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
                 throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
             }

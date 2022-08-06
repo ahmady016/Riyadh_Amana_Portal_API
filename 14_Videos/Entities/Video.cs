@@ -55,10 +55,12 @@ public class VideoConfig : EntityConfig<Video, Guid>
             .HasColumnName("thumb_url")
             .HasColumnType("varchar(400)");
 
-        entity.HasIndex(e => e.TitleAr, "title_ar_unique_index")
+        entity.HasIndex(e => e.TitleAr)
+            .HasDatabaseName("title_ar_unique_index")
             .IsUnique();
 
-        entity.HasIndex(e => e.TitleEn, "title_en_unique_index")
+        entity.HasIndex(e => e.TitleEn)
+            .HasDatabaseName("title_en_unique_index")
             .IsUnique();
 
     }

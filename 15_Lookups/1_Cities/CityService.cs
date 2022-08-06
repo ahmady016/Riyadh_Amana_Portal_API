@@ -200,11 +200,11 @@ public class CityService : ICityService
         // if any titles changed check if aleary existed in db
         if (changedCitiesTitlesAr.Count > 0 || changedCitiesTitlesEn.Count > 0)
         {
-            var CitiesExisted = _crudService.GetList<City, Guid>(e => changedCitiesTitlesAr.Contains(e.TitleAr) || changedCitiesTitlesEn.Contains(e.TitleEn));
+            var existedCities = _crudService.GetList<City, Guid>(e => changedCitiesTitlesAr.Contains(e.TitleAr) || changedCitiesTitlesEn.Contains(e.TitleEn));
             // if any existance found in db reject all inputs
-            if (CitiesExisted.Count > 0)
+            if (existedCities.Count > 0)
             {
-                _errorMessage = $"Cities List Is rejected , Some TitleAr or TitleEn is already existed.";
+                _errorMessage = $"Cities List Is rejected, Some TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
                 throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
             }

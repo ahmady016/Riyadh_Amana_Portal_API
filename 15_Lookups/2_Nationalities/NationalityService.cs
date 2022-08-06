@@ -160,9 +160,9 @@ public class NationalityService : INationalityService
         // if any titles changed
         if (oldNationality.TitleAr != input.TitleAr || oldNationality.TitleEn != input.TitleEn ) {
             // check for its existance in db
-            var nationalityExisted = _crudService.GetOne<Nationality>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
+            var existedNationality = _crudService.GetOne<Nationality>(e => e.TitleAr == input.TitleAr || e.TitleEn == input.TitleEn);
             // if existed reject update input
-            if (nationalityExisted is not null) {
+            if (existedNationality is not null) {
                 _errorMessage = $"Nationality: TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
                 throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
@@ -199,9 +199,9 @@ public class NationalityService : INationalityService
         // if any titles changed check if aleary existed in db
         if (changedNationalitiesTitlesAr.Count > 0 || changedNationalitiesTitlesEn.Count > 0)
         {
-            var nationalitiesExisted = _crudService.GetList<Nationality, Guid>(e => changedNationalitiesTitlesAr.Contains(e.TitleAr) || changedNationalitiesTitlesEn.Contains(e.TitleEn));
+            var existedNationalities = _crudService.GetList<Nationality, Guid>(e => changedNationalitiesTitlesAr.Contains(e.TitleAr) || changedNationalitiesTitlesEn.Contains(e.TitleEn));
             // if any existance found in db reject all inputs
-            if (nationalitiesExisted.Count > 0)
+            if (existedNationalities.Count > 0)
             {
                 _errorMessage = $"Nationalities List was rejected, Some TitleAr or TitleEn is already existed.";
                 _logger.LogError(_errorMessage);
