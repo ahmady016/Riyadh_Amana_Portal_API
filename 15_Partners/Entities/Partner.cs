@@ -17,8 +17,8 @@ public class LocalPartner : Partner
 {
     public string PartnershipTitleAr { get; set; }
     public string PartnershipTitleEn { get; set; }
-    public string RmDepartmentEn { get; set; }
     public string RmDepartmentAr { get; set; }
+    public string RmDepartmentEn { get; set; }
     public DateTime? ContractDate { get; set; }
     public bool? IsActiveContract { get; set; }
 }
@@ -44,15 +44,15 @@ public class PartnerConfig : EntityConfig<Partner, Guid>
 
         entity.Property(e => e.DescriptionAr)
             .IsRequired()
-            .HasMaxLength(600)
-            .HasColumnName("content_ar")
-            .HasColumnType("nvarchar(600)");
+            .HasMaxLength(500)
+            .HasColumnName("description_ar")
+            .HasColumnType("nvarchar(500)");
 
         entity.Property(e => e.DescriptionEn)
             .IsRequired()
-            .HasMaxLength(600)
-            .HasColumnName("content_en")
-            .HasColumnType("varchar(600)");
+            .HasMaxLength(500)
+            .HasColumnName("description_en")
+            .HasColumnType("varchar(500)");
 
         entity.Property(e => e.IconUrl)
             .IsRequired()
@@ -75,24 +75,24 @@ public class LocalPartnerConfig : IEntityTypeConfiguration<LocalPartner>
     public void Configure(EntityTypeBuilder<LocalPartner> entity)
     {
         entity.Property(e => e.PartnershipTitleAr)
-            .HasMaxLength(100)
+            .HasMaxLength(200)
             .HasColumnName("partnership_title_ar")
-            .HasColumnType("nvarchar(100)");
+            .HasColumnType("nvarchar(200)");
 
         entity.Property(e => e.PartnershipTitleEn)
-            .HasMaxLength(100)
+            .HasMaxLength(200)
             .HasColumnName("partnership_title_en")
-            .HasColumnType("varchar(100)");
+            .HasColumnType("varchar(200)");
 
         entity.Property(e => e.RmDepartmentAr)
-            .HasMaxLength(100)
+            .HasMaxLength(200)
             .HasColumnName("rm_department_ar")
-            .HasColumnType("nvarchar(100)");
+            .HasColumnType("nvarchar(200)");
 
         entity.Property(e => e.RmDepartmentEn)
-            .HasMaxLength(100)
+            .HasMaxLength(200)
             .HasColumnName("rm_department_en")
-            .HasColumnType("varchar(100)");
+            .HasColumnType("varchar(200)");
 
         entity.Property(e => e.ContractDate)
             .HasColumnName("contract_date")

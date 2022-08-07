@@ -2,7 +2,7 @@
 
 namespace Dtos;
 
-public class UpdatePartnerInput : CreatePartnerInput
+public class UpdateNormalPartnerInput : CreateNormalPartnerInput
 {
     [Required]
     [RegularExpression(
