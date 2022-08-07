@@ -4,7 +4,7 @@ using DB.Common;
 
 namespace DB.Entities;
 
-public class Lookup : Entity<Guid>
+public abstract class Lookup : Entity<Guid>
 {
     public string TitleAr { get; set; }
     public string TitleEn { get; set; }
