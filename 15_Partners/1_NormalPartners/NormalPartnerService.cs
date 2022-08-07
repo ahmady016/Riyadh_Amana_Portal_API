@@ -9,17 +9,17 @@ using Dtos;
 
 namespace Partners;
 
-public class PartnerService : IPartnerService
+public class NormalPartnerService : INormalPartnerService
 {
     private readonly ICRUDService _crudService;
     private readonly IMapper _mapper;
-    private readonly ILogger<Partner> _logger;
+    private readonly ILogger<NormalPartner> _logger;
     private string _errorMessage;
 
-    public PartnerService(
+    public NormalPartnerService(
         ICRUDService curdService,
         IMapper mapper,
-        ILogger<Partner> logger
+        ILogger<NormalPartner> logger
     )
     {
         _crudService = curdService;
@@ -27,9 +27,9 @@ public class PartnerService : IPartnerService
         _logger = logger;
     }
 
-    private Partner GetById(Guid id)
+    private NormalPartner GetById(Guid id)
     {
-        var partner = _crudService.Find<Partner, Guid>(id);
+        var partner = _crudService.Find<NormalPartner, Guid>(id);
         if (partner is null)
         {
             _errorMessage = $"Partner Record with Id: {id} Not Found";
@@ -38,9 +38,9 @@ public class PartnerService : IPartnerService
         }
         return partner;
     }
-    private List<Partner> GetByIds(List<Guid> ids)
+    private List<NormalPartner> GetByIds(List<Guid> ids)
     {
-        var partners = _crudService.GetList<Partner, Guid>(e => ids.Contains(e.Id));
+        var partners = _crudService.GetList<NormalPartner, Guid>(e => ids.Contains(e.Id));
         if (partners.Count == 0)
         {
             _errorMessage = $"No Any Partner Records Found";
@@ -49,7 +49,7 @@ public class PartnerService : IPartnerService
         }
         return partners;
     }
-    private static void FillRestPropsWithOldValues(Partner oldItem, Partner newItem)
+    private static void FillRestPropsWithOldValues(NormalPartner oldItem, NormalPartner newItem)
     {
         newItem.CreatedAt = oldItem.CreatedAt;
         newItem.CreatedBy = oldItem.CreatedBy;
@@ -63,7 +63,7 @@ public class PartnerService : IPartnerService
         newItem.DeletedBy = oldItem.DeletedBy;
     }
 
-    public List<PartnerDto> List(string type)
+    public List<NormalPartnerDto> List(string type)
     {
         var list = type.ToLower() switch
         {
@@ -71,9 +71,9 @@ public class PartnerService : IPartnerService
             "deleted" => _crudService.GetList<Partner, Guid>(e => e.IsDeleted),
             _ => _crudService.GetList<Partner, Guid>(e => !e.IsDeleted),
         };
-        return _mapper.Map<List<PartnerDto>>(list);
+        return _mapper.Map<List<NormalPartnerDto>>(list);
     }
-    public PageResult<PartnerDto> ListPage(string type, int pageSize, int pageNumber)
+    public PageResult<NormalPartnerDto> ListPage(string type, int pageSize, int pageNumber)
     {
         var query = type.ToLower() switch
         {
@@ -82,82 +82,82 @@ public class PartnerService : IPartnerService
             _ => _crudService.GetQuery<Partner>(e => !e.IsDeleted),
         };
         var page = _crudService.GetPage(query, pageSize, pageNumber);
-        return new PageResult<PartnerDto>()
+        return new PageResult<NormalPartnerDto>()
         {
-            PageItems = _mapper.Map<List<PartnerDto>>(page.PageItems),
+            PageItems = _mapper.Map<List<NormalPartnerDto>>(page.PageItems),
             TotalItems = page.TotalItems,
             TotalPages = page.TotalPages
         };
     }
 
-    public PartnerDto Find(Guid id)
+    public NormalPartnerDto Find(Guid id)
     {
         var partner = GetById(id);
-        return _mapper.Map<PartnerDto>(partner);
+        return _mapper.Map<NormalPartnerDto>(partner);
     }
-    public List<PartnerDto> FindList(string ids)
+    public List<NormalPartnerDto> FindList(string ids)
     {
         if (ids == null)
         {
             _errorMessage = $"Partner: Must supply comma separated string of ids";
             _logger.LogError(_errorMessage);
-            throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.BadRequest);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
         var _ids = ids.SplitAndRemoveEmpty(',').Select(Guid.Parse).ToList();
         var list = GetByIds(_ids);
-        return _mapper.Map<List<PartnerDto>>(list);
+        return _mapper.Map<List<NormalPartnerDto>>(list);
     }
 
-    public PartnerDto Add(CreatePartnerInput input)
+    public NormalPartnerDto Add(CreateNormalPartnerInput input)
     {
-        var partner = _mapper.Map<Partner>(input);
-        var createdPartner = _crudService.Add<Partner, Guid>(partner);
+        var partner = _mapper.Map<NormalPartner>(input);
+        var createdPartner = _crudService.Add<NormalPartner, Guid>(partner);
         _crudService.SaveChanges();
-        return _mapper.Map<PartnerDto>(createdPartner);
+        return _mapper.Map<NormalPartnerDto>(createdPartner);
     }
-    public List<PartnerDto> AddMany(List<CreatePartnerInput> inputs)
+    public List<NormalPartnerDto> AddMany(List<CreateNormalPartnerInput> inputs)
     {
-        var partners = _mapper.Map<List<Partner>>(inputs);
-        var createdPartners = _crudService.AddAndGetRange<Partner, Guid>(partners);
+        var partners = _mapper.Map<List<NormalPartner>>(inputs);
+        var createdPartners = _crudService.AddAndGetRange<NormalPartner, Guid>(partners);
         _crudService.SaveChanges();
-        return _mapper.Map<List<PartnerDto>>(createdPartners);
+        return _mapper.Map<List<NormalPartnerDto>>(createdPartners);
     }
 
-    public PartnerDto Update(UpdatePartnerInput input)
+    public NormalPartnerDto Update(UpdateNormalPartnerInput input)
     {
         var oldPartner = GetById(input.Id);
-        var newPartner = _mapper.Map<Partner>(input);
+        var newPartner = _mapper.Map<NormalPartner>(input);
 
         FillRestPropsWithOldValues(oldPartner, newPartner);
-        var updatedPartner = _crudService.Update<Partner, Guid>(newPartner);
+        var updatedPartner = _crudService.Update<NormalPartner, Guid>(newPartner);
         _crudService.SaveChanges();
         
-        return _mapper.Map<PartnerDto>(updatedPartner);
+        return _mapper.Map<NormalPartnerDto>(updatedPartner);
     }
-    public List<PartnerDto> UpdateMany(List<UpdatePartnerInput> inputs)
+    public List<NormalPartnerDto> UpdateMany(List<UpdateNormalPartnerInput> inputs)
     {
         var oldPartners = GetByIds(inputs.Select(x => x.Id).ToList());
-        var newPartners = _mapper.Map<List<Partner>>(inputs);
+        var newPartners = _mapper.Map<List<NormalPartner>>(inputs);
 
         for (int i = 0; i < oldPartners.Count; i++)
             FillRestPropsWithOldValues(oldPartners[i], newPartners[i]);
-        var updatedPartners = _crudService.UpdateAndGetRange<Partner, Guid>(newPartners);
+        var updatedPartners = _crudService.UpdateAndGetRange<NormalPartner, Guid>(newPartners);
         _crudService.SaveChanges();
         
-        return _mapper.Map<List<PartnerDto>>(updatedPartners);
+        return _mapper.Map<List<NormalPartnerDto>>(updatedPartners);
     }
 
     public bool Delete(Guid id)
     {
         var partner = GetById(id);
-        _crudService.SoftDelete<Partner, Guid>(partner);
+        _crudService.SoftDelete<NormalPartner, Guid>(partner);
         _crudService.SaveChanges();
         return true;
     }
     public bool Activate(Guid id)
     {
         var partner = GetById(id);
-        _crudService.Activate<Partner, Guid>(partner);
+        _crudService.Activate<NormalPartner, Guid>(partner);
         _crudService.SaveChanges();
         return true;
     }

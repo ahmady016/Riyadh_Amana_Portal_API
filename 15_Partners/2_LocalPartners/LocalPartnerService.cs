@@ -9,17 +9,17 @@ using Dtos;
 
 namespace Partners;
 
-public class PartnerService : IPartnerService
+public class LocalPartnerService : ILocalPartnerService
 {
     private readonly ICRUDService _crudService;
     private readonly IMapper _mapper;
-    private readonly ILogger<Partner> _logger;
+    private readonly ILogger<LocalPartner> _logger;
     private string _errorMessage;
 
-    public PartnerService(
+    public LocalPartnerService(
         ICRUDService curdService,
         IMapper mapper,
-        ILogger<Partner> logger
+        ILogger<LocalPartner> logger
     )
     {
         _crudService = curdService;
@@ -27,29 +27,29 @@ public class PartnerService : IPartnerService
         _logger = logger;
     }
 
-    private Partner GetById(Guid id)
+    private LocalPartner GetById(Guid id)
     {
-        var partner = _crudService.Find<Partner, Guid>(id);
-        if (partner is null)
+        var localPartner = _crudService.Find<LocalPartner, Guid>(id);
+        if (localPartner is null)
         {
-            _errorMessage = $"Partner Record with Id: {id} Not Found";
+            _errorMessage = $"LocalPartner Record with Id: {id} Not Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
         }
-        return partner;
+        return localPartner;
     }
-    private List<Partner> GetByIds(List<Guid> ids)
+    private List<LocalPartner> GetByIds(List<Guid> ids)
     {
-        var partners = _crudService.GetList<Partner, Guid>(e => ids.Contains(e.Id));
-        if (partners.Count == 0)
+        var localPartner = _crudService.GetList<LocalPartner, Guid>(e => ids.Contains(e.Id));
+        if (localPartner.Count == 0)
         {
-            _errorMessage = $"No Any Partner Records Found";
+            _errorMessage = $"No Any LocalPartner Records Found";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.NotFound);
         }
-        return partners;
+        return localPartner;
     }
-    private static void FillRestPropsWithOldValues(Partner oldItem, Partner newItem)
+    private static void FillRestPropsWithOldValues(LocalPartner oldItem, LocalPartner newItem)
     {
         newItem.CreatedAt = oldItem.CreatedAt;
         newItem.CreatedBy = oldItem.CreatedBy;
@@ -63,101 +63,101 @@ public class PartnerService : IPartnerService
         newItem.DeletedBy = oldItem.DeletedBy;
     }
 
-    public List<PartnerDto> List(string type)
+    public List<LocalPartnerDto> List(string type)
     {
         var list = type.ToLower() switch
         {
-            "all" => _crudService.GetAll<Partner, Guid>(),
-            "deleted" => _crudService.GetList<Partner, Guid>(e => e.IsDeleted),
-            _ => _crudService.GetList<Partner, Guid>(e => !e.IsDeleted),
+            "all" => _crudService.GetAll<LocalPartner, Guid>(),
+            "deleted" => _crudService.GetList<LocalPartner, Guid>(e => e.IsDeleted),
+            _ => _crudService.GetList<LocalPartner, Guid>(e => !e.IsDeleted),
         };
-        return _mapper.Map<List<PartnerDto>>(list);
+        return _mapper.Map<List<LocalPartnerDto>>(list);
     }
-    public PageResult<PartnerDto> ListPage(string type, int pageSize, int pageNumber)
+    public PageResult<LocalPartnerDto> ListPage(string type, int pageSize, int pageNumber)
     {
         var query = type.ToLower() switch
         {
-            "all" => _crudService.GetQuery<Partner>(),
-            "deleted" => _crudService.GetQuery<Partner>(e => e.IsDeleted),
-            _ => _crudService.GetQuery<Partner>(e => !e.IsDeleted),
+            "all" => _crudService.GetQuery<LocalPartner>(),
+            "deleted" => _crudService.GetQuery<LocalPartner>(e => e.IsDeleted),
+            _ => _crudService.GetQuery<LocalPartner>(e => !e.IsDeleted),
         };
         var page = _crudService.GetPage(query, pageSize, pageNumber);
-        return new PageResult<PartnerDto>()
+        return new PageResult<LocalPartnerDto>()
         {
-            PageItems = _mapper.Map<List<PartnerDto>>(page.PageItems),
+            PageItems = _mapper.Map<List<LocalPartnerDto>>(page.PageItems),
             TotalItems = page.TotalItems,
             TotalPages = page.TotalPages
         };
     }
 
-    public PartnerDto Find(Guid id)
+    public LocalPartnerDto Find(Guid id)
     {
-        var partner = GetById(id);
-        return _mapper.Map<PartnerDto>(partner);
+        var localPartner = GetById(id);
+        return _mapper.Map<LocalPartnerDto>(localPartner);
     }
-    public List<PartnerDto> FindList(string ids)
+    public List<LocalPartnerDto> FindList(string ids)
     {
         if (ids == null)
         {
-            _errorMessage = $"Partner: Must supply comma separated string of ids";
+            _errorMessage = $"LocalPartner: Must supply comma separated string of ids";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, System.Net.HttpStatusCode.BadRequest);
         }
         var _ids = ids.SplitAndRemoveEmpty(',').Select(Guid.Parse).ToList();
         var list = GetByIds(_ids);
-        return _mapper.Map<List<PartnerDto>>(list);
+        return _mapper.Map<List<LocalPartnerDto>>(list);
     }
 
-    public PartnerDto Add(CreatePartnerInput input)
+    public LocalPartnerDto Add(CreateLocalPartnerInput input)
     {
-        var partner = _mapper.Map<Partner>(input);
-        var createdPartner = _crudService.Add<Partner, Guid>(partner);
+        var localPartner = _mapper.Map<LocalPartner>(input);
+        var createdLocalPartner = _crudService.Add<LocalPartner, Guid>(localPartner);
         _crudService.SaveChanges();
-        return _mapper.Map<PartnerDto>(createdPartner);
+        return _mapper.Map<LocalPartnerDto>(createdLocalPartner);
     }
-    public List<PartnerDto> AddMany(List<CreatePartnerInput> inputs)
+    public List<LocalPartnerDto> AddMany(List<CreateLocalPartnerInput> inputs)
     {
-        var partners = _mapper.Map<List<Partner>>(inputs);
-        var createdPartners = _crudService.AddAndGetRange<Partner, Guid>(partners);
+        var localPartners = _mapper.Map<List<LocalPartner>>(inputs);
+        var createdLocalPartners = _crudService.AddAndGetRange<LocalPartner, Guid>(localPartners);
         _crudService.SaveChanges();
-        return _mapper.Map<List<PartnerDto>>(createdPartners);
+        return _mapper.Map<List<LocalPartnerDto>>(createdLocalPartners);
     }
 
-    public PartnerDto Update(UpdatePartnerInput input)
+    public LocalPartnerDto Update(UpdateLocalPartnerInput input)
     {
-        var oldPartner = GetById(input.Id);
-        var newPartner = _mapper.Map<Partner>(input);
+        var oldLocalPartner = GetById(input.Id);
+        var newLocalPartner = _mapper.Map<LocalPartner>(input);
 
-        FillRestPropsWithOldValues(oldPartner, newPartner);
-        var updatedPartner = _crudService.Update<Partner, Guid>(newPartner);
-        _crudService.SaveChanges();
-        
-        return _mapper.Map<PartnerDto>(updatedPartner);
-    }
-    public List<PartnerDto> UpdateMany(List<UpdatePartnerInput> inputs)
-    {
-        var oldPartners = GetByIds(inputs.Select(x => x.Id).ToList());
-        var newPartners = _mapper.Map<List<Partner>>(inputs);
-
-        for (int i = 0; i < oldPartners.Count; i++)
-            FillRestPropsWithOldValues(oldPartners[i], newPartners[i]);
-        var updatedPartners = _crudService.UpdateAndGetRange<Partner, Guid>(newPartners);
+        FillRestPropsWithOldValues(oldLocalPartner, newLocalPartner);
+        var updatedLocalPartner = _crudService.Update<LocalPartner, Guid>(newLocalPartner);
         _crudService.SaveChanges();
         
-        return _mapper.Map<List<PartnerDto>>(updatedPartners);
+        return _mapper.Map<LocalPartnerDto>(updatedLocalPartner);
+    }
+    public List<LocalPartnerDto> UpdateMany(List<UpdateLocalPartnerInput> inputs)
+    {
+        var oldLocalPartners = GetByIds(inputs.Select(x => x.Id).ToList());
+        var newLocalPartners = _mapper.Map<List<LocalPartner>>(inputs);
+
+        for (int i = 0; i < oldLocalPartners.Count; i++)
+            FillRestPropsWithOldValues(oldLocalPartners[i], newLocalPartners[i]);
+        var updatedLocalPartners = _crudService.UpdateAndGetRange<LocalPartner, Guid>(newLocalPartners);
+        _crudService.SaveChanges();
+        
+        return _mapper.Map<List<LocalPartnerDto>>(updatedLocalPartners);
     }
 
     public bool Delete(Guid id)
     {
-        var partner = GetById(id);
-        _crudService.SoftDelete<Partner, Guid>(partner);
+        var localPartner = GetById(id);
+        _crudService.SoftDelete<LocalPartner, Guid>(localPartner);
         _crudService.SaveChanges();
         return true;
     }
     public bool Activate(Guid id)
     {
-        var partner = GetById(id);
-        _crudService.Activate<Partner, Guid>(partner);
+        var localPartner = GetById(id);
+        _crudService.Activate<LocalPartner, Guid>(localPartner);
         _crudService.SaveChanges();
         return true;
     }

@@ -3,16 +3,16 @@ using Dtos;
 
 namespace Partners;
 
-public interface IPartnerService
+public interface ILocalPartnerService
 {
-    List<PartnerDto> List(string type);
-    PageResult<PartnerDto> ListPage(string type, int pageSize, int pageNumber);
-    PartnerDto Find(Guid id);
-    List<PartnerDto> FindList(string ids);
-    PartnerDto Add(CreatePartnerInput input);
-    List<PartnerDto> AddMany(List<CreatePartnerInput> inputs);
-    PartnerDto Update(UpdatePartnerInput input);
-    List<PartnerDto> UpdateMany(List<UpdatePartnerInput> inputs);
+    List<LocalPartnerDto> List(string type);
+    PageResult<LocalPartnerDto> ListPage(string type, int pageSize, int pageNumber);
+    LocalPartnerDto Find(Guid id);
+    List<LocalPartnerDto> FindList(string ids);
+    LocalPartnerDto Add(CreateLocalPartnerInput input);
+    List<LocalPartnerDto> AddMany(List<CreateLocalPartnerInput> inputs);
+    LocalPartnerDto Update(UpdateLocalPartnerInput input);
+    List<LocalPartnerDto> UpdateMany(List<UpdateLocalPartnerInput> inputs);
     bool Delete(Guid id);
     bool Activate(Guid id);
 }

@@ -35,10 +35,6 @@ public class AutoMapperProfile : Profile
         CreateMap<Award, CreateAwardInput>().ReverseMap();
         CreateMap<Award, UpdateAwardInput>().ReverseMap();
 
-        CreateMap<Partner, PartnerDto>().ReverseMap();
-        CreateMap<Partner, CreatePartnerInput>().ReverseMap();
-        CreateMap<Partner, UpdatePartnerInput>().ReverseMap();
-
         CreateMap<Document, DocumentDto>().ReverseMap();
         CreateMap<Document, CreateDocumentInput>().ReverseMap();
         CreateMap<Document, UpdateDocumentInput>().ReverseMap();
@@ -46,6 +42,10 @@ public class AutoMapperProfile : Profile
         CreateMap<AppFeature, AppFeatureDto>().ReverseMap();
         CreateMap<AppFeature, CreateAppFeatureInput>().ReverseMap();
         CreateMap<AppFeature, UpdateAppFeatureInput>().ReverseMap();
+
+        CreateMap<Video, VideoDto>().ReverseMap();
+        CreateMap<Video, CreateVideoInput>().ReverseMap();
+        CreateMap<Video, UpdateVideoInput>().ReverseMap();
 
         CreateMap<Album, AlbumDto>().ReverseMap();
         CreateMap<Album, CreateAlbumInput>().ReverseMap();
@@ -84,9 +84,17 @@ public class AutoMapperProfile : Profile
         CreateMap<NavLink, CreateNavLinkWithNavIdInput>().ReverseMap();
         CreateMap<NavLink, UpdateNavLinkInput>().ReverseMap();
 
-        CreateMap<Video, VideoDto>().ReverseMap();
-        CreateMap<Video, CreateVideoInput>().ReverseMap();
-        CreateMap<Video, UpdateVideoInput>().ReverseMap();
+        CreateMap<Lookup, LookupDto>().ReverseMap();
+        CreateMap<Lookup, CreateLookupInput>().ReverseMap();
+        CreateMap<Lookup, UpdateLookupInput>().ReverseMap();
+
+        CreateMap<NormalPartner, NormalPartnerDto>().ReverseMap();
+        CreateMap<NormalPartner, CreateNormalPartnerInput>().ReverseMap();
+        CreateMap<NormalPartner, UpdateNormalPartnerInput>().ReverseMap();
+
+        CreateMap<LocalPartner, LocalPartnerDto>().ReverseMap();
+        CreateMap<LocalPartner, CreateLocalPartnerInput>().ReverseMap();
+        CreateMap<LocalPartner, UpdateLocalPartnerInput>().ReverseMap();
 
     }
 }

@@ -5,10 +5,10 @@ namespace Partners;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-public class PartnersController : ControllerBase
+public class NormalPartnersController : ControllerBase
 {
-    private readonly IPartnerService _service;
-    public PartnersController(IPartnerService service)
+    private readonly INormalPartnerService _service;
+    public NormalPartnersController(INormalPartnerService service)
     {
         _service = service;
     }
@@ -16,7 +16,7 @@ public class PartnersController : ControllerBase
     /// <summary>
     /// listType values (all/deleted/existed)
     /// </summary>
-    /// <returns>List of PartnersDots</returns>
+    /// <returns>List of NormalPartnerDto</returns>
     [HttpGet("{type}")]
     public virtual IActionResult List([FromRoute] string type)
     {
@@ -26,7 +26,7 @@ public class PartnersController : ControllerBase
     /// <summary>
     /// listType values (all/deleted/existed)
     /// </summary>
-    /// <returns>List of PartnersDots</returns>
+    /// <returns>List of NormalPartnerDto</returns>
     [HttpGet("{type}")]
     public virtual IActionResult ListPage(
         [FromRoute] string type,
@@ -38,9 +38,9 @@ public class PartnersController : ControllerBase
     }
 
     /// <summary>
-    /// Partner/Find/[id]
+    /// NormalPartners/Find/[id]
     /// </summary>
-    /// <returns>PartnersDots</returns>
+    /// <returns>NormalPartnerDto</returns>
     [HttpGet("{id}")]
     public IActionResult Find(Guid id)
     {
@@ -48,9 +48,9 @@ public class PartnersController : ControllerBase
     }
 
     /// <summary>
-    /// Partner/FindList/[id, id, id]
+    /// NormalPartners/FindList/[id, id, id]
     /// </summary>
-    /// <returns>List Of PartnersDots</returns>
+    /// <returns>List Of NormalPartnerDto</returns>
     [HttpGet("{ids}")]
     public IActionResult FindList(string ids)
     {
@@ -58,47 +58,47 @@ public class PartnersController : ControllerBase
     }
 
     /// <summary>
-    /// Partner/Add
+    /// NormalPartners/Add
     /// </summary>
-    /// <returns>PartnersDots</returns>
+    /// <returns>NormalPartnerDto</returns>
     [HttpPost]
-    public virtual IActionResult Add([FromBody] CreatePartnerInput input)
+    public virtual IActionResult Add([FromBody] CreateNormalPartnerInput input)
     {
         return Ok(_service.Add(input));
     }
 
     /// <summary>
-    /// Partner/AddMany
+    /// NormalPartners/AddMany
     /// </summary>
-    /// <returns>List Of PartnersDots</returns>
+    /// <returns>List Of NormalPartnerDto</returns>
     [HttpPost]
-    public virtual IActionResult AddMany([FromBody] List<CreatePartnerInput> inputs)
+    public virtual IActionResult AddMany([FromBody] List<CreateNormalPartnerInput> inputs)
     {
         return Ok(_service.AddMany(inputs));
     }
 
     /// <summary>
-    /// Partner/Update
+    /// NormalPartners/Update
     /// </summary>
-    /// <returns>PartnersDots</returns>
+    /// <returns>NormalPartnerDto</returns>
     [HttpPut]
-    public virtual IActionResult Update([FromBody] UpdatePartnerInput input)
+    public virtual IActionResult Update([FromBody] UpdateNormalPartnerInput input)
     {
         return Ok(_service.Update(input));
     }
 
     /// <summary>
-    /// Partner/UpdateMany
+    /// NormalPartners/UpdateMany
     /// </summary>
-    /// <returns>List Of PartnersDots</returns>
+    /// <returns>List Of NormalPartnerDto</returns>
     [HttpPut]
-    public virtual IActionResult UpdateMany([FromBody] List<UpdatePartnerInput> inputs)
+    public virtual IActionResult UpdateMany([FromBody] List<UpdateNormalPartnerInput> inputs)
     {
         return Ok(_service.UpdateMany(inputs));
     }
 
     /// <summary>
-    /// Partner/Delete
+    /// NormalPartners/Delete
     /// </summary>
     /// <returns>bool</returns>
     [HttpDelete]
@@ -108,7 +108,7 @@ public class PartnersController : ControllerBase
     }
 
     /// <summary>
-    /// Partner/Activate
+    /// NormalPartners/Activate
     /// </summary>
     /// <returns>bool</returns>
     [HttpPut]
@@ -116,4 +116,5 @@ public class PartnersController : ControllerBase
     {
         return Ok(_service.Activate(id));
     }
+
 }

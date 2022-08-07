@@ -9,19 +9,23 @@ using Common;
 using Auth;
 
 using Users;
+
 using Advertisements;
 using Articles;
 using _News;
 using _ContactUs;
 using Awards;
-using Partners;
 using Documents;
 using AppFeatures;
+using Videos;
+
 using Albums;
 using AppPages;
 using Comments;
 using Navs;
-using Videos;
+
+using Lookups;
+using Partners;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,19 +51,27 @@ builder.Services.AddScoped<ICRUDService, CRUDService>();
 
 // Register Features Services
 builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddScoped<IAdvertisementService, AdvertisementService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<INewsService, NewsService>();
 builder.Services.AddScoped<IContactUsService, ContactUsService>();
 builder.Services.AddScoped<IAwardService, AwardService>();
-builder.Services.AddScoped<IPartnerService, PartnerService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IAppFeatureService, AppFeatureService>();
+builder.Services.AddScoped<IVideoService, VideoService>();
+
 builder.Services.AddScoped<IAlbumAndPhotoService, AlbumAndPhotoService>();
 builder.Services.AddScoped<IAppPageAndPageKeyService, AppPageAndPageKeyService>();
 builder.Services.AddScoped<ICommentAndReplyService, CommentAndReplyService>();
 builder.Services.AddScoped<INavAndNavLinkService, NavAndNavLinkService>();
-builder.Services.AddScoped<IVideoService, VideoService>();
+
+builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<INationalityService, NationalityService>();
+builder.Services.AddScoped<IQualificationService, QualificationService>();
+
+builder.Services.AddScoped<INormalPartnerService, NormalPartnerService>();
+builder.Services.AddScoped<ILocalPartnerService, LocalPartnerService>();
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

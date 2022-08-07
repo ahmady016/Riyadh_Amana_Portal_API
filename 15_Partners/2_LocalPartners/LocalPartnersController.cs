@@ -5,10 +5,10 @@ namespace Partners;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-public class PartnersController : ControllerBase
+public class LocalPartnersController : ControllerBase
 {
-    private readonly IPartnerService _service;
-    public PartnersController(IPartnerService service)
+    private readonly ILocalPartnerService _service;
+    public LocalPartnersController(ILocalPartnerService service)
     {
         _service = service;
     }
@@ -16,7 +16,7 @@ public class PartnersController : ControllerBase
     /// <summary>
     /// listType values (all/deleted/existed)
     /// </summary>
-    /// <returns>List of PartnersDots</returns>
+    /// <returns>List of LocalPartnerDto</returns>
     [HttpGet("{type}")]
     public virtual IActionResult List([FromRoute] string type)
     {
@@ -26,7 +26,7 @@ public class PartnersController : ControllerBase
     /// <summary>
     /// listType values (all/deleted/existed)
     /// </summary>
-    /// <returns>List of PartnersDots</returns>
+    /// <returns>List of LocalPartnerDto</returns>
     [HttpGet("{type}")]
     public virtual IActionResult ListPage(
         [FromRoute] string type,
@@ -38,9 +38,9 @@ public class PartnersController : ControllerBase
     }
 
     /// <summary>
-    /// Partner/Find/[id]
+    /// LocalPartners/Find/[id]
     /// </summary>
-    /// <returns>PartnersDots</returns>
+    /// <returns>LocalPartnerDto</returns>
     [HttpGet("{id}")]
     public IActionResult Find(Guid id)
     {
@@ -48,9 +48,9 @@ public class PartnersController : ControllerBase
     }
 
     /// <summary>
-    /// Partner/FindList/[id, id, id]
+    /// LocalPartners/FindList/[id, id, id]
     /// </summary>
-    /// <returns>List Of PartnersDots</returns>
+    /// <returns>List Of LocalPartnerDto</returns>
     [HttpGet("{ids}")]
     public IActionResult FindList(string ids)
     {
@@ -58,47 +58,47 @@ public class PartnersController : ControllerBase
     }
 
     /// <summary>
-    /// Partner/Add
+    /// LocalPartners/Add
     /// </summary>
-    /// <returns>PartnersDots</returns>
+    /// <returns>LocalPartnerDto</returns>
     [HttpPost]
-    public virtual IActionResult Add([FromBody] CreatePartnerInput input)
+    public virtual IActionResult Add([FromBody] CreateLocalPartnerInput input)
     {
         return Ok(_service.Add(input));
     }
 
     /// <summary>
-    /// Partner/AddMany
+    /// LocalPartners/AddMany
     /// </summary>
-    /// <returns>List Of PartnersDots</returns>
+    /// <returns>List Of LocalPartnerDto</returns>
     [HttpPost]
-    public virtual IActionResult AddMany([FromBody] List<CreatePartnerInput> inputs)
+    public virtual IActionResult AddMany([FromBody] List<CreateLocalPartnerInput> inputs)
     {
         return Ok(_service.AddMany(inputs));
     }
 
     /// <summary>
-    /// Partner/Update
+    /// LocalPartners/Update
     /// </summary>
-    /// <returns>PartnersDots</returns>
+    /// <returns>LocalPartnerDto</returns>
     [HttpPut]
-    public virtual IActionResult Update([FromBody] UpdatePartnerInput input)
+    public virtual IActionResult Update([FromBody] UpdateLocalPartnerInput input)
     {
         return Ok(_service.Update(input));
     }
 
     /// <summary>
-    /// Partner/UpdateMany
+    /// LocalPartners/UpdateMany
     /// </summary>
-    /// <returns>List Of PartnersDots</returns>
+    /// <returns>List Of LocalPartnerDto</returns>
     [HttpPut]
-    public virtual IActionResult UpdateMany([FromBody] List<UpdatePartnerInput> inputs)
+    public virtual IActionResult UpdateMany([FromBody] List<UpdateLocalPartnerInput> inputs)
     {
         return Ok(_service.UpdateMany(inputs));
     }
 
     /// <summary>
-    /// Partner/Delete
+    /// LocalPartners/Delete
     /// </summary>
     /// <returns>bool</returns>
     [HttpDelete]
@@ -108,7 +108,7 @@ public class PartnersController : ControllerBase
     }
 
     /// <summary>
-    /// Partner/Activate
+    /// LocalPartners/Activate
     /// </summary>
     /// <returns>bool</returns>
     [HttpPut]
