@@ -23,27 +23,28 @@ public class PageKeyConfig : EntityConfig<PageKey, Guid>
 
         entity.Property(e => e.Key)
             .IsRequired()
-            .HasMaxLength(50)
+            .HasMaxLength(100)
             .HasColumnName("key")
-            .HasColumnType("nvarchar(50)");
+            .HasColumnType("nvarchar(100)");
 
         entity.Property(e => e.ValueAr)
             .IsRequired()
-            .HasMaxLength(400)
+            .HasMaxLength(500)
             .HasColumnName("value_ar")
-            .HasColumnType("varchar(400)");
+            .HasColumnType("varchar(500)");
 
         entity.Property(e => e.ValueEn)
             .IsRequired()
-            .HasMaxLength(400)
+            .HasMaxLength(500)
             .HasColumnName("value_en")
-            .HasColumnType("varchar(400)");
+            .HasColumnType("varchar(500)");
 
         entity.Property(e => e.PageId)
             .HasColumnName("page_id")
             .HasColumnType("uniqueidentifier");
 
-        entity.HasIndex(e => e.Key, "key_unique_index")
+        entity.HasIndex(e => e.Key)
+            .HasDatabaseName("key_unique_index")
             .IsUnique();
 
         entity.HasIndex(e => e.PageId, "app_pages_pages_keys_index");

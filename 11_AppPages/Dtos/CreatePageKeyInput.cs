@@ -5,15 +5,15 @@ namespace Dtos;
 public class CreatePageKeyInput
 {
     [Required(ErrorMessage = "Key is required")]
-    [StringLength(50, MinimumLength = 5, ErrorMessage = "Key Must be between 5 and 50 characters")]
+    [StringLength(100, MinimumLength = 5, ErrorMessage = "Key Must be between 5 and 100 characters")]
     public string Key { get; set; }
 
     [Required(ErrorMessage = "ValueAr is required")]
-    [StringLength(400, MinimumLength = 5, ErrorMessage = "ValueAr Must be between 5 and 400 characters")]
+    [StringLength(500, MinimumLength = 5, ErrorMessage = "ValueAr Must be between 5 and 500 characters")]
     public string ValueAr { get; set; }
 
     [Required(ErrorMessage = "ValueEn is required")]
-    [StringLength(400, MinimumLength = 5, ErrorMessage = "ValueEn Must be between 5 and 400 characters")]
+    [StringLength(500, MinimumLength = 5, ErrorMessage = "ValueEn Must be between 5 and 500 characters")]
     public string ValueEn { get; set; }
 
     [Required(ErrorMessage = "PageId is required")]

@@ -22,23 +22,24 @@ public class AppPageConfig : EntityConfig<AppPage, Guid>
 
         entity.Property(e => e.Title)
             .IsRequired()
-            .HasMaxLength(80)
+            .HasMaxLength(100)
             .HasColumnName("title")
-            .HasColumnType("nvarchar(80)");
+            .HasColumnType("nvarchar(100)");
 
         entity.Property(e => e.Description)
             .IsRequired()
-            .HasMaxLength(200)
+            .HasMaxLength(500)
             .HasColumnName("description")
-            .HasColumnType("varchar(200)");
+            .HasColumnType("varchar(500)");
 
         entity.Property(e => e.Url)
             .IsRequired()
-            .HasMaxLength(400)
+            .HasMaxLength(500)
             .HasColumnName("url")
-            .HasColumnType("varchar(400)");
+            .HasColumnType("varchar(500)");
 
-        entity.HasIndex(e => e.Title, "title_unique_index")
+        entity.HasIndex(e => e.Title)
+            .HasDatabaseName("title_unique_index")
             .IsUnique();
 
     }
