@@ -26,9 +26,9 @@ public class ReplyConfig : EntityConfig<Reply, Guid>
 
         entity.Property(e => e.ReplierName)
             .IsRequired()
-            .HasMaxLength(50)
+            .HasMaxLength(100)
             .HasColumnName("replier_name")
-            .HasColumnType("varchar(50)");
+            .HasColumnType("varchar(100)");
 
         entity.Property(e => e.ReplierEmail)
             .IsRequired()
@@ -38,9 +38,9 @@ public class ReplyConfig : EntityConfig<Reply, Guid>
 
         entity.Property(e => e.Text)
             .IsRequired()
-            .HasMaxLength(1000)
+            .HasMaxLength(2000)
             .HasColumnName("text")
-            .HasColumnType("varchar(1000)");
+            .HasColumnType("varchar(2000)");
 
         entity.Property(e => e.IsApproved)
             .IsRequired()
