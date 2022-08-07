@@ -22,15 +22,15 @@ public class ArticleConfig : EntityConfig<Article, Guid>
 
         entity.Property(e => e.TitleAr)
             .IsRequired()
-            .HasMaxLength(80)
+            .HasMaxLength(200)
             .HasColumnName("title_ar")
-            .HasColumnType("nvarchar(80)");
+            .HasColumnType("nvarchar(200)");
 
         entity.Property(e => e.TitleEn)
             .IsRequired()
-            .HasMaxLength(80)
+            .HasMaxLength(200)
             .HasColumnName("title_en")
-            .HasColumnType("varchar(80)");
+            .HasColumnType("varchar(200)");
 
         entity.Property(e => e.ContentAr)
             .IsRequired()
@@ -46,9 +46,9 @@ public class ArticleConfig : EntityConfig<Article, Guid>
 
         entity.Property(e => e.Url)
             .IsRequired()
-            .HasMaxLength(400)
+            .HasMaxLength(500)
             .HasColumnName("url")
-            .HasColumnType("varchar(400)");
+            .HasColumnType("varchar(500)");
 
     }
 }
