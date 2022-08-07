@@ -48,13 +48,13 @@ public class AppFeatureConfig : EntityConfig<AppFeature, Guid>
 
         entity.Property(e => e.IconUrl)
             .IsRequired()
-            .HasMaxLength(400)
+            .HasMaxLength(500)
             .HasColumnName("icon_url")
             .HasColumnType("varchar(400)");
 
         entity.Property(e => e.Url)
             .IsRequired()
-            .HasMaxLength(400)
+            .HasMaxLength(500)
             .HasColumnName("url")
             .HasColumnType("varchar(400)");
 

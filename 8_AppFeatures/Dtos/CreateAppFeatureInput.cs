@@ -20,14 +20,14 @@ public class CreateAppFeatureInput
     [StringLength(500, MinimumLength = 10, ErrorMessage = "DescriptionEn Must be between 10 and 500 characters")]
     public string DescriptionEn { get; set; }
 
-    [Required(ErrorMessage = "IconUrl is required")]
-    [StringLength(400, MinimumLength = 10, ErrorMessage = "IconUrl Must be between 10 and 400 characters")]
     [DataType(DataType.ImageUrl)]
+    [Required(ErrorMessage = "IconUrl is required")]
+    [StringLength(500, MinimumLength = 10, ErrorMessage = "IconUrl Must be between 10 and 500 characters")]
     public string IconUrl { get; set; }
 
-    [Required(ErrorMessage = "Url is required")]
-    [StringLength(400, MinimumLength = 10, ErrorMessage = "Url Must be between 10 and 400 characters")]
     [DataType(DataType.Url)]
+    [Required(ErrorMessage = "Url is required")]
+    [StringLength(500, MinimumLength = 10, ErrorMessage = "Url Must be between 10 and 500 characters")]
     public string Url { get; set; }
 
     public byte? Order { get; set; }
