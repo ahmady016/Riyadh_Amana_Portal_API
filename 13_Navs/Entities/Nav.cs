@@ -23,15 +23,15 @@ public class NavConfig : EntityConfig<Nav, Guid>
 
         entity.Property(e => e.TitleAr)
             .IsRequired()
-            .HasMaxLength(80)
+            .HasMaxLength(100)
             .HasColumnName("title_ar")
-            .HasColumnType("nvarchar(80)");
+            .HasColumnType("nvarchar(100)");
 
         entity.Property(e => e.TitleEn)
             .IsRequired()
-            .HasMaxLength(80)
+            .HasMaxLength(100)
             .HasColumnName("title_en")
-            .HasColumnType("varchar(80)");
+            .HasColumnType("varchar(100)");
 
         entity.Property(e => e.DescriptionAr)
             .HasMaxLength(200)
@@ -45,9 +45,9 @@ public class NavConfig : EntityConfig<Nav, Guid>
 
         entity.Property(e => e.IconUrl)
            .IsRequired()
-           .HasMaxLength(400)
+           .HasMaxLength(500)
            .HasColumnName("icon_url")
-           .HasColumnType("varchar(400)");
+           .HasColumnType("varchar(500)");
 
         entity.HasIndex(e => e.TitleAr)
          .HasDatabaseName("navs_title_ar_unique_index")
@@ -58,5 +58,3 @@ public class NavConfig : EntityConfig<Nav, Guid>
          .IsUnique();
     }
 }
-
-

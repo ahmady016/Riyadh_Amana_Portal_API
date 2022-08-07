@@ -24,15 +24,15 @@ public class NavLinkConfig : EntityConfig<NavLink, Guid>
 
         entity.Property(e => e.TitleAr)
             .IsRequired()
-            .HasMaxLength(80)
+            .HasMaxLength(100)
             .HasColumnName("title_ar")
-            .HasColumnType("nvarchar(80)");
+            .HasColumnType("nvarchar(100)");
 
         entity.Property(e => e.TitleEn)
             .IsRequired()
-            .HasMaxLength(80)
+            .HasMaxLength(100)
             .HasColumnName("title_en")
-            .HasColumnType("varchar(80)");
+            .HasColumnType("varchar(100)");
 
         entity.Property(e => e.DescriptionAr)
             .HasMaxLength(200)
@@ -46,9 +46,9 @@ public class NavLinkConfig : EntityConfig<NavLink, Guid>
 
         entity.Property(e => e.Url)
             .IsRequired()
-            .HasMaxLength(400)
+            .HasMaxLength(500)
             .HasColumnName("url")
-            .HasColumnType("varchar(400)");
+            .HasColumnType("varchar(500)");
 
         entity.Property(e => e.NavId)
             .IsRequired()
@@ -64,12 +64,11 @@ public class NavLinkConfig : EntityConfig<NavLink, Guid>
             .HasConstraintName("navs_navs_links_fk");
 
         entity.HasIndex(e => e.TitleAr)
-        .HasDatabaseName("navs_links_title_ar_unique_index")
-        .IsUnique();
+            .HasDatabaseName("navs_links_title_ar_unique_index")
+            .IsUnique();
 
         entity.HasIndex(e => e.TitleEn)
-         .HasDatabaseName("navs_links_title_en_unique_index")
-         .IsUnique();
+             .HasDatabaseName("navs_links_title_en_unique_index")
+             .IsUnique();
     }
 }
-
