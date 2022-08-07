@@ -138,7 +138,7 @@ public class UserService : IUserService
         var existedUser = _crudService.GetOne<User>(u => u.Email == input.Email);
         if (existedUser is not null)
         {
-            _errorMessage = "Email already excited !!!";
+            _errorMessage = "Email already existed !!!";
             _logger.LogError(_errorMessage);
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.Conflict);
         }
@@ -251,7 +251,10 @@ public class UserService : IUserService
     }
     public bool ChangeEmail(ChangeEmailInput input)
     {
+        // get the existed user from db
         var user = GetById(input.UserId);
+
+        // return error if old email not existed
         if (input.OldEmail != user.Email)
         {
             _errorMessage = $"Wrong Old Email !!!";
@@ -259,6 +262,16 @@ public class UserService : IUserService
             throw new HttpRequestException(_errorMessage, null, HttpStatusCode.BadRequest);
         }
 
+        // return error if new email already existed in db
+        var existedUser = _crudService.GetOne<User>(u => u.Email == input.NewEmail);
+        if (existedUser is not null)
+        {
+            _errorMessage = "New Email already existed !!!";
+            _logger.LogError(_errorMessage);
+            throw new HttpRequestException(_errorMessage, null, HttpStatusCode.Conflict);
+        }
+
+        // if every things okay then do update the user with new email
         user.Email = input.NewEmail;
         _crudService.Update<User, Guid>(user);
         _crudService.SaveChanges();
