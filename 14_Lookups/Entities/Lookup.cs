@@ -22,15 +22,15 @@ public class LookupConfig : EntityConfig<Lookup, Guid>
 
         entity.Property(e => e.TitleAr)
             .IsRequired()
-            .HasMaxLength(100)
+            .HasMaxLength(200)
             .HasColumnName("title_ar")
-            .HasColumnType("nvarchar(100)");
+            .HasColumnType("nvarchar(200)");
 
         entity.Property(e => e.TitleEn)
             .IsRequired()
-            .HasMaxLength(100)
+            .HasMaxLength(200)
             .HasColumnName("title_en")
-            .HasColumnType("varchar(100)");
+            .HasColumnType("varchar(200)");
 
         entity.HasDiscriminator<string>("discriminator")
             .HasValue<City>("city")
@@ -38,8 +38,8 @@ public class LookupConfig : EntityConfig<Lookup, Guid>
             .HasValue<Qualification>("qualification");
 
         entity.Property("discriminator")
-            .HasMaxLength(50)
-            .HasColumnType("varchar(50)");
+            .HasMaxLength(100)
+            .HasColumnType("varchar(100)");
 
         entity.HasIndex(e => e.TitleAr)
             .HasDatabaseName("lookups_title_ar_unique_index")
