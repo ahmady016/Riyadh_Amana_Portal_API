@@ -12,7 +12,6 @@ public class AutoMapperProfile : Profile
     {
         CreateMap<User, UserDto>().ReverseMap();
         CreateMap<User, RegisterInput>().ReverseMap();
-        CreateMap<User, CreateUserInput>().ReverseMap();
         CreateMap<User, UpdateUserInput>().ReverseMap();
 
         CreateMap<Advertisement, AdvertisementDto>().ReverseMap();
