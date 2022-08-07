@@ -23,32 +23,32 @@ public class DocumentConfig : EntityConfig<Document, Guid>
 
         entity.Property(e => e.TitleAr)
             .IsRequired()
-            .HasMaxLength(100)
+            .HasMaxLength(200)
             .HasColumnName("title_ar")
-            .HasColumnType("nvarchar(100)");
+            .HasColumnType("nvarchar(200)");
 
         entity.Property(e => e.TitleEn)
             .IsRequired()
-            .HasMaxLength(100)
+            .HasMaxLength(200)
             .HasColumnName("title_en")
-            .HasColumnType("varchar(100)");
+            .HasColumnType("varchar(200)");
 
         entity.Property(e => e.DescriptionAr)
             .IsRequired()
-            .HasMaxLength(200)
+            .HasMaxLength(500)
             .HasColumnName("description_ar")
-            .HasColumnType("nvarchar(200)");
+            .HasColumnType("nvarchar(500)");
 
         entity.Property(e => e.DescriptionEn)
             .IsRequired()
-            .HasMaxLength(200)
+            .HasMaxLength(500)
             .HasColumnName("description_en")
-            .HasColumnType("varchar(200)");
+            .HasColumnType("varchar(500)");
 
         entity.Property(e => e.Url)
-            .HasMaxLength(400)
+            .HasMaxLength(500)
             .HasColumnName("url")
-            .HasColumnType("varchar(400)");
+            .HasColumnType("varchar(500)");
 
         entity.Property(e => e.Base64Url)
             .HasMaxLength(1000)
