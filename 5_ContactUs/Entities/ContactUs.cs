@@ -65,14 +65,14 @@ public class ContactUsConfig : EntityConfig<ContactUs, Guid>
 
         entity.Property(e => e.Description)
             .IsRequired()
-            .HasMaxLength(400)
+            .HasMaxLength(500)
             .HasColumnName("description")
-            .HasColumnType("nvarchar(400)");
+            .HasColumnType("nvarchar(500)");
 
         entity.Property(e => e.FileUrl)
-            .HasMaxLength(400)
+            .HasMaxLength(500)
             .HasColumnName("file_url")
-            .HasColumnType("varchar(400)");
+            .HasColumnType("varchar(500)");
 
     }
 }

@@ -35,10 +35,10 @@ public class CreateContactUsInput
     public string Title { get; set; }
 
     [Required(ErrorMessage = "Description is required")]
-    [StringLength(400, MinimumLength = 10, ErrorMessage = "Description Must be between 10 and 400 characters")]
+    [StringLength(500, MinimumLength = 10, ErrorMessage = "Description Must be between 10 and 500 characters")]
     public string Description { get; set; }
 
     [Required(ErrorMessage = "FileUrl is required")]
-    [StringLength(400, MinimumLength = 10, ErrorMessage = "FileUrl Must be between 10 and 400 characters")]
+    [StringLength(500, MinimumLength = 10, ErrorMessage = "FileUrl Must be between 10 and 500 characters")]
     public string FileUrl { get; set; }
 }
