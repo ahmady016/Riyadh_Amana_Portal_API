@@ -119,9 +119,6 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseSwagger(options => options.SerializeAsV2 = true);
 app.UseSwaggerUI();
 
-// custom jwt auth middleware
-app.UseMiddleware<JwtMiddleware>();
-
 // Allow CORS
 app.UseCors(config => config
     .AllowAnyMethod()
@@ -132,6 +129,9 @@ app.UseCors(config => config
 
 // Serve Static Files
 app.UseStaticFiles();
+
+// custom jwt auth middleware
+app.UseMiddleware<JwtMiddleware>();
 
 // setup API routes
 app.UseRouting();
