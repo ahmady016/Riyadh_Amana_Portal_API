@@ -30,15 +30,15 @@ public class NewsConfig : EntityConfig<News, Guid>
 
         entity.Property(e => e.TitleAr)
             .IsRequired()
-            .HasMaxLength(100)
+            .HasMaxLength(200)
             .HasColumnName("title_ar")
-            .HasColumnType("nvarchar(100)");
+            .HasColumnType("nvarchar(200)");
 
         entity.Property(e => e.TitleEn)
             .IsRequired()
-            .HasMaxLength(100)
+            .HasMaxLength(200)
             .HasColumnName("title_en")
-            .HasColumnType("varchar(100)");
+            .HasColumnType("varchar(200)");
 
         entity.Property(e => e.SourceAr)
             .IsRequired()
@@ -54,15 +54,15 @@ public class NewsConfig : EntityConfig<News, Guid>
 
         entity.Property(e => e.BriefAr)
             .IsRequired()
-            .HasMaxLength(200)
+            .HasMaxLength(400)
             .HasColumnName("brief_ar")
-            .HasColumnType("nvarchar(200)");
+            .HasColumnType("nvarchar(400)");
 
         entity.Property(e => e.BriefEn)
             .IsRequired()
-            .HasMaxLength(200)
+            .HasMaxLength(400)
             .HasColumnName("brief_en")
-            .HasColumnType("varchar(200)");
+            .HasColumnType("varchar(400)");
 
         entity.Property(e => e.ContentAr)
             .IsRequired()
@@ -78,15 +78,15 @@ public class NewsConfig : EntityConfig<News, Guid>
 
         entity.Property(e => e.ThumbUrl)
             .IsRequired()
-            .HasMaxLength(400)
+            .HasMaxLength(500)
             .HasColumnName("thumb_url")
-            .HasColumnType("varchar(400)");
+            .HasColumnType("varchar(500)");
 
         entity.Property(e => e.ImageUrl)
             .IsRequired()
-            .HasMaxLength(400)
+            .HasMaxLength(500)
             .HasColumnName("image_url")
-            .HasColumnType("varchar(400)");
+            .HasColumnType("varchar(500)");
 
         entity.Property(e => e.HijriDate)
             .HasMaxLength(50)
